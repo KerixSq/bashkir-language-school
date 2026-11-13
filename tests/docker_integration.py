@@ -196,6 +196,13 @@ def main():
                     context.close()
                 browser.close()
                 print('PASS Docker restart preserves answers, points and browser Auth sessions')
+        except Exception:
+            logs = compose('logs', '--no-color', '--tail', '40', 'auth', 'db', 'rest', 'app')
+            for value in values.values():
+                if value:
+                    logs = logs.replace(value, '[redacted]')
+            print(logs, flush=True)
+            raise
         finally:
             compose('down')  # Intentionally retain the unique project's volume.
             print('Retained integration volume for project:', project)
