@@ -13,6 +13,7 @@ if (-not $UseSupabaseCli) {
     return
 }
 
+$env:BASHKIR_ENV_FILE = Join-Path $root '.env'
 $python = (Get-Command python -ErrorAction Stop).Source
 if (Test-Path '.venv\Scripts\python.exe') {
     $python = (Resolve-Path '.venv\Scripts\python.exe').Path

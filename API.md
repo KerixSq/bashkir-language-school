@@ -166,3 +166,7 @@ Content-Type: application/json
 Также доступны: `web_profile()`; `web_next_fragment()`; `web_submit_answer(p_fragment_pair_id, p_action, p_text)`; `web_skip_fragment(p_fragment_pair_id)`. Во всех случаях внутренний `user_id` находится по `auth.uid()` в SQL, а не приходит из клиента.
 
 Фронтенд вызывает эти RPC через `supabase-js` (`client.rpc()`), который автоматически добавляет JWT текущего сеанса. Публичные рейтинги `leaderboard_*` и `translations_export` читаются по публичному ключу, без авторизации.
+
+## Периодные очки учеников
+
+`leaderboard_users` дополнительно возвращает `day_points`, `week_points`, `month_points`, `year_points` по `Asia/Yekaterinburg`; `points` остаётся общим итогом за всё время. Миграция stage10 добавляет колонки без изменения ответов; stage11 настраивает search_path роли Auth для самостоятельного Compose.
