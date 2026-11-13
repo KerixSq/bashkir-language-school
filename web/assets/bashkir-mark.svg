@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Башҡорт теле — знак школы</title>
+  <desc id="desc">Геометрический цветок курая над раскрытой книгой</desc>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="#115A74"/>
+  <!-- The seven leaves are an original geometric treatment, not a reproduction of the flag. -->
+  <g fill="#FFD36A">
+    <path d="M32 12.1c-1.85 0-3.15 3.1-3.15 5.25s1.3 4.1 3.15 4.1 3.15-1.95 3.15-4.1S33.85 12.1 32 12.1Z"/>
+    <path d="M22.65 15.2c-1.6.9-1.19 4.18-.11 6.05 1.08 1.86 3.24 2.9 4.84 2s1.25-3.22.17-5.08-3.3-3.86-4.9-2.97Z"/>
+    <path d="M15.5 22.25c-.93 1.6 1.17 4 3.04 5.1 1.87 1.08 4.19 1.36 5.11-.24s-.11-3.69-1.98-4.77c-1.86-1.08-5.23-1.69-6.17-.09Z"/>
+    <path d="M14.18 32.55c0 1.84 3.13 3.07 5.29 3.07s4.12-1.23 4.12-3.07-1.96-3.12-4.12-3.12-5.29 1.28-5.29 3.12Z"/>
+    <path d="M49.82 32.55c0 1.84-3.13 3.07-5.29 3.07s-4.12-1.23-4.12-3.07 1.96-3.12 4.12-3.12 5.29 1.28 5.29 3.12Z"/>
+    <path d="M48.5 22.25c.93 1.6-1.17 4-3.04 5.1-1.87 1.08-4.19 1.36-5.11-.24s.11-3.69 1.98-4.77c1.86-1.08 5.23-1.69 6.17-.09Z"/>
+    <path d="M41.35 15.2c1.6.9 1.19 4.18.11 6.05-1.08 1.86-3.24 2.9-4.84 2s-1.25-3.22-.17-5.08 3.3-3.86 4.9-2.97Z"/>
+  </g>
+  <circle cx="32" cy="28.5" r="3.4" fill="#F5FAFD"/>
+  <path d="M32 33.5v6" fill="none" stroke="#FFCE5A" stroke-width="2.1" stroke-linecap="round"/>
+  <!-- A book, with a distinct centre seam and two precise, readable pages. -->
+  <path d="M10.5 39c8.2-3.1 15.1-2.8 21.5 2.3v11.2c-7.2-4.1-14.3-4.7-21.5-2.2V39Z" fill="#F9FFFD"/>
+  <path d="M53.5 39c-8.2-3.1-15.1-2.8-21.5 2.3v11.2c7.2-4.1 14.3-4.7 21.5-2.2V39Z" fill="#DAF6E9"/>
+  <path d="M12 43.2c7.6-2.5 13.8-1.2 18 2.1M52 43.2c-7.6-2.5-13.8-1.2-18 2.1" fill="none" stroke="#50B28B" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M9.5 53c8.3-2.4 16.3-1.8 22.5 2.4 6.2-4.2 14.2-4.8 22.5-2.4" fill="none" stroke="#FFD36A" stroke-width="2.7" stroke-linecap="round"/>
+</svg>

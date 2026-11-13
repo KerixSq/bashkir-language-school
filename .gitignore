@@ -22,6 +22,7 @@ Thumbs.db
 !web/assets/learning-deck.json
 !docs/CORPUS_PROVENANCE.json
 test-results/
+.index.html.before-brand-update.bak
 
 
 # Supabase CLI, npm и локальные контейнеры

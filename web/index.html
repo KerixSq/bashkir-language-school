@@ -244,25 +244,6 @@
     .map-pin { position:absolute; top:-28px; display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:#ffce48; border:3px solid #fff; box-shadow:0 3px 0 #ca932c; color:#28465c; font-weight:800; }
     .map-stop small { font-weight:600; font-size:11px; margin-top:3px; color:#49716a; }
     .map-note { color:#506b75; font-size:12px; margin:14px 1px 0; }
-    .legend-zone { margin:8px 0 35px; }
-    .legend-intro { text-align:center; max-width:670px; margin:0 auto 23px; }
-    .legend-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
-    .legend-card { min-width:0; border:2px solid #e2eee8; background:#fffef9; border-radius:24px; overflow:hidden; box-shadow:0 7px 0 #d5e5e5; transition:transform .2s,box-shadow .2s; }
-    .legend-card:hover { transform:translateY(-5px); box-shadow:0 12px 0 #d5e5e5; }
-    .legend-art { height:180px; position:relative; display:flex; justify-content:center; align-items:center; overflow:hidden; }
-    .legend-horse .legend-art { background:#b9e4f9; }
-    .legend-swan .legend-art { background:#beece7; }
-    .legend-hero .legend-art { background:#d6e7fb; }
-    .legend-art img { width:100%; height:100%; object-fit:cover; }
-    .legend-horse .legend-art img { width:auto; height:210px; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(25,65,80,.14)); }
-    .legend-info { padding:18px 20px 21px; }
-    .legend-type { display:inline-block; font-size:10px; font-weight:800; letter-spacing:.11em; color:#207056; }
-    .legend-info h3 { font-size:24px; margin:4px 0 7px; letter-spacing:-.04em; }
-    .legend-info > p { color:#455d65; font-size:13px; min-height:60px; margin:0; }
-    .legend-info details { border-top:1px solid #dce8e2; margin-top:13px; padding-top:11px; font-size:13px; }
-    .legend-info summary { cursor:pointer; font-weight:850; color:#176b5b; }
-    .legend-info details p { margin:9px 0 0; color:#475e6a; }
-    .legend-disclaimer { color:#547079; font-size:12px; margin:16px 0 0; text-align:center; }
     .welcome-guide { margin-top:12px; border:2px solid #dcebe5; border-radius:23px; box-shadow:0 7px 0 #e0ebec; }
     .guide-steps li { border-radius:17px; }
     .guide-number { display:grid; place-items:center; min-width:35px; height:35px; border-radius:12px; background:#ffdf72; color:#28516a; }
@@ -284,7 +265,6 @@
       .hero-scene { height:485px; }
       .hero-mascot { top:5px; }
       .hero-card { bottom:8px; right:-5px; }
-      .legend-grid { gap:12px; }
     }
     @media (max-width:900px) {
       .hero-main { flex-direction:column; align-items:stretch; }
@@ -292,7 +272,6 @@
       .hero-scene { width:min(100%,520px); flex:auto; align-self:center; height:480px; }
       .hero-mascot { left:0; width:100%; top:-20px; }
       .hero-card { right:0; bottom:10px; }
-      .legend-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
     @media (max-width:650px) {
       .hero { padding-bottom:50px; }
@@ -315,13 +294,6 @@
       .map-stops { align-items:center; flex-direction:column; justify-content:center; gap:20px; padding:22px; }
       .map-stop,.map-stop:nth-child(2),.map-stop:nth-child(3) { width:min(100%,230px); min-height:62px; margin:0; box-shadow:0 5px 0 #4c9164; }
       .map-pin { left:-17px; top:-8px; width:34px; height:34px; }
-      .legend-grid { grid-template-columns:1fr; }
-      .legend-card { display:grid; grid-template-columns:37% 63%; min-height:170px; }
-      .legend-art { height:100%; min-height:170px; }
-      .legend-horse .legend-art img { height:177px; }
-      .legend-info { padding:15px 15px 14px; }
-      .legend-info h3 { font-size:20px; }
-      .legend-info > p { min-height:0; font-size:12px; }
     }
     @media (max-width:400px) {
       .hero-scene { height:315px; }
@@ -332,7 +304,6 @@
       .hero-card .flower { width:22px; }
       .daily-mark strong { font-size:40px; }
       .daily-mark span { font-size:9px; }
-      .legend-card { grid-template-columns:35% 65%; }
       .hero-benefits { gap:6px; }
       .hero-benefits span { font-size:11px; }
     }
@@ -549,7 +520,6 @@
     .game-big-button:hover:not(:disabled) {background:#31b783!important;box-shadow:0 6px 0 #18805a!important;}
     .game-answers .game-answer {min-height:57px!important;border:2px solid #dfebe5!important;border-bottom-width:4px!important;border-radius:14px!important;}
     .game-answer[aria-pressed="true"] {background:#eaf9ed!important;border-color:#3cb986!important;}
-    .legend-zone {margin-top:40px!important;}
     .welcome-guide {margin-top:25px!important;}
     .game-badges {grid-template-columns:repeat(3,minmax(0,1fr))!important;}
     .app-rail {position:sticky;top:0;height:100vh;padding:25px 17px 25px 20px;border-left:2px solid #eaf0ec;background:white;overflow-y:auto;}
@@ -790,8 +760,6 @@
     .quest-button.secondary{background:#eef5ff;color:#154875;box-shadow:0 4px #bad1e8;border:2px solid #c7d9ee;}
     .quest-progress span,.game-progress-track span{background:linear-gradient(90deg,#33c57b,#f6d24c);}
     .legend-card,.panel,.app-rail-card{border-radius:22px;}
-    .legend-art{height:205px;}
-    .legend-art img{width:100%;height:100%;object-fit:cover;}
     .app-mobile-nav{background:#fff!important;border-top:2px solid #cee8d8;}
     @media(max-width:1220px){.app-layout{grid-template-columns:205px minmax(0,1fr)}.quest-layout{grid-template-columns:minmax(0,1fr) 290px;}.quest-mascot{width:152px;height:152px;right:0;}.app-center{padding:20px 17px 58px;}}
     @media(max-width:980px){.quest-layout{grid-template-columns:1fr}.jury-side{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;}.quest-hero h2{max-width:440px;}}
@@ -1029,7 +997,13 @@ body.lesson-active .game-award {font-size:65px!important;color:#f2bb2c!important
 }
 
 body.lesson-active .app-mobile-nav {display:none!important}
+  /* Brand refresh: geometric mark and small chibi mascot. */
+  .app-brand-icon{background:#115a74!important;border:0!important;box-shadow:none!important;overflow:hidden!important}
+  .app-brand-icon img{width:100%!important;height:100%!important;object-fit:contain!important}
+  .app-sidebar-bottom img{width:145px;height:124px;max-width:100%;object-fit:contain}
+  .app-guide-illustration img{width:118px;height:118px;max-width:100%;object-fit:contain}
 </style>
+  <link rel="icon" type="image/svg+xml" href="assets/bashkir-mark.svg">
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
@@ -1067,7 +1041,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
   <div class="app-layout">
     <aside class="app-sidebar" aria-label="Навигация по школе">
       <a class="app-brand" href="#web-play" aria-label="Башкирская языковая школа — главная">
-        <span class="app-brand-icon" aria-hidden="true"><img src="assets/akbuzat.webp" alt="" width="70" height="70"></span>
+        <span class="app-brand-icon" aria-hidden="true"><img src="assets/bashkir-mark.svg" alt="" width="70" height="70"></span>
         <span>Башҡорт <b>теле</b><small>ШКОЛА ПРИКЛЮЧЕНИЙ</small></span>
       </a>
       <div class="app-nav-group-title">ОБУЧЕНИЕ</div>
@@ -1086,7 +1060,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         <a href="#community-title" class="app-nav-item" data-app-dest="library"><span class="app-nav-ico"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-landmark"></use></svg></span> Библиотека</a>
       </nav>
       <div class="app-sidebar-bottom">
-        <img src="assets/akbuzat.webp" alt="" loading="lazy" width="120" height="110">
+        <img src="assets/akbuzat-chibi.webp" alt="" loading="lazy" width="120" height="110">
         <strong>Акбузат верит в тебя!</strong>
         <small>Пять минут в день — и ты на шаг ближе к цели.</small>
       </div>
@@ -1356,15 +1330,6 @@ body.lesson-active .app-mobile-nav {display:none!important}
         </aside>
       </div>
     </section>
-    <section class="legend-zone" aria-labelledby="legends-title">
-      <div class="legend-intro"><span class="game-eyebrow">МИР ИСТОРИЙ</span><h2 id="legends-title">Герои башкирских легенд</h2><p>Узнавай культурные образы, которые вдохновили оформление школы.</p></div>
-      <div class="legend-grid">
-        <article class="legend-card legend-horse"><div class="legend-art"><img src="assets/akbuzat.webp" alt="Иллюстрация крылатого коня Акбузата" loading="lazy" width="260" height="260"></div><div class="legend-info"><span class="legend-type">КРЫЛАТЫЙ КОНЬ</span><h3>Акбузат</h3><p>Волшебный конь из эпосов «Урал-батыр» и «Акбузат». Здесь он — игровой проводник.</p><details><summary>Короткая история</summary><p>В эпосе Акбузат помогает батыру и связан с образом Хумай.</p></details></div></article>
-        <article class="legend-card legend-swan"><div class="legend-art"><img src="assets/humay.svg" alt="Авторская стилизованная иллюстрация лебедя — отсылка к образу Хумай" loading="lazy" width="360" height="290"></div><div class="legend-info"><span class="legend-type">НЕБЕСНЫЙ ОБРАЗ</span><h3>Хумай</h3><p>Дочь Самрау и Солнца, связанная в эпосе с образом лебедя.</p><details><summary>Короткая история</summary><p>Хумай дарит Урал-батыру волшебного коня Акбузата.</p></details></div></article>
-        <article class="legend-card legend-hero"><div class="legend-art"><img src="assets/ural-batyr.svg" alt="Авторский мультяшный образ богатыря на фоне Уральских гор" loading="lazy" width="360" height="290"></div><div class="legend-info"><span class="legend-type">ГЕРОЙ ЭПОСА</span><h3>Урал-батыр</h3><p>Герой башкирского эпоса, олицетворяющий защиту жизни и людей.</p><details><summary>Короткая история</summary><p>Эпос повествует о подвигах Урала и объясняет происхождение Уральских гор.</p></details></div></article>
-      </div>
-      <p class="legend-disclaimer">Иллюстрации — современные авторские интерпретации, а не исторические изображения. Карточки не являются игровыми наградами.</p>
-    </section>
     <section id="start-guide" class="welcome-guide" aria-labelledby="start-title">
       <div class="guide-heading">
         <span class="guide-index">И ЕЩЁ</span>
@@ -1521,7 +1486,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         <a href="#game-zone" class="app-rail-action">Начать в браузере</a>
       </section>
       <section class="app-rail-card app-guide-card">
-        <div class="app-guide-illustration"><img src="assets/akbuzat.webp" alt="Акбузат улыбается и приглашает учиться" width="200" height="200" loading="lazy"></div>
+        <div class="app-guide-illustration"><img src="assets/akbuzat-chibi.webp" alt="Акбузат улыбается и приглашает учиться" width="200" height="200" loading="lazy"></div>
         <div><span class="app-rail-label">ТВОЙ ДРУГ</span><h2>Акбузат рядом!</h2><p>Изучай настоящие фразы, а если ошибёшься — попробуем ещё.</p></div>
       </section>
       <section class="app-rail-card app-library-card">

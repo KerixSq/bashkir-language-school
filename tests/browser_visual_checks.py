@@ -54,6 +54,19 @@ def main():
                     "(nodes) => nodes.forEach(node => node.loading = 'eager')"
                 )
                 page.wait_for_function('[...document.images].every(img => img.complete)')
+                expect(page.locator('.legend-zone')).to_have_count(0)
+                expect(page.locator('.app-brand-icon img')).to_have_attribute(
+                    'src', 'assets/bashkir-mark.svg'
+                )
+                expect(page.locator('.app-sidebar-bottom img')).to_have_attribute(
+                    'src', 'assets/akbuzat-chibi.webp'
+                )
+                expect(page.locator('link[rel="icon"]')).to_have_attribute(
+                    'href', 'assets/bashkir-mark.svg'
+                )
+                assert page.locator('.app-brand-icon img, .app-sidebar-bottom img').evaluate_all(
+                    '(images) => images.every(image => image.naturalWidth > 0)'
+                )
                 no_overflow(page)
                 page.screenshot(path=str(OUT / f'home-{width}.png'))
                 # Mascot must occupy its own area rather than cover mobile CTAs/copy.

@@ -55,16 +55,20 @@ class JuryHomeChecks(unittest.TestCase):
         self.assertIn('id="expert-code"', HTML)
         self.assertIn("if (!code) throw new Error('Введи отдельный код эксперта.')", HTML)
 
-    def test_images_exist_and_mythology_is_clearly_stylized(self):
+    def test_images_exist_and_brand_refresh_replaces_legend_section(self):
         for asset in (
             'akbuzat.webp',
             'adventure-world.webp',
             'humay.svg',
             'ural-batyr.svg',
             'ural-map.svg',
+            'akbuzat-chibi.webp',
+            'bashkir-mark.svg',
         ):
             self.assertTrue((ROOT / 'web' / 'assets' / asset).is_file(), asset)
-        self.assertIn('современные авторские интерпретации', HTML)
+        self.assertNotIn('class="legend-zone"', HTML)
+        self.assertIn('src="assets/bashkir-mark.svg"', HTML)
+        self.assertIn('src="assets/akbuzat-chibi.webp"', HTML)
 
     def test_no_repeated_html_ids(self):
         ids = re.findall(r'\bid="([^"]+)"', HTML)
