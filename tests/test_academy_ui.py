@@ -23,13 +23,13 @@ class AcademyUiTests(unittest.TestCase):
         self.assertIn('id="path-count"', PAGE)
         self.assertIn('id="top-streak"', PAGE)
         self.assertIn('id="top-xp"', PAGE)
-        self.assertIn("textContent = `${mastered()} изученных фраз`", PAGE)
+        self.assertIn('textContent = `${mastered()} изученных фраз`', PAGE)
         for file in ('akbuzat.webp', 'ural-journey.webp', 'learning-deck.json'):
             self.assertTrue((ROOT / 'web' / 'assets' / file).is_file(), file)
 
     def test_immersive_lesson_and_keyboard_options(self):
         self.assertIn('class="game-word-mascot"', PAGE)
-        self.assertIn("/^[1-4]$/.test(event.key)", PAGE)
+        self.assertIn('/^[1-4]$/.test(event.key)', PAGE)
         self.assertIn('body.lesson-active .app-mobile-nav {display:none!important}', PAGE)
         self.assertIn('id="game-finish"', PAGE)
 

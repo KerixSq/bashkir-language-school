@@ -62,7 +62,11 @@ def main():
     SCREENSHOTS.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(
-            **({'executable_path': os.environ['BROWSER_EXECUTABLE']} if os.getenv('BROWSER_EXECUTABLE') else {})
+            **(
+                {'executable_path': os.environ['BROWSER_EXECUTABLE']}
+                if os.getenv('BROWSER_EXECUTABLE')
+                else {}
+            )
         )
         for width in (360, 390, 430, 768, 1280):
             context = browser.new_context(

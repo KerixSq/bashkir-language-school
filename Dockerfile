@@ -14,5 +14,7 @@ CMD ["python", "-m", "bot.main"]
 FROM nginx:1.27-alpine AS app
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY web/ /usr/share/nginx/html/web/
+COPY docker/public_config.sh /docker-entrypoint.d/40-public-config.sh
+RUN chmod +x /docker-entrypoint.d/40-public-config.sh
 HEALTHCHECK --interval=15s --timeout=3s --start-period=5s --retries=3 \
     CMD wget -q -O /dev/null http://127.0.0.1/health || exit 1

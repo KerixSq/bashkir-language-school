@@ -26,10 +26,7 @@ docker compose --env-file .env.docker ps
 docker compose --env-file .env.docker logs --tail 50 db rest auth app
 ```
 
-5. Открой `http://127.0.0.1:54321/web/`. В настройках сайта используй:
-   - адрес API: `http://127.0.0.1:54321`;
-   - публичный ключ: `ANON_KEY` из `.env.docker`.
-   - **Никогда** не вводи туда `SERVICE_ROLE_KEY`.
+5. Открой `http://127.0.0.1:54321/web/`. `config.js` автоматически получает адрес текущего сайта и только anon JWT. Ключи вручную не вводятся.
 
 6. Если в базе ещё нет фрагментов, импортируй реальный корпус. JSONL лежат
    в `data/phrasebooks/` и монтируются read-only в контейнер бота:
@@ -66,7 +63,8 @@ docker compose --env-file .env.docker logs --tail 100 db
 docker compose --env-file .env.docker --profile bot down
 
 # Резервная копия в файл на ноутбуке
-docker compose --env-file .env.docker exec -T db pg_dump -U postgres -d bashkir > bashkir-backup.sql
+docker compose --env-file .env.docker exec -T db pg_dump -U postgres -d bashkir -Fc -f /tmp/bashkir-backup.dump
+docker compose --env-file .env.docker cp db:/tmp/bashkir-backup.dump ./bashkir-backup.dump
 ```
 
 **Не используй `docker compose down -v`**, если хочешь сохранить БД:
@@ -87,3 +85,18 @@ Supabase и не импортируются автоматически из ст
   шлюз для внешнего доступа не входит в эту локальную демо-сборку.
 - Проверяй в браузере анонимный вход и API после запуска: проверка Compose
   не доказывает корректность PostgreSQL RPC.
+
+## Проверки и обновление существующей БД
+
+Проверки автоматически выбирают `.env.docker`, если он существует; старые облачные переменные игнорируются. Для явного выбора: `$env:BASHKIR_ENV_FILE=".env.docker"`.
+
+```powershell
+python scripts/doctor.py
+python scripts/check_rls.py
+# После резервной копии; старые миграции не повторять вслепую:
+docker compose --env-file .env.docker cp sql/migrations/20261114_stage9_auth_owner.sql db:/tmp/stage9.sql
+docker compose --env-file .env.docker exec -T db psql -U postgres -d bashkir -v ON_ERROR_STOP=1 -f /tmp/stage9.sql
+docker compose --env-file .env.docker up -d --build
+```
+
+Stage9 применяется после stage8; она исправляет владельца auth.uid() для миграций GoTrue. Не удаляй volume. Браузерный цикл с тремя аккаунтами и контейнеры должны быть проверены перед защитой; результаты этой сессии — в PRE_DEMO_REPORT.md.

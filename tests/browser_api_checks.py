@@ -101,8 +101,12 @@ def main():
         before = progress()
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(
-            **({'executable_path': os.environ['BROWSER_EXECUTABLE']} if os.getenv('BROWSER_EXECUTABLE') else {})
-        )
+                **(
+                    {'executable_path': os.environ['BROWSER_EXECUTABLE']}
+                    if os.getenv('BROWSER_EXECUTABLE')
+                    else {}
+                )
+            )
             context = browser.new_context(
                 viewport={'width': 390, 'height': 844}, reduced_motion='reduce'
             )

@@ -1,11 +1,14 @@
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
 from supabase import create_client
 
 ROOT = Path(__file__).resolve().parents[1]
-load_dotenv(ROOT / '.env')
+if __package__:
+    from .settings import load_settings
+else:
+    from settings import load_settings
+os.environ.update(load_settings())
 
 
 def client():

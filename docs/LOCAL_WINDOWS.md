@@ -1,3 +1,7 @@
+# Альтернативный режим Supabase CLI
+
+Основной запуск описан в [DOCKER_WINDOWS.md](DOCKER_WINDOWS.md). Эта инструкция относится к CLI: добавляй `-UseSupabaseCli` к setup_local.ps1/run_local.ps1. Перед запуском останови Compose. Для проверок CLI явно установи `$env:BASHKIR_ENV_FILE=".env"`.
+
 # Все данные на своём ноутбуке · Windows 11
 
 Это рекомендуемый режим **для разработки и очной защиты**. Локальная PostgreSQL и Supabase REST API работают через Docker Desktop; Telegram-бот и веб-игра запускаются на Windows. Регистрация в облачном Supabase не требуется.

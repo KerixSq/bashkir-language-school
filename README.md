@@ -10,8 +10,7 @@ python .\scripts\create_docker_env.py
 docker compose --env-file .env.docker up -d --build
 ```
 
-Открой `http://127.0.0.1:54321/web/`. Настрой публичный ключ
-`ANON_KEY` из `.env.docker` в настройках сайта. Для бота заполни
+Открой `http://127.0.0.1:54321/web/`. Публичная конфигурация создаётся автоматически при старте app; секретный ключ в сайт не передаётся. Для бота заполни
 `TELEGRAM_BOT_TOKEN` в `.env.docker` и выполни
 `docker compose --env-file .env.docker --profile bot up -d --build`.
 
@@ -30,9 +29,9 @@ docker compose --env-file .env.docker up -d --build
 - **Стек сайта:** один `web/index.html`, Tailwind Play CDN, Nunito + Manrope, Font Awesome 6, GSAP/ScrollTrigger, Lenis, Supabase JS через CDN. При отсутствии интернета эффекты CDN могут не загрузиться; базовые стили и тренировочная колода остаются.
 - **Приватность:** браузер получает только публичный ключ. Все изменения официальных очков происходят через RPC с `auth.uid()`, без передачи идентификатора пользователя из браузера.
 
-**Запуск / обновление:**
+**Альтернативный запуск через Supabase CLI (не одновременно с Compose):**
 1. Сделай резервную копию существующей базы и останови бота.
-2. Запусти локальный Supabase через `scripts/setup_local.ps1` (скрипт включает анонимный вход в `supabase/config.toml`). Если база уже запущена, перезапусти Supabase после изменения настройки Auth.
+2. Запусти локальный Supabase через `scripts/setup_local.ps1 -UseSupabaseCli` (скрипт включает анонимный вход в `supabase/config.toml`). Если база уже запущена, перезапусти Supabase после изменения настройки Auth.
 3. В существующей базе после предыдущих миграций выполни только `sql/migrations/20261113_stage8_browser_first.sql` в SQL Editor. Для чистой базы — `schema.sql` → `seed.sql` → `logic.sql`.
 4. Проверь наличие импортированных `fragment_pairs` для `ba-ru` и/или `ba-kk`. При пустой базе сначала импортируй корпус.
 5. Запусти сайт: `python -m http.server 8000 --bind 127.0.0.1`, открой `http://127.0.0.1:8000/web/`.
@@ -94,7 +93,7 @@ JSONL БГПУ / текстовые файлы
 
 **Важно для существующей базы:** после stage5 последовательно примени `sql/migrations/20261113_stage6_expedition.sql` и `sql/migrations/20261113_stage7_runtime_fixes.sql`. Если stage6 уже применена, запусти только stage7. Для новой базы достаточно `schema.sql`, `seed.sql`, `logic.sql`: все исправления уже входят в `logic.sql`. Не выполняй старые миграции поверх чистой установки.
 
-## Запуск на Windows 11
+## Альтернативный CLI-запуск на Windows 11
 
 Нужны Python 3.11+, аккаунт Supabase (Free) **или локальная среда по инструкции выше**, токен бота от [@BotFather](https://t.me/BotFather). Работай из корневой папки проекта в PowerShell.
 
@@ -116,7 +115,7 @@ notepad .env
 
 Не публикуй `.env` и не вставляй секретный ключ в браузер.
 
-**Быстрый локальный запуск:** `scripts/setup_local.ps1` автоматически сохранит локальные ключи в `.env`, не затронув токен Telegram, и создаст резервную копию старых настроек. Затем выполни `python scripts/doctor.py`; после проверки запусти сайт и бота одной командой `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_local.ps1`. Старые облачные настройки при необходимости лежат в `.env.backup-*` (не коммить!). Подробности — в [`docs/LOCAL_WINDOWS.md`](docs/LOCAL_WINDOWS.md).
+**Быстрый локальный запуск:** `scripts/setup_local.ps1` автоматически сохранит локальные ключи в `.env`, не затронув токен Telegram, и создаст резервную копию старых настроек. Затем выполни `python scripts/doctor.py`; после проверки запусти сайт и бота одной командой `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_local.ps1 -UseSupabaseCli`. Старые облачные настройки при необходимости лежат в `.env.backup-*` (не коммить!). Подробности — в [`docs/LOCAL_WINDOWS.md`](docs/LOCAL_WINDOWS.md).
 
 **Для новой пустой базы:** в Supabase → SQL Editor по порядку выполни `sql/schema.sql`, `sql/seed.sql`, `sql/logic.sql`. Миграции для старой версии отдельно не запускай.
 

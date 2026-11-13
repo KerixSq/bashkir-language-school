@@ -1,6 +1,6 @@
+import unittest
 from html.parser import HTMLParser
 from pathlib import Path
-import unittest
 
 WEB = Path(__file__).resolve().parents[1] / 'web' / 'index.html'
 
@@ -31,8 +31,15 @@ class AppUiContractTest(unittest.TestCase):
 
     def test_unique_ids_and_existing_game_contract(self):
         self.assertEqual(len(self.doc.ids), len(set(self.doc.ids)))
-        for field in ('game-start', 'game-question', 'game-check', 'game-next',
-                      'game-finish', 'game-badges', 'community-progressbar'):
+        for field in (
+            'game-start',
+            'game-question',
+            'game-check',
+            'game-next',
+            'game-finish',
+            'game-badges',
+            'community-progressbar',
+        ):
             self.assertIn(field, self.doc.ids)
 
     def test_path_nodes_open_actual_lesson_stages(self):

@@ -20,8 +20,13 @@ def jwt(secret: str, role: str) -> str:
     head = b64(json.dumps({'alg': 'HS256', 'typ': 'JWT'}, separators=(',', ':')).encode())
     body = b64(
         json.dumps(
-            {'iss': 'supabase', 'role': role, 'aud': 'authenticated', 'iat': now,
-             'exp': now + 10 * 365 * 24 * 3600},
+            {
+                'iss': 'supabase',
+                'role': role,
+                'aud': 'authenticated',
+                'iat': now,
+                'exp': now + 10 * 365 * 24 * 3600,
+            },
             separators=(',', ':'),
         ).encode()
     )

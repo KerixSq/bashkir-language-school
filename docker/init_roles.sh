@@ -23,4 +23,6 @@ RETURNS uuid LANGUAGE sql STABLE SET search_path = '' AS $$
 $$;
 REVOKE ALL ON FUNCTION auth.uid() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION auth.uid() TO authenticated, service_role;
+-- GoTrue migrations replace auth.uid(); the migration role must own it.
+ALTER FUNCTION auth.uid() OWNER TO supabase_auth_admin;
 SQL

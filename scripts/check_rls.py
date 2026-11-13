@@ -1,7 +1,6 @@
 """Проверка публичных прав Supabase реальными запросами."""
 
 import os
-from pathlib import Path
 
 CLOSED = (
     'users',
@@ -84,10 +83,13 @@ def check_public(client, view: str) -> None:
 
 
 def main() -> None:
-    from dotenv import load_dotenv
     from supabase import create_client
 
-    load_dotenv(Path(__file__).resolve().parents[1] / '.env')
+    if __package__:
+        from .settings import load_settings
+    else:
+        from settings import load_settings
+    os.environ.update(load_settings())
     url = os.getenv('SUPABASE_URL', '').strip()
     key = os.getenv('SUPABASE_PUBLIC_KEY', '').strip()
     if not url or not key:

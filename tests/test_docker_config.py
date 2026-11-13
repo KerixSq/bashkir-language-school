@@ -14,9 +14,13 @@ class DockerSetupTests(unittest.TestCase):
     def test_jwt_signature_and_claims(self):
         token = jwt('a' * 64, 'anon')
         head, body, signature = token.split('.')
-        expected = base64.urlsafe_b64encode(
-            hmac.new(b'a' * 64, f'{head}.{body}'.encode(), hashlib.sha256).digest()
-        ).decode().rstrip('=')
+        expected = (
+            base64.urlsafe_b64encode(
+                hmac.new(b'a' * 64, f'{head}.{body}'.encode(), hashlib.sha256).digest()
+            )
+            .decode()
+            .rstrip('=')
+        )
         self.assertEqual(signature, expected)
         claims = json.loads(base64.urlsafe_b64decode(body + '=' * (-len(body) % 4)))
         self.assertEqual(claims['role'], 'anon')

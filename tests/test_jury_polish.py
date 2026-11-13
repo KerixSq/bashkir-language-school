@@ -4,7 +4,6 @@ import re
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / 'web' / 'index.html').read_text(encoding='utf-8')
 SQL = (ROOT / 'sql' / 'logic.sql').read_text(encoding='utf-8')
@@ -15,7 +14,7 @@ class JuryHomeChecks(unittest.TestCase):
         for name in ('jury-fast-confirm', 'jury-fast-correct', 'web-confirm', 'web-correct-toggle'):
             self.assertIn(f'id="{name}"', HTML)
         self.assertIn('focusTask', HTML)
-        self.assertIn("button.click()", HTML)
+        self.assertIn('button.click()', HTML)
 
     def test_rankings_are_marked_demo_until_live_data(self):
         self.assertIn('ДЕМО', HTML)
@@ -36,8 +35,13 @@ class JuryHomeChecks(unittest.TestCase):
             'from public.fragment_pairs fp', 1
         )[0]
         expected = [
-            'as fragment_id', 'f.text_ba', 'fp.lang_pair', 'as translation',
-            'as source', 'as confirmed', 'fp.status',
+            'as fragment_id',
+            'f.text_ba',
+            'fp.lang_pair',
+            'as translation',
+            'as source',
+            'as confirmed',
+            'fp.status',
         ]
         for field in expected:
             self.assertIn(field, view)
@@ -52,8 +56,13 @@ class JuryHomeChecks(unittest.TestCase):
         self.assertIn("if (!code) throw new Error('Введи отдельный код эксперта.')", HTML)
 
     def test_images_exist_and_mythology_is_clearly_stylized(self):
-        for asset in ('akbuzat.webp', 'adventure-world.webp', 'humay.svg',
-                      'ural-batyr.svg', 'ural-map.svg'):
+        for asset in (
+            'akbuzat.webp',
+            'adventure-world.webp',
+            'humay.svg',
+            'ural-batyr.svg',
+            'ural-map.svg',
+        ):
             self.assertTrue((ROOT / 'web' / 'assets' / asset).is_file(), asset)
         self.assertIn('современные авторские интерпретации', HTML)
 

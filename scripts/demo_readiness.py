@@ -86,12 +86,19 @@ def collect_metrics(db) -> dict[str, int]:
         while True:
             rows = (
                 db.table('answers')
-                .select('id,user_id,fragment_pair_id,users!inner(telegram_id,role),'
-                        'fragment_pairs!inner(status,fragments!inner(source_id))')
-                .gt('users.telegram_id', 0).eq('users.role', 'student')
+                .select(
+                    'id,user_id,fragment_pair_id,users!inner(telegram_id,role),'
+                    'fragment_pairs!inner(status,fragments!inner(source_id))'
+                )
+                .gt('users.telegram_id', 0)
+                .eq('users.role', 'student')
                 .eq('eligible', True)
                 .eq('fragment_pairs.fragments.source_id', source_id)
-                .order('id').range(offset, offset + 499).execute().data or []
+                .order('id')
+                .range(offset, offset + 499)
+                .execute()
+                .data
+                or []
             )
             for row in rows:
                 voters.add(row['user_id'])

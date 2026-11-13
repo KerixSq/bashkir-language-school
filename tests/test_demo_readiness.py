@@ -36,6 +36,15 @@ class ReadinessTests(unittest.TestCase):
         self.assertEqual(evaluate(data), [])
 
     def test_many_answers_from_one_person_are_not_ready(self):
-        data = dict(corpus_sources=1, corpus_fragments=100, pairs_ru=80, pairs_kk=20,
-                    answers=30, confirmed=1, students=15, voters=1, demonstrable_consensus=0)
+        data = dict(
+            corpus_sources=1,
+            corpus_fragments=100,
+            pairs_ru=80,
+            pairs_kk=20,
+            answers=30,
+            confirmed=1,
+            students=15,
+            voters=1,
+            demonstrable_consensus=0,
+        )
         self.assertTrue(evaluate(data))

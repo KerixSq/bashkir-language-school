@@ -1,7 +1,9 @@
-﻿# Запускает локальную среду разработки без доступа к облачному проекту.
+﻿param([switch]$UseSupabaseCli)
+# Запускает локальную среду разработки без доступа к облачному проекту.
 $ErrorActionPreference = 'Stop'
 $project = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location $project
+if (-not $UseSupabaseCli) { throw 'Alternative CLI setup: pass -UseSupabaseCli. Primary launch: scripts/run_local.ps1. Stop Compose first.' }
 
 function Require-Command([string]$Name) {
     if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {

@@ -13,9 +13,9 @@ class BrowserFirstContractTests(unittest.TestCase):
         cls.html = (ROOT / 'web/index.html').read_text(encoding='utf-8')
         cls.logic = (ROOT / 'sql/logic.sql').read_text(encoding='utf-8')
         cls.schema = (ROOT / 'sql/schema.sql').read_text(encoding='utf-8')
-        cls.migration = (
-            ROOT / 'sql/migrations/20261113_stage8_browser_first.sql'
-        ).read_text(encoding='utf-8')
+        cls.migration = (ROOT / 'sql/migrations/20261113_stage8_browser_first.sql').read_text(
+            encoding='utf-8'
+        )
 
     def test_all_required_cdn_scripts(self):
         for marker in (
@@ -31,8 +31,11 @@ class BrowserFirstContractTests(unittest.TestCase):
 
     def test_all_rpc_have_consistent_signatures(self):
         for name in (
-            'web_register', 'web_profile', 'web_next_fragment',
-            'web_submit_answer', 'web_skip_fragment',
+            'web_register',
+            'web_profile',
+            'web_next_fragment',
+            'web_submit_answer',
+            'web_skip_fragment',
         ):
             self.assertRegex(self.logic, rf'create or replace function public\.{name}\s*\(')
             self.assertRegex(self.migration, rf'create or replace function public\.{name}\s*\(')
@@ -42,7 +45,7 @@ class BrowserFirstContractTests(unittest.TestCase):
         self.assertIn('to authenticated;', self.logic)
         self.assertIn('auth.uid()', self.logic)
         self.assertIn('security definer set search_path', self.logic)
-        self.assertNotIn('sb_secret_', self.html[:self.html.index('<body')])
+        self.assertNotIn('sb_secret_', self.html[: self.html.index('<body')])
         self.assertNotRegex(self.html, r'PUBLISHED_(?:SERVICE|SECRET)_KEY')
         self.assertIn('users_identity_present', self.schema)
         self.assertIn('users_identity_present', self.migration)
@@ -56,9 +59,18 @@ class BrowserFirstContractTests(unittest.TestCase):
 
     def test_main_features_in_dom(self):
         for name in (
-            'web-play', 'web-register-form', 'web-next', 'web-confirm',
-            'web-correction', 'web-correct-form', 'web-skip', 'web-points',
-            'web-level', 'web-streak', 'web-badges', 'web-progress',
+            'web-play',
+            'web-register-form',
+            'web-next',
+            'web-confirm',
+            'web-correction',
+            'web-correct-form',
+            'web-skip',
+            'web-points',
+            'web-level',
+            'web-streak',
+            'web-badges',
+            'web-progress',
         ):
             self.assertIn(f'id="{name}"', self.html)
 

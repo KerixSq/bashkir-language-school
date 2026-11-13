@@ -5,8 +5,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 
 from common import client
-from dotenv import load_dotenv
 from pure import new_api_key, new_join_code, secret_hash
+
 from supabase import create_client
 
 
@@ -41,7 +41,6 @@ def main() -> None:
     if not args.expert_code:
         parser.error('Задай EXPERT_ACCESS_CODE или --expert-code')
     db = client()
-    load_dotenv()
     public_key = os.getenv('SUPABASE_PUBLIC_KEY')
     url = os.getenv('SUPABASE_URL')
     if not public_key or not url:
