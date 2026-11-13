@@ -72,6 +72,7 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
+    print("Hello, World!")
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
