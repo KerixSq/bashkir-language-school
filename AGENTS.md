@@ -24,6 +24,6 @@
 ## Продолжение локальной разработки
 
 - При уже применённой `stage6` обязательно проверь наличие `sql/migrations/20261113_stage7_runtime_fixes.sql`. На чистой базе эта функция уже есть в `sql/logic.sql`.
-- После `scripts/setup_local.ps1` ключи появляются в активном `.env`; старый файл, если был, резервируется как `.env.backup-*`. Код Telegram-бота этот скрипт не меняет.
+- В альтернативном CLI-режиме после `scripts/setup_local.ps1 -UseSupabaseCli` ключи появляются в активном `.env`; старый файл, если был, резервируется как `.env.backup-*`. Код Telegram-бота этот скрипт не меняет.
 - Быстрая проверка локальной базы: `python scripts/doctor.py`, затем `scripts/check_rls.py` и `scripts/smoke_test.py`. При ошибке подключения не принимай это за PASS.
 - Для запуска сайта и бота одной командой: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_local.ps1`.

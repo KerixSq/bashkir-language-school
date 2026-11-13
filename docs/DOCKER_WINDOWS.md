@@ -28,7 +28,7 @@ docker compose --env-file .env.docker logs --tail 50 db rest auth app
 
 5. Открой `http://127.0.0.1:54321/web/`. `config.js` автоматически получает адрес текущего сайта и только anon JWT. Ключи вручную не вводятся.
 
-6. Если в базе ещё нет фрагментов, импортируй реальный корпус. JSONL лежат
+6. После git clone сначала выполни `python scripts/download_phrasebooks.py`. Если в базе ещё нет фрагментов, импортируй реальный корпус. Загруженные JSONL лежат
    в `data/phrasebooks/` и монтируются read-only в контейнер бота:
 
 ```powershell
@@ -100,3 +100,5 @@ docker compose --env-file .env.docker up -d --build
 ```
 
 Stage9 применяется после stage8; она исправляет владельца auth.uid() для миграций GoTrue. Не удаляй volume. Браузерный цикл с тремя аккаунтами и контейнеры должны быть проверены перед защитой; результаты этой сессии — в PRE_DEMO_REPORT.md.
+
+После stage9 для периодных очков рейтинга применяй sql/migrations/20261114_stage10_period_points.sql через docker compose cp и psql по аналогии со stage9. Существующие ответы сохраняются.

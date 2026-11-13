@@ -25,7 +25,7 @@ class BrowserFirstContractTests(unittest.TestCase):
             'gsap.min.js',
             'ScrollTrigger.min.js',
             'lenis.min.js',
-            '@supabase/supabase-js@2',
+            'assets/vendor/supabase.min.js',
         ):
             self.assertIn(marker, self.html)
 

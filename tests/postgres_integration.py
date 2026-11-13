@@ -236,6 +236,27 @@ class PostgreSQLTests(unittest.TestCase):
             }
             self.assertFalse(columns & {'user_id', 'telegram_id', 'username', 'display_name'})
 
+    def test_points_are_scoped_to_selected_period(self):
+        user = self.user()
+        first, second = self.pair(), self.pair()
+        self.assign(user, first)
+        self.vote(user, first)
+        self.assign(user, second)
+        self.vote(user, second)
+        self.db.execute(
+            "update public.answers set created_at=date_trunc('year',now())-interval '1 day' where fragment_pair_id=%s",
+            (first,),
+        )
+        row = self.db.execute(
+            "select points,day_points,year_points from public.leaderboard_users where name='Integration' and points=20 order by day_points desc limit 1"
+        ).fetchone()
+        self.assertEqual(row, (20, 10, 10))
+        migration = (ROOT / 'sql/migrations/20261114_stage10_period_points.sql').read_text(
+            encoding='utf-8'
+        )
+        self.db.execute(migration)
+        self.db.execute(migration)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

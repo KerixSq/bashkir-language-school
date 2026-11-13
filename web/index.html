@@ -1234,7 +1234,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         </div>
         <aside class="quest-aside jury-side" aria-label="Ежедневное задание и результаты">
           <section class="jury-card jury-daily" aria-labelledby="jury-daily-title">
-            <div class="jury-heading"><span class="jury-tag"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-calendar-check"></use></svg> ЕЖЕДНЕВНЫЙ КВЕСТ</span><span class="jury-xp">+XP</span></div>
+            <div class="jury-heading"><span class="jury-tag"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-calendar-check"></use></svg> ЕЖЕДНЕВНЫЙ КВЕСТ</span><span class="jury-xp">Серверные очки</span></div>
             <h3 id="jury-daily-title">Проверь перевод</h3>
             <p id="jury-quick-ba" class="jury-phrase">Начни приключение, чтобы получить фразу из корпуса.</p>
             <p class="jury-proposed" id="jury-quick-translation">Предложенный перевод появится здесь.</p>
@@ -1563,7 +1563,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         <p>Проверяй переводы в браузере, чтобы открывать новые главы вместе.</p>
         <a href="#community-title" class="app-library-link">Посмотреть прогресс</a>
       </section>
-      <p class="app-rail-footnote">После входа здесь показываются настоящие очки и серия. Тренировочная тропа ведёт отдельный локальный прогресс.</p>
+      <p class="app-rail-footnote">XP — локальная тренировка. Серверные рейтинговые очки показаны отдельно в профиле и рейтинге.</p>
     </aside>
   </div>
   <nav class="app-mobile-nav" aria-label="Навигация на телефоне">
@@ -1572,7 +1572,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     <button type="button" data-open-tab="translations" data-app-dest="translations"><span aria-hidden="true">▤</span>Слова</button>
     <a href="#game-badges" data-app-dest="rewards"><span aria-hidden="true">◇</span>Награды</a>
   </nav>
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script defer src="assets/vendor/supabase.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script defer src="https://unpkg.com/lenis@1.3.27/dist/lenis.min.js"></script>
@@ -1805,9 +1805,9 @@ body.lesson-active .app-mobile-nav {display:none!important}
         ['Ответов за период', users.reduce((sum, u) => sum + Number(u[metric('answers')] || 0), 0)],
         ['Всего ответов', users.reduce((sum, u) => sum + Number(u.total_answers || 0), 0)],
       ]);
-      renderTable($('users-table'), ['№', 'Никнейм', 'Ответы', 'Очки', 'Исправления', 'Ошибки', 'Слова'],
+      renderTable($('users-table'), ['№', 'Никнейм', 'Ответы за период', 'Очки за период', 'Исправления за всё время', 'Ошибки за всё время', 'Слова за всё время'],
         users.slice(0, 30).map((u, index) => [
-          index + 1, u.name, pretty(u[metric('answers')]), pretty(u.points),
+          index + 1, u.name, pretty(u[metric('answers')]), pretty(u[metric('points')]),
           pretty(u.corrections), `${u.error_rate}%`, pretty(u.vocabulary),
         ]));
       renderTable($('classes-table'), ['Класс', 'Школа', 'Очки', 'Учеников'],
@@ -2038,6 +2038,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
       $('toggle-connection').textContent = 'Изменить подключение';
       $('toggle-connection').setAttribute('aria-expanded', 'false');
       apiExample();
+      document.dispatchEvent(new Event('api-connection-changed'));
       return Promise.all([loadRatings(), loadExpedition()]);
     }
 
@@ -2268,7 +2269,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
           const label = document.getElementById(id);
           if (label) label.textContent = allowed(index) ? 'Урок открыт' : `Ещё ${Math.max(0,goal-mastered())} фраз`;
         }
-        if(document.body.dataset.serverSession!=='true') {
+        {
           const topStreak = document.getElementById('top-streak');
           const topXp = document.getElementById('top-xp');
           if(topStreak) topStreak.textContent = String(activeStreak);
@@ -2290,7 +2291,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         const railStreak = el('rail-streak');
         if (railStreak && document.body.dataset.serverSession!=='true') railStreak.textContent = String(activeStreak);
         const railXp = el('rail-xp');
-        if (railXp && document.body.dataset.serverSession!=='true') railXp.textContent = String(profile.xp);
+        if (railXp) railXp.textContent = String(profile.xp);
         const railCount = el('rail-daily-count');
         if (railCount && document.body.dataset.serverSession!=='true') railCount.textContent = `${dayTotal} / 5`;
         const railFill = el('rail-daily-fill');
@@ -2638,7 +2639,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
           const li=document.createElement('li');
           const pos=document.createElement('span');pos.className='jury-position';pos.textContent=i+1;
           const label=document.createElement('span');label.className='jury-rank-name';label.textContent=String(name||'Без названия');
-          const score=document.createElement('strong');score.className='jury-rank-score';score.textContent=(Number(points)||0).toLocaleString('ru-RU')+' XP';
+          const score=document.createElement('strong');score.className='jury-rank-score';score.textContent=(Number(points)||0).toLocaleString('ru-RU')+' очков';
           li.append(pos,label,score);byId('jury-ranking-list').append(li);
         }
       }
@@ -2705,6 +2706,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
   const BrowserLearning = (() => {
     const el = (id) => document.getElementById(id);
     let client = null;
+    let clientConfig = null;
     let profile = null;
     let task = null;
     let busy = false;
@@ -2717,10 +2719,14 @@ body.lesson-active .app-mobile-nav {display:none!important}
     function ensureClient() {
       if (!state.url || !state.key) throw new Error('Сначала подключи публичный API в разделе «Настройки сайта».');
       if (!window.supabase?.createClient) throw new Error('Библиотека авторизации не загрузилась. Проверь интернет и CDN.');
-      if (!client || client.supabaseUrl !== state.url) {
-        client=window.supabase.createClient(state.url,state.key,{
+      const url = state.url.replace(/\/+$/, '');
+      if (!client || clientConfig.url !== url || clientConfig.key !== state.key) {
+        client?.auth.stopAutoRefresh();
+        task=null;drawProfile(null);show('web-task',false);
+        client=window.supabase.createClient(url,state.key,{
           auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false},
         });
+        clientConfig={url,key:state.key};
       }
       return client;
     }
@@ -2755,9 +2761,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
       setText('web-total',`${data.total_answers||0} ответов всего`);
       // Правая панель показывает серверный прогресс, если ученик вошёл.
       if(document.getElementById('top-streak')) setText('top-streak',data.streak||0);
-      if(document.getElementById('top-xp')) setText('top-xp',data.points||0);
       if(document.getElementById('rail-streak')) setText('rail-streak',data.streak||0);
-      if(document.getElementById('rail-xp')) setText('rail-xp',data.points||0);
       if(document.getElementById('rail-daily-count')) setText('rail-daily-count',`${Math.min(today,goal)} / ${goal}`);
       if(document.getElementById('rail-daily-fill')) document.getElementById('rail-daily-fill').style.width=`${Math.min(100,100*today/goal)}%`;
       el('web-progress-fill').style.width=`${Math.min(100,100*today/goal)}%`;
@@ -2851,7 +2855,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
       el('web-correct-toggle').addEventListener('click',()=>{show('web-answer-actions',false);show('web-correct-form',true);el('web-correction').focus();});
       el('web-cancel-correction').addEventListener('click',()=>{show('web-answer-actions',true);show('web-correct-form',false);});
       el('web-correct-form').addEventListener('submit',(event)=>{event.preventDefault();const value=el('web-correction').value.trim();if(!value){status('Исправление не должно быть пустым.',true);return;}submit('correct',value);});
-      el('connect').addEventListener('click',()=>{client=null;setTimeout(restore,900);});
+      document.addEventListener('api-connection-changed',restore);
       restore();
       if(!state.url||!state.key)status('Сначала подключи публичный API в разделе «Настройки сайта» — после этого начнём.');
     }

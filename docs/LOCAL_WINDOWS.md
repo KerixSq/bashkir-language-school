@@ -4,7 +4,7 @@
 
 # Все данные на своём ноутбуке · Windows 11
 
-Это рекомендуемый режим **для разработки и очной защиты**. Локальная PostgreSQL и Supabase REST API работают через Docker Desktop; Telegram-бот и веб-игра запускаются на Windows. Регистрация в облачном Supabase не требуется.
+Это альтернативный режим Supabase CLI. Основной запуск — Docker Compose по README.md. Локальная PostgreSQL и Supabase REST API работают через Docker Desktop; Telegram-бот и веб-игра запускаются на Windows. Регистрация в облачном Supabase не требуется.
 
 **Важно:** ключи из `supabase status` теперь автоматически записываются в действующий `.env`. Если там уже были настройки облака, они сохраняются в файле `.env.backup-*`. Скрипт не переписывает `TELEGRAM_BOT_TOKEN`.
 
@@ -23,7 +23,7 @@ Supabase CLI требует запущенный Docker. Для полного �
 В PowerShell из корня `bashkir-language-school`:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup_local.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup_local.ps1 -UseSupabaseCli
 ```
 
 Скрипт установит официальную Supabase CLI через npm (если её нет), создаст локальный проект, ограничит привязку портов `127.0.0.1` и запустит Docker. Обрати внимание на ключи, которые выводит `supabase status`: **не показывай их в трансляции экрана**. Если PowerShell запускается из VS Code, просто используй новый терминал.
@@ -112,7 +112,7 @@ npx --no-install supabase start --network-id local-network
 Для запуска сайта и бота **одной командой** (после настройки токена и SQL) используй:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_local.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_local.ps1 -UseSupabaseCli
 ```
 
 Перед запуском эта команда выполняет `scripts/doctor.py`: проверяет наличие файлов, публичное представление API и запрет прямого чтения `users`. Если проверка не прошла, бот не запускается. Запускай только с локальными ключами. `Ctrl+C` останавливает бот и локальный веб-сервер.
