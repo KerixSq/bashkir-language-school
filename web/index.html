@@ -2829,7 +2829,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         window.JuryHome?.task(null,null);
         await refreshProfile();
         // Коллективный прогресс берём только из PostgreSQL.
-        if(state.url&&state.key) await loadExpedition().catch(()=>{});
+        if(state.url&&state.key) await Promise.all([loadExpedition(),loadRatings()]).catch(()=>{status('Ответ сохранён. Не удалось обновить рейтинг; повтори загрузку.',true);});
       });
     }
     async function skip() {

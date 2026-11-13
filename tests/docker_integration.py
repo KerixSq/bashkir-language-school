@@ -143,6 +143,7 @@ def main():
                     expect(page.locator('#web-feedback')).to_contain_text('Ответ принят')
                     expect(page.locator('#web-points')).not_to_have_text('0')
                     expect(page.locator('#top-xp')).to_have_text('0')
+                    expect(page.locator('#jury-ranking-list')).to_contain_text('Integration')
                     session = page.evaluate("""() => Object.values(localStorage).map(v=>{
                       try{return JSON.parse(v)}catch{return null}
                     }).find(v=>v?.access_token)""")
