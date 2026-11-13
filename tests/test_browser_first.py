@@ -17,14 +17,9 @@ class BrowserFirstContractTests(unittest.TestCase):
             encoding='utf-8'
         )
 
-    def test_all_required_cdn_scripts(self):
+    def test_required_client_is_local_and_fonts_optional(self):
         for marker in (
-            'cdn.tailwindcss.com',
             'fonts.googleapis.com',
-            'font-awesome/6.7.2/css/all.min.css',
-            'gsap.min.js',
-            'ScrollTrigger.min.js',
-            'lenis.min.js',
             'assets/vendor/supabase.min.js',
         ):
             self.assertIn(marker, self.html)
