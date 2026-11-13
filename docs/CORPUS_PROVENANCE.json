@@ -1,0 +1,12 @@
+{
+  "revision": "fa499b98b24a97a696b10ce4265af129a2bf526c",
+  "files": {
+    "LICENSE": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+    "NOTICE": "6a619837bcfa482f1a9555cc61b914573ba246e81ebc03f7b21f2fe25e539e76",
+    "data/data-ba-ru-alt.jsonl": "7caf4aa683d8c6a2652ea894820f0e0ca99f2866df2c2c982cd5cc9bfa1a8908",
+    "data/data-ba-ru-ar.jsonl": "d354c76cd5c3967b8825e5ca8ca5130b795a4e394cf88d6a4e5973ee0d0a42e3",
+    "data/data-ba-ru-kk.jsonl": "4b4a99e582d90c7cfca939a759b052c2429ae50c88ee1bdc66139750194b7855",
+    "data/data-ba-ru-sah.jsonl": "5ae97783b0bb1058424c41d544a04a122efe945d8501de98f413eeb66f13f09a",
+    "data/data-ba-ru-zh.jsonl": "30a51e5325bc264ab8a766e611376abcb2e35c708348ff6e43531f37726875ee"
+  }
+}

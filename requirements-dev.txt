@@ -1,0 +1,4 @@
+-r bot/requirements.txt
+ruff==0.17.5
+psycopg[binary]==3.3.9
+playwright==1.65.1

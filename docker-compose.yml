@@ -1,0 +1,121 @@
+# Local hackathon deployment. Generate .env.docker before running.
+name: bashkir-school
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bashkir
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python scripts/create_docker_env.py}
+      AUTHENTICATOR_PASSWORD: ${AUTHENTICATOR_PASSWORD:?Run python scripts/create_docker_env.py}
+      AUTH_ADMIN_PASSWORD: ${AUTH_ADMIN_PASSWORD:?Run python scripts/create_docker_env.py}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init_roles.sh:/docker-entrypoint-initdb.d/00-roles.sh:ro
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./sql/seed.sql:/docker-entrypoint-initdb.d/20-seed.sql:ro
+      - ./sql/logic.sql:/docker-entrypoint-initdb.d/30-logic.sql:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          pg_isready -U postgres -d bashkir &&
+          psql -U postgres -d bashkir -tAc
+          "select to_regprocedure('public.web_register(text,text,text)') is not null"
+          | grep -q t
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [internal]
+
+  rest:
+    image: postgrest/postgrest:v14.18
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgresql://authenticator:${AUTHENTICATOR_PASSWORD}@db:5432/bashkir
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET:?Run python scripts/create_docker_env.py}
+      PGRST_DB_EXTRA_SEARCH_PATH: public,extensions
+      PGRST_SERVER_PORT: 3000
+    healthcheck:
+      test: ["CMD", "postgrest", "--ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    networks: [internal]
+
+  auth:
+    image: supabase/gotrue:v2.197.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://127.0.0.1:54321/auth/v1
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${AUTH_ADMIN_PASSWORD}@db:5432/bashkir
+      GOTRUE_DB_NAMESPACE: auth
+      GOTRUE_DB_AUTOMIGRATE: "true"
+      GOTRUE_SITE_URL: http://127.0.0.1:54321/web/
+      GOTRUE_URI_ALLOW_LIST: http://127.0.0.1:54321/**
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: "true"
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: "3600"
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:9999/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    networks: [internal]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    restart: unless-stopped
+    depends_on:
+      rest:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:54321:80"
+    networks: [internal]
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: bot
+    restart: unless-stopped
+    profiles: [bot]
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      SUPABASE_URL: http://app
+      SUPABASE_SECRET_KEY: ${SERVICE_ROLE_KEY:?Run python scripts/create_docker_env.py}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+    volumes:
+      - ./data/phrasebooks:/app/data/phrasebooks:ro
+    networks: [internal]
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  postgres_data:

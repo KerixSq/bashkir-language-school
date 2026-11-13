@@ -1,0 +1,35 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+*.log
+.ruff_cache/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+*.csv
+*.json
+!*.example.json
+.vscode/settings.json
+
+# Локально скачанный корпус (не входит в репозиторий)
+/data/
+*.jsonl
+
+# Статическая учебная колода публикуется осознанно, без персональных данных.
+!web/assets/learning-deck.json
+!docs/CORPUS_PROVENANCE.json
+test-results/
+
+
+# Supabase CLI, npm и локальные контейнеры
+node_modules/
+package-lock.json
+supabase/.temp/
+supabase/.branches/
+
+# Docker secrets and PostgreSQL data
+.env.docker
+.env.docker.*

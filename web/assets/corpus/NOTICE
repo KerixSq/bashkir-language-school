@@ -1,0 +1,48 @@
+NOTICE — Bashkir Trilingual Parallel Phrasebooks, part of the Bashkorttele project
+==============================================================================
+
+License of the dataset
+----------------------
+Creative Commons Attribution 4.0 International (CC BY 4.0).
+The full legal code is in the LICENSE file and at
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Scope of the license
+--------------------
+The license covers the TEXT in this dataset.
+
+It does NOT cover illustrations, artwork or the typographic design of the
+source publications. Those remain with their rights holders.
+
+Publisher of the dataset
+------------------------
+Foundation for the Preservation and Development of the Bashkir Language
+АНО «Фонд сохранения и развития башкирского языка»
+ОГРН 1180280025023
+https://bsfond.ru/
+https://huggingface.co/bashkorttele
+
+Rights holder of the source material
+------------------------------------
+M. Akmulla Bashkir State Pedagogical University
+ФГБОУ ВО «БГПУ им. М. Акмуллы»
+ОГРН 1020202554778
+https://bspu.ru/
+
+Attribution is REQUIRED by CC BY 4.0. When you share this dataset or
+material derived from it, credit the rights holder(s) of the source material
+and the publisher of the dataset named in this notice, link to the dataset
+and to the license, and indicate if you made changes.
+
+Rights to the underlying material were obtained under an agreement with the
+rights holder. The signed agreement itself is NOT part of this dataset: it
+contains personal names, bank details and seals.
+
+Attribution
+-----------
+Suggested credit:
+  Bashkir Trilingual Parallel Phrasebooks. Source material: M. Akmulla Bashkir
+  State Pedagogical University. Published by Foundation for the Preservation
+  and Development of the Bashkir Language, Bashkorttele project,
+  https://huggingface.co/datasets/bashkorttele/trilingual-parallel-phrasebooks-bgpu.
+  Licensed under CC BY 4.0.

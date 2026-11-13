@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+!.env.docker.example
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.git/
+node_modules/
+*.log
+*.zip
+docs/
+tests/
+data/
+sql/
+*.md
