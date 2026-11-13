@@ -63,7 +63,7 @@ services:
       GOTRUE_API_PORT: 9999
       API_EXTERNAL_URL: http://127.0.0.1:54321/auth/v1
       GOTRUE_DB_DRIVER: postgres
-      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${AUTH_ADMIN_PASSWORD}@db:5432/bashkir
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${AUTH_ADMIN_PASSWORD}@db:5432/bashkir?search_path=auth
       GOTRUE_DB_NAMESPACE: auth
       GOTRUE_DB_AUTOMIGRATE: "true"
       GOTRUE_SITE_URL: http://127.0.0.1:54321/web/
