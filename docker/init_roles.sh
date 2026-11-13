@@ -13,6 +13,7 @@ SELECT format('CREATE ROLE supabase_auth_admin LOGIN PASSWORD %L', :'auth_passwo
 GRANT anon, authenticated, service_role TO authenticator;
 GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin;
+ALTER ROLE supabase_auth_admin SET search_path TO auth, public, extensions;
 CREATE SCHEMA IF NOT EXISTS extensions;
 GRANT USAGE ON SCHEMA auth TO anon, authenticated, service_role;
 GRANT CREATE ON DATABASE bashkir TO supabase_auth_admin;
