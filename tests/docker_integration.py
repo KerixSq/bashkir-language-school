@@ -4,6 +4,7 @@ Requires Docker and a free loopback port 54321. Creates a unique Compose project
 never touches the normal project and never removes volumes. No mocked Auth/API.
 """
 
+import re
 import secrets
 import socket
 import subprocess
@@ -102,6 +103,7 @@ def main():
             )
             assert int(sql('select count(*) from phrasebook_rows;')) > 9000
             sql("update config set value='0' where key='bad_variant_probability';")
+            sql("update config set value='5' where key='min_answer_seconds';")
             print('PASS real corpus imported with source-row mappings')
 
             with sync_playwright() as playwright:
@@ -133,10 +135,16 @@ def main():
                     if index == 0:
                         pair = original
                     assert original == pair, 'Started votes must be prioritised'
-                    time.sleep(3)
+                    if index == 0:
+                        page.locator('#web-confirm').click()
+                        expect(page.locator('#web-status')).to_contain_text('Подожди')
+                    time.sleep(6)
                     page.locator('#web-confirm').click()
-                    expect(page.locator('#web-feedback')).to_contain_text('РћС‚РІРµС‚ РїСЂРёРЅСЏС‚')
+                    expect(page.locator('#web-feedback')).to_contain_text(
+                        'Р С›РЎвЂљР Р†Р ВµРЎвЂљ Р С—РЎР‚Р С‘Р Р…РЎРЏРЎвЂљ'
+                    )
                     expect(page.locator('#web-points')).not_to_have_text('0')
+                    expect(page.locator('#top-xp')).to_have_text('0')
                     session = page.evaluate("""() => Object.values(localStorage).map(v=>{
                       try{return JSON.parse(v)}catch{return null}
                     }).find(v=>v?.access_token)""")
@@ -184,6 +192,22 @@ def main():
                     for r in ratings
                 )
                 print('PASS HTTP export, public fields and real RLS denial')
+                confirmed_pair = sql("select id from fragment_pairs where status='confirmed';")
+                duplicate = context.request.post(
+                    'http://127.0.0.1:54321/rest/v1/rpc/web_submit_answer',
+                    headers=headers,
+                    data={
+                        'p_fragment_pair_id': confirmed_pair,
+                        'p_action': 'confirm',
+                        'p_text': None,
+                    },
+                )
+                assert duplicate.ok and duplicate.json()['duplicate'] is True
+                context.set_offline(True)
+                page.locator('#web-after-answer').click()
+                expect(page.locator('#web-status')).to_have_class(re.compile('.*is-error.*'))
+                context.set_offline(False)
+                print('PASS fast answer, duplicate, network failure and training XP isolation')
 
                 snapshot = sql('select count(*),sum(points_awarded) from answers;')
                 compose('restart', 'db', 'auth', 'rest', 'app')
@@ -193,6 +217,7 @@ def main():
                     page.reload()
                     expect(page.locator('#web-session')).to_be_visible(timeout=20000)
                     expect(page.locator('#web-points')).not_to_have_text('0')
+                    expect(page.locator('#top-xp')).to_have_text('0')
                     context.close()
                 browser.close()
                 print('PASS Docker restart preserves answers, points and browser Auth sessions')

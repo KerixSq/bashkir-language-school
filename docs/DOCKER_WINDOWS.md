@@ -102,3 +102,5 @@ docker compose --env-file .env.docker up -d --build
 Stage9 применяется после stage8; она исправляет владельца auth.uid() для миграций GoTrue. Не удаляй volume. Браузерный цикл с тремя аккаунтами и контейнеры должны быть проверены перед защитой; результаты этой сессии — в PRE_DEMO_REPORT.md.
 
 После stage9 для периодных очков рейтинга применяй sql/migrations/20261114_stage10_period_points.sql через docker compose cp и psql по аналогии со stage9. Существующие ответы сохраняются.
+
+Затем примени sql/migrations/20261114_stage11_auth_search_path.sql и перезапусти auth: миграция настраивает search_path роли GoTrue на auth, public, extensions и не расширяет доступ к public.

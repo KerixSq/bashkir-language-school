@@ -43,7 +43,7 @@ docker compose --env-file .env.docker run --rm --no-deps bot python scripts/impo
 docker compose --env-file .env.docker --profile bot down
 ```
 
-Обычный down сохраняет volume. Никогда не добавляй -v для обычной остановки. Не пересоздавай .env.docker для существующей БД: в нём сохранены её пароли и JWT secret. Backup и обновление существующего volume — [docs/DOCKER_WINDOWS.md](docs/DOCKER_WINDOWS.md). После stage9 применяется stage10_period_points.sql; старые миграции не редактируются и не повторяются вслепую.
+Обычный down сохраняет volume. Никогда не добавляй -v для обычной остановки. Не пересоздавай .env.docker для существующей БД: в нём сохранены её пароли и JWT secret. Backup и обновление существующего volume — [docs/DOCKER_WINDOWS.md](docs/DOCKER_WINDOWS.md). После stage9 последовательно применяются stage10_period_points.sql и stage11_auth_search_path.sql; старые миграции не редактируются и не повторяются вслепую.
 
 Telegram необязателен: добавь TELEGRAM_BOT_TOKEN в .env.docker и выполни `docker compose --env-file .env.docker --profile bot up -d --build`. Команды: /start, /task, /pair, /cancel, /me, /top, /report, /newclass, /privacy, /delete_me, /help. Токены, учительские и экспертные коды не публикуй.
 

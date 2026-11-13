@@ -2289,13 +2289,13 @@ body.lesson-active .app-mobile-nav {display:none!important}
         renderBadges();
         const dayTotal = Math.min(5, profile.dayCounts[day] || 0);
         const railStreak = el('rail-streak');
-        if (railStreak && document.body.dataset.serverSession!=='true') railStreak.textContent = String(activeStreak);
+        if (railStreak) railStreak.textContent = String(activeStreak);
         const railXp = el('rail-xp');
         if (railXp) railXp.textContent = String(profile.xp);
         const railCount = el('rail-daily-count');
-        if (railCount && document.body.dataset.serverSession!=='true') railCount.textContent = `${dayTotal} / 5`;
+        if (railCount) railCount.textContent = `${dayTotal} / 5`;
         const railFill = el('rail-daily-fill');
-        if (railFill && document.body.dataset.serverSession!=='true') railFill.style.width = `${dayTotal * 20}%`;
+        if (railFill) railFill.style.width = `${dayTotal * 20}%`;
       }
       function showScene(scene) {
         ['loading','empty','ready','question','finish'].forEach((name)=>setVisible(`game-${name}`,scene===name));
@@ -2759,11 +2759,6 @@ body.lesson-active .app-mobile-nav {display:none!important}
       const today=Math.max(0,Number(data.today_answers)||0);
       setText('web-today',`${Math.min(today,goal)} из ${goal}`);
       setText('web-total',`${data.total_answers||0} ответов всего`);
-      // Правая панель показывает серверный прогресс, если ученик вошёл.
-      if(document.getElementById('top-streak')) setText('top-streak',data.streak||0);
-      if(document.getElementById('rail-streak')) setText('rail-streak',data.streak||0);
-      if(document.getElementById('rail-daily-count')) setText('rail-daily-count',`${Math.min(today,goal)} / ${goal}`);
-      if(document.getElementById('rail-daily-fill')) document.getElementById('rail-daily-fill').style.width=`${Math.min(100,100*today/goal)}%`;
       el('web-progress-fill').style.width=`${Math.min(100,100*today/goal)}%`;
       el('web-progress').setAttribute('aria-valuemax',String(goal));
       el('web-progress').setAttribute('aria-valuenow',String(Math.min(goal,today)));
