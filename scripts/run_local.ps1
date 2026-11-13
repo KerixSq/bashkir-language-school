@@ -7,7 +7,7 @@ if (-not $UseSupabaseCli) {
     if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { throw 'Docker Desktop is required for the primary Compose launch.' }
     & python .\scripts\create_docker_env.py
     if ($LASTEXITCODE -ne 0) { throw 'Environment setup failed.' }
-    & docker compose --env-file .env.docker up -d --build
+    & docker compose --env-file .env.docker up -d --build --wait
     if ($LASTEXITCODE -ne 0) { throw 'Compose startup failed. Check docker compose logs.' }
     Write-Host 'Website: http://127.0.0.1:54321/web/'
     return

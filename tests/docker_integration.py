@@ -140,9 +140,7 @@ def main():
                         expect(page.locator('#web-status')).to_contain_text('Подожди')
                     time.sleep(6)
                     page.locator('#web-confirm').click()
-                    expect(page.locator('#web-feedback')).to_contain_text(
-                        'Р С›РЎвЂљР Р†Р ВµРЎвЂљ Р С—РЎР‚Р С‘Р Р…РЎРЏРЎвЂљ'
-                    )
+                    expect(page.locator('#web-feedback')).to_contain_text('Ответ принят')
                     expect(page.locator('#web-points')).not_to_have_text('0')
                     expect(page.locator('#top-xp')).to_have_text('0')
                     session = page.evaluate("""() => Object.values(localStorage).map(v=>{

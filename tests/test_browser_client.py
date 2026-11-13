@@ -5,6 +5,30 @@ from pathlib import Path
 
 
 class BrowserClientTests(unittest.TestCase):
+    def test_home_ranking_uses_period_points(self):
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node is needed for JS runtime regression')
+        source = (Path(__file__).resolve().parents[1] / 'web/index.html').read_text(
+            encoding='utf-8'
+        )
+        body = source.split("      function update(data,period='day') {", 1)[1].split(
+            '      function task(', 1
+        )[0]
+        script = (
+            "const assert=require('node:assert/strict');let live;const render=()=>{};function update(data,period='day'){"
+            + body
+            + """
+const data={loaded:true,schools:[],classes:[],users:[
+ {name:'Older',points:100,day_points:0,week_points:100},
+ {name:'Today',points:5,day_points:5,week_points:5}]};
+update(data,'day');assert.deepEqual(live.users[0],['Today',5]);
+update(data,'week');assert.deepEqual(live.users[0],['Older',100]);
+"""
+        )
+        result = subprocess.run([node, '-e', script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_factory_reuses_canonical_url_and_replaces_changed_key(self):
         node = shutil.which('node')
         if not node:

@@ -225,6 +225,8 @@ def assign_bad_variants(
     """Сначала выбираем допустимые пары, затем ровно округлённую долю."""
     if not 0 <= bad_share <= 1:
         raise ValueError('--bad-share должен быть между 0 и 1')
+    if bad_share == 0:
+        return {}
     pools: dict[tuple[str, str], list[tuple[str, str]]] = defaultdict(list)
     for row in rows:
         pools[(row.file_name, 'ba-ru')].append((row.key, row.text_ru))

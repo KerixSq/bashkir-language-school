@@ -2627,7 +2627,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         mode.classList.toggle('is-demo', !live);
         mode.classList.toggle('is-live', !!live);
         byId('jury-ranking-note').textContent = live
-          ? 'Рейтинг получен из Supabase. Показываем только никнеймы и общие результаты.'
+          ? 'Рейтинг получен из Supabase. Показываем никнеймы и очки за выбранный период.'
           : 'Вымышленные примеры для демонстрации дизайна. Не результаты реальных учеников.';
         byId('jury-ranking-list').replaceChildren();
         if (!rows.length) {
@@ -2649,7 +2649,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         live={
           schools:[...data.schools].sort((a,b)=>metric(b)-metric(a)).slice(0,3).map(s=>[s.name,metric(s)]),
           classes:[...data.classes].sort((a,b)=>metric(b)-metric(a)).slice(0,3).map(c=>[c.name,metric(c)]),
-          users:[...data.users].sort((a,b)=>Number(b.points||0)-Number(a.points||0)).slice(0,3).map(u=>[u.name,Number(u.points||0)]),
+          users:[...data.users].sort((a,b)=>metric(b)-metric(a)).slice(0,3).map(u=>[u.name,metric(u)]),
         };
         render();
       }
