@@ -150,6 +150,7 @@ def main():
             )
             lesson(page)
             assert progress() == before + 1
+            page.locator('#game-back-to-map').click()
             page.locator('#tab-translations').click()
             page.locator('#search').fill(stamp)
             page.locator('#find').click()

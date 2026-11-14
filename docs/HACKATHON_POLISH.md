@@ -41,7 +41,7 @@ TTS по-прежнему покрывает 40 фраз, остальные д�
 
 Локально пройдены 113 unit-тестов, compileall, контракт, Ruff check/format, `browser_checks.py`, `browser_visual_checks.py`, `browser_tts_checks.py`. Chromium: 360, 390, 768, 1024, 1440, 1920 px, уменьшенные анимации, тёмная системная настройка, отключённые CDN, reflow до 320 CSS px, длинные строки, фокус, раскрытие источника, реальные пять заданий, сохранение XP и восстановление из ошибок.
 
-Снимки лично просмотрены: главная ПК/телефон, урок ПК/телефон, завершение, регистрация/профиль, рейтинги и эксперт. После исправления мобильного пересечения подписи с иллюстрацией визуальные регрессии повторены. Снимки находятся в `test-results/visual/`; Actions сохраняет `interface-screenshots`. Снимок регистрационной карточки исправлен: теперь выбирается её реальный элемент, а не весь длинный раздел главной.
+Снимки лично просмотрены: главная ПК/телефон, урок ПК/телефон, завершение, регистрация/профиль, рейтинги и эксперт. После исправления мобильного пересечения подписи с иллюстрацией визуальные регрессии повторены. Снимки находятся в `test-results/visual/`; Actions сохраняет `interface-screenshots`. Старый браузерный API-тест теперь завершает урок возвратом к карте перед переходом к экспорту: фон полноэкранного урока намеренно недоступен для кликов. Снимок регистрационной карточки исправлен: теперь выбирается её реальный элемент, а не весь длинный раздел главной.
 
 PostgreSQL и Compose дополнительно проверяются в CI на изолированной базе; их локальный пропуск не равен PASS. Локально PostgreSQL integration пропущен из-за отсутствия `PG_TEST_ADMIN_DSN`, Docker integration недоступен: pipe движка Docker Desktop не существует. Живой Telegram, физический телефон/Safari, нагрузка публичного развёртывания и оценка носителем не подтверждены. Семантическое распознавание синонимов остаётся ограниченным ручными правилами, коллективный консенсус не заменяет экспертизу. Анонимные аккаунты не обеспечивают полной защиты от нескольких профилей одного человека.
 
@@ -49,6 +49,6 @@ PostgreSQL и Compose дополнительно проверяются в CI н
 
 ## Изменённые файлы и запуск
 
-`web/index.html`, `tests/browser_visual_checks.py`, `tests/browser_tts_checks.py`, `tests/docker_integration.py`, `README.md`, `SPEC.md`, `API.md`, `docs/DEMO_3_MINUTES.md`, `docs/GAMEPLAY.md`, `docs/TTS.md`, `docs/HACKATHON_POLISH.md`.
+`web/index.html`, `tests/browser_visual_checks.py`, `tests/browser_tts_checks.py`, `tests/docker_integration.py`, `tests/browser_api_checks.py`, `README.md`, `SPEC.md`, `API.md`, `docs/DEMO_3_MINUTES.md`, `docs/GAMEPLAY.md`, `docs/TTS.md`, `docs/HACKATHON_POLISH.md`.
 
 Основной запуск из PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_local.ps1`. Для отдельной визуальной проверки: `python tests/browser_visual_checks.py`; для полного тестового стека: `python tests/docker_integration.py` при свободном порте 54321. Не удаляйте volumes и не применяйте SQL чистой установки повторно к рабочей базе.
