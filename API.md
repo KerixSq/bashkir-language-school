@@ -1,10 +1,10 @@
 # REST API
 
-Stage14: claim_daily_reminders(p_now timestamptz,p_limit integer) — только service_role, резервирует дату одной ежедневной попытки по Уфе через SKIP LOCKED. Публичный вызов/список Telegram-получателей запрещён. Согласие меняет только бот по from_user через /remind on/off; публичного reminder API нет. Подробности: [REMINDERS.md](docs/REMINDERS.md).
+Stage14: claim_daily_reminders(p_now timestamptz,p_limit integer) — только service_role, резервирует дату одной ежедневной попытки по Уфе через SKIP LOCKED. Публичный вызов/список Telegram-получателей запрещён. Согласие меняет только бот по from_user через /remind on/off; публичного reminder API нет. Подробности: [Telegram и напоминания](docs/TELEGRAM.md).
 
-Stage13: задания дополнительно возвращают source_kind/source_url/source_license и прежние time_start/time_end для исходного аудио. Новый import_audio_fragments(jsonb,jsonb) — только service_role, для CLI; публичное исполнение запрещено. В translations_export по-прежнему семь полей, таймкоды находятся в source. [Импорт и контракт](docs/ORIGINAL_AUDIO.md).
+Stage13: задания дополнительно возвращают source_kind/source_url/source_license и прежние time_start/time_end для исходного аудио. Новый import_audio_fragments(jsonb,jsonb) — только service_role, для CLI; публичное исполнение запрещено. В translations_export по-прежнему семь полей, таймкоды находятся в source. [Импорт и контракт](docs/CONTENT_AND_AUDIO.md).
 
-Stage12: защищённый `expert_list_queue(p_code)` дополнительно возвращает `similarity_candidates` с двумя вариантами, числом голосов и score pg_trgm (0–1). Это подсказка эксперту, не семантическое объединение; запись выполняется прежним `expert_resolve`. Права и семь полей `translations_export` сохранены. Подробности: [EXPERT_SIMILARITY.md](docs/EXPERT_SIMILARITY.md).
+Stage12: защищённый `expert_list_queue(p_code)` дополнительно возвращает `similarity_candidates` с двумя вариантами, числом голосов и score pg_trgm (0–1). Это подсказка эксперту, не семантическое объединение; запись выполняется прежним `expert_resolve`. Права и семь полей `translations_export` сохранены. Подробности: [Экспертное согласование](docs/EXPERT_REVIEW.md).
 
 Telegram и веб используют общий submit_answer/консенсус и агрегированные представления. Самостоятельный Telegram-ученик может иметь class_id=NULL (stage11); публичные RLS не расширялись. Новый личный вклад запрашивается только доверенным ботом по from_user; браузеру API чужой истории не добавлен. Контракт translations_export остаётся из семи полей.
 
@@ -180,4 +180,4 @@ Content-Type: application/json
 `leaderboard_users` дополнительно возвращает `day_points`, `week_points`, `month_points`, `year_points` по `Asia/Yekaterinburg`; `points` остаётся общим итогом за всё время. Миграция stage10 добавляет колонки без изменения ответов; stage11 настраивает search_path роли Auth для самостоятельного Compose.
 # Проверка RC1
 
-API-контракты сохранены. [Матрица и результаты](docs/FINAL_RELEASE_QA.md), [PowerShell и обновление](docs/FINAL_WINDOWS_SETUP.md). REST-экспорт содержит прежние семь полей; независимые Telegram/Web-профили используют общий механизм голосования, не объединённую учётную запись.
+API-контракты сохранены. [Матрица и результаты](docs/QA.md), [PowerShell и обновление](docs/WINDOWS_SETUP.md). REST-экспорт содержит прежние семь полей; независимые Telegram/Web-профили используют общий механизм голосования, не объединённую учётную запись.

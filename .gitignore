@@ -24,6 +24,13 @@ Thumbs.db
 !web/assets/audio/manifest.json
 !docs/CORPUS_PROVENANCE.json
 test-results/
+playwright-report/
+*.webm
+*.trace.zip
+*.dump
+*.bak
+*.backup-*
+/backups/
 .index.html.before-brand-update.bak
 .cache/tts/
 .live-telegram/

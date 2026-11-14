@@ -131,9 +131,9 @@ class ContractTests(unittest.TestCase):
             'bot/handlers/tasks.py',
             'scripts/smoke_test.py',
             'scripts/seed_demo.py',
-            'PROMPT_TRANSLATION.md',
+            'docs/CONTENT_AND_AUDIO.md',
             'README.md',
-            'PITCH_NOTES.md',
+            'docs/DEMO.md',
         ):
             with self.subTest(filename=filename):
                 self.assertTrue((ROOT / filename).exists())

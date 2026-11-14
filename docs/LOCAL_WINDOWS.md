@@ -1,6 +1,6 @@
 # Альтернативный режим Supabase CLI
 
-Основной запуск описан в [DOCKER_WINDOWS.md](DOCKER_WINDOWS.md). Эта инструкция относится к CLI: добавляй `-UseSupabaseCli` к setup_local.ps1/run_local.ps1. Перед запуском останови Compose. Для проверок CLI явно установи `$env:BASHKIR_ENV_FILE=".env"`.
+Основной запуск описан в [WINDOWS_SETUP.md](WINDOWS_SETUP.md). Эта инструкция относится к CLI: добавляй `-UseSupabaseCli` к setup_local.ps1/run_local.ps1. Перед запуском останови Compose. Для проверок CLI явно установи `$env:BASHKIR_ENV_FILE=".env"`.
 
 # Все данные на своём ноутбуке · Windows 11
 
@@ -44,7 +44,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup_local.ps1 -U
 2. `sql/seed.sql`
 3. `sql/logic.sql`
 
-Эти три файла уже содержат изменения прежних миграций и представление общей библиотеки. **Не применяй к новой чистой базе заново файлы из `sql/migrations/`**. На уже существующей базе после stage5 последовательно примени `20261113_stage6_expedition.sql`, затем `20261113_stage7_runtime_fixes.sql`. Если stage6 выполнена, применяй только stage7.
+Эти три файла содержат актуальную схему до stage14. **Не применяй к новой чистой базе заново файлы из `sql/migrations/`**. Для существующей CLI-базы сначала backup и подтверждение её версии, затем только недостающий суффикс миграций. После stage5 нужны stage6, stage7, stage8 и последующие этапы; две stage11 имеют разные назначения. Имена/порядок stage9–14 — [WINDOWS_SETUP](WINDOWS_SETUP.md). В CLI выполняйте выбранные SQL-файлы в локальном SQL Editor; команды Compose для контейнера db к CLI не относятся. Не останавливайтесь на stage7 и не запускайте старые файлы отдельно поверх новых.
 
 ## 4. Подключить бота
 

@@ -1,20 +1,22 @@
 # Башкирская языковая школа
 
-Release candidate `v0.9.0-rc1`: [единая установка/обновление Windows](docs/FINAL_WINDOWS_SETUP.md), [сценарий на три минуты](docs/FINAL_DEMO.md), [резервный показ](docs/DEMO_BACKUP.md), [проверки и матрица ТЗ](docs/FINAL_RELEASE_QA.md). Ветка `release-candidate`; тег и стабильный релиз не опубликованы.
+Веб-платформа и Telegram-бот для практики башкирского языка и совместной проверки переводов. Короткие уроки с Акбузатом помогают заниматься регулярно, а независимые ответы участников пополняют общую базу согласованных переводов с источниками и REST-экспортом.
 
-Добровольные Telegram-напоминания: `/remind on/off` и меню настроек. По умолчанию выключены; [stage14, запуск и ограничения доставки](docs/REMINDERS.md). Итоговый технический аудит — [FINAL_HACKATHON_QA.md](docs/FINAL_HACKATHON_QA.md).
+Сайт, aiogram-бот, PostgreSQL, PostgREST, Supabase Auth и Nginx работают на одном ноутбуке через Docker Compose. React, внешняя облачная база и Node.js для запуска не нужны. Текущая сборка собрана в `rc1-visual-polish`; стабильный релиз и тег не опубликованы. [Результаты проверок и ограничения](docs/QA.md).
 
-Исходное WAV/MP3 с готовой разметкой: [импорт, stage13 и воспроизведение диапазона](docs/ORIGINAL_AUDIO.md). Это отдельный конвейер от TTS, без распознавания речи.
+## Возможности
 
-Экспертные подсказки сходства вариантов и безопасное обновление stage12: [инструкция](docs/EXPERT_SIMILARITY.md). Итог выбирает эксперт; сходство не объединяет голоса автоматически.
+- Тренировочная карта, уроки по пять заданий, локальные XP и достижения.
+- Серверная проверка в браузере и Telegram: подтверждение, исправление, пропуск, три независимых голоса и экспертная очередь.
+- Рейтинги по периодам, прогресс общей библиотеки, классы, отчёты преподавателя, JSON/CSV и REST API.
+- Самостоятельная регистрация без класса, вступление позже через `/join`, добровольные `/remind on/off` (изначально выключены).
+- Реальные тексты БГПУ; синтезированная башкирская TTS для 40 фраз; импорт исходного WAV/MP3 с готовыми таймкодами.
 
-Telegram: самостоятельное обучение без класса, меню и личный вклад — [инструкция](docs/TELEGRAM_NAVIGATION.md). Для обновления существующей базы нужна миграция stage11 из этой инструкции. Сайт запускается без токена и без Tor; бот имеет явные proxy/direct режимы.
+Тренировочные XP сохраняются только в браузере. Они не создают серверных голосов и не увеличивают рейтинг или библиотеку. Веб- и Telegram-профили независимы.
 
-Браузерная проверка переводов БГПУ: анонимный вход, никнейм, задания, серверные очки, консенсус, рейтинги и REST-экспорт. Telegram — дополнительный канал. Отдельная тренировочная тропа хранит XP только в браузере: они не влияют на серверный рейтинг и Библиотеку Акбузата.
+## Быстрый старт — Windows 11
 
-## Основной запуск: Docker Compose, Windows 11
-
-Нужны Docker Desktop (Linux containers / WSL2), Python 3.11+ и Git. Node.js для запуска сайта не нужен. Выполняй из корня репозитория:
+Нужны Git, Python 3.11+ и Docker Desktop в режиме Linux containers/WSL2. Выполняйте из корня клонированного репозитория:
 
 ```powershell
 python scripts/create_docker_env.py
@@ -22,17 +24,9 @@ docker compose --env-file .env.docker config --quiet
 docker compose --env-file .env.docker up -d --build --wait
 ```
 
-Открой http://127.0.0.1:54321/web/. Публичная конфигурация и анонимный вход включены автоматически; секретный ключ не попадает на сайт. SQL инициализируется автоматически только при первом запуске пустого volume. Не запускай schema/seed/logic повторно поверх существующих данных.
+Откройте http://127.0.0.1:54321/web/. Публичная конфигурация создаётся автоматически; секретный ключ не попадает на сайт. На новом volume SQL инициализируется один раз. Сайт работает без токена Telegram и Tor.
 
-Оба Windows-скрипта по умолчанию запускают этот же Compose:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run_local.ps1
-```
-
-## Реальный корпус после чистого git clone
-
-`data/` исключена из Git. В репозитории есть учебная колода из 700 фраз, но серверные задания нужно импортировать отдельно. Загрузчик скачивает зафиксированную ревизию, проверяет SHA-256 всех пяти JSONL, LICENSE и NOTICE; изменённые локальные файлы не перезаписывает.
+Серверные задания после чистого clone нужно импортировать отдельно; `data/` не входит в Git:
 
 ```powershell
 python scripts/download_phrasebooks.py
@@ -41,49 +35,55 @@ docker compose --env-file .env.docker run --rm --no-deps bot python scripts/impo
 docker compose --env-file .env.docker run --rm --no-deps bot python scripts/import_phrasebooks.py --dir data/phrasebooks --bad-share 0.2 --seed 42
 ```
 
-Импорт повторяемый; неподтверждённые переводы получают collecting. Пары: ba-ru и ba-kk. Подставной вариант — другой перевод того же файла, выбранный по длине; это эвристика, требующая проверки. Для ручной проверки используй --review-out (CSV внутри контейнера нужно скопировать на хост).
+Загрузчик проверяет закреплённую ревизию и SHA-256. Импорт повторяемый, новые пары получают collecting. Готовая браузерная колода содержит 700 записей и работает отдельно от серверной базы. Её экспортёр: `python scripts/export_learning_deck.py --dir data/phrasebooks --per-pair 350 --seed 42`.
 
-Источник: [Bashkorttele / БГПУ](https://huggingface.co/datasets/bashkorttele/trilingual-parallel-phrasebooks-bgpu). Лицензия текстов — [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Правообладатель: ФГБОУ ВО «БГПУ им. М. Акмуллы»; издатель: АНО «Фонд сохранения и развития башкирского языка». Сохранённые LICENSE/NOTICE — web/assets/corpus/; ревизия и хеши — docs/CORPUS_PROVENANCE.json. Изменения: отбор ba-ru/ba-kk, дедупликация, частотный выбор русского варианта, учебные подстановки. Соответствия корпуса не проверены построчно; проверка сообщества не равна экспертизе. Лицензия текста не распространяется на иллюстрации печатных изданий.
+**Существующая база:** сначала backup и подтверждение её версии, затем только недостающие миграции по [WINDOWS_SETUP](docs/WINDOWS_SETUP.md). Важны обе stage11 и последовательность до stage14. Не повторяйте schema/seed/logic поверх volume, не пересоздавайте пароли/JWT из `.env.docker`, не используйте down -v или reset.
 
-Статическую колоду можно обновить командой `python scripts/export_learning_deck.py --dir data/phrasebooks --per-pair 350 --seed 42`. Правила тренировки — [docs/GAMEPLAY.md](docs/GAMEPLAY.md).
-
-## Данные и остановка
+Для Telegram введите токен только локально в `.env.docker`, остановите другие polling-процессы и выполните:
 
 ```powershell
-docker compose --env-file .env.docker --profile bot down
+docker compose --env-file .env.docker --profile bot up -d --build tor bot
 ```
 
-Обычный down сохраняет volume. Никогда не добавляй -v для обычной остановки. Не пересоздавай .env.docker для существующей БД: в нём сохранены её пароли и JWT secret. Backup и точный порядок обновления — [FINAL_WINDOWS_SETUP.md](docs/FINAL_WINDOWS_SETUP.md). После stage9 нужны stage10, **обе stage11** (auth_search_path и independent_students), затем stage12–14. Применяйте только необходимый суффикс после проверки состояния базы.
+Direct-режим выбирается явно, без скрытого fallback. Полные команды установки, обновления, backup, Tor/direct, healthchecks и остановки — [WINDOWS_SETUP](docs/WINDOWS_SETUP.md). Supabase CLI — [отдельный альтернативный режим](docs/LOCAL_WINDOWS.md); одновременно с Compose на 54321 его не запускают.
 
-Telegram необязателен: добавь TELEGRAM_BOT_TOKEN в .env.docker и выполни `docker compose --env-file .env.docker --profile bot up -d --build`. Команды: /start, /task, /pair, /cancel, /me, /top, /report, /newclass, /privacy, /delete_me, /help. Токены, учительские и экспертные коды не публикуй.
+## Документация
+
+| Документ | Содержание |
+|---|---|
+| [SPEC](SPEC.md), [API](API.md) | Фактические функции, RPC, права и семь полей экспорта |
+| [WINDOWS_SETUP](docs/WINDOWS_SETUP.md) | Установка, миграции, backup и диагностика |
+| [ARCHITECTURE](docs/ARCHITECTURE.md) | Потоки данных, безопасность, модули и тестовые контуры |
+| [GAMEPLAY](docs/GAMEPLAY.md) | Правила уроков, XP и серверного прогресса |
+| [CONTENT_AND_AUDIO](docs/CONTENT_AND_AUDIO.md) | Корпус, лицензии, CSV, TTS, исходное аудио и 20 фраз для носителя |
+| [TELEGRAM](docs/TELEGRAM.md) | Регистрация, меню, вклад и напоминания |
+| [EXPERT_REVIEW](docs/EXPERT_REVIEW.md) | Сходство вариантов и защищённое решение эксперта |
+| [DEMO](docs/DEMO.md) | Три минуты защиты, резервный сценарий и вопросы жюри |
+| [QA](docs/QA.md), [RELEASE_NOTES](docs/RELEASE_NOTES.md) | Фактические результаты, ограничения и история |
+
+[Исследование учеников](docs/STUDENT_RESEARCH.md) сохраняет гипотезы и протокол пилота. [Live Telegram](docs/TELEGRAM_LIVE_TEST.md) описывает изолированную ручную проверку; искусственные Updates не называются Live E2E.
 
 ## Проверки
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m compileall -q bot scripts tests
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe scripts/check_contract.py
 .\.venv\Scripts\python.exe -m ruff check .
 .\.venv\Scripts\python.exe -m ruff format --check .
-.\.venv\Scripts\python.exe scripts/doctor.py
-.\.venv\Scripts\python.exe scripts/check_rls.py
-.\.venv\Scripts\python.exe -m playwright install chromium
+.\.venv\Scripts\python.exe -m playwright install chromium webkit
+.\.venv\Scripts\python.exe tests/browser_navigation_checks.py
+.\.venv\Scripts\python.exe tests/browser_visual_checks.py
+.\.venv\Scripts\python.exe tests/browser_tts_checks.py
 .\.venv\Scripts\python.exe tests/docker_integration.py
 ```
 
-Docker integration требует свободного порта 54321: сначала останови обычный Compose. Тест создаёт уникальный проект, скачивает настоящий корпус, проверяет Auth → браузер → REST → SQL, права и сохранность после restart. В конце останавливает только свой проект, сохраняя его volume. Отдельные PostgreSQL-тесты: PG_TEST_ADMIN_DSN на локальный тестовый сервер и tests/postgres_integration.py. SQL-тест создаёт и удаляет только собственную временную БД. Полный Docker-тест автоматически выполняется GitHub Actions.
+Docker integration требует свободного 54321 и создаёт отдельный Compose-проект, не рабочую базу. PostgreSQL integration использует локальный PG_TEST_ADMIN_DSN и удаляет только свою disposable БД. Скриншоты/видео — в test-results, новые CI-артефакты хранятся 14 дней. Повторный аудит и документация не подтверждают запуск на конкретном ноутбуке — смотрите фактический SHA/CI в QA.
 
-Проверки выбирают .env.docker; для явного выбора используется BASHKIR_ENV_FILE. Сетевой отказ не является успешной проверкой прав. Схема и RPC документированы в [API.md](API.md). Сценарий защиты — [docs/DEMO_3_MINUTES.md](docs/DEMO_3_MINUTES.md). Единая учётная запись сайта/Telegram и семантическое распознавание синонимов не реализованы. Башкирская TTS доступна для 40 фраз корпуса: статические WAV Silero `bak_aigul`, без облачного API; произношение требует оценки носителем. Инструкции и ограничения — [docs/TTS.md](docs/TTS.md).
+## Происхождение и ограничения
 
-## Альтернативный режим Supabase CLI
+Тексты: [Bashkorttele / БГПУ](https://huggingface.co/datasets/bashkorttele/trilingual-parallel-phrasebooks-bgpu), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Правообладатель — ФГБОУ ВО «БГПУ им. М. Акмуллы»; издатель — АНО «Фонд сохранения и развития башкирского языка». Сохранены LICENSE/NOTICE, [ревизия и хеши](docs/CORPUS_PROVENANCE.json). Изменения: отбор ba-ru/ba-kk, дедупликация, частотный русский вариант, учебные подстановки. Лицензия текста не распространяется на иллюстрации печатных изданий.
 
-Только при осознанном выборе: scripts/setup_local.ps1 -UseSupabaseCli. Не запускай CLI и Compose одновременно: они используют порт 54321. [Архивная инструкция CLI](docs/LOCAL_WINDOWS.md) описывает этот отдельный режим; он не является основным путём запуска. Локальный API привязан к 127.0.0.1; на другом телефоне это сам телефон. Публичное размещение требует отдельной настройки HTTPS и защиты.
-
-Обязательная библиотека Supabase JS поставляется локально с MIT-лицензией. При недоступном CDN вход и упражнения работают без внешней JS-загрузки; внешние шрифты и декоративные анимации могут отсутствовать.
-
-Визуальные регрессии интерфейса: `python tests/browser_visual_checks.py` (Chromium, шесть размеров экрана, CDN отключён, системная тёмная тема, длинный текст и клавиатура). Тест сам запускает временный статический сервер; снимки — `test-results/visual/`. Для просмотра без API: `python -m http.server 8000`, адрес `http://127.0.0.1:8000/web/`. Отчёт о визуальной полировке — [docs/UI_FINAL_PASS.md](docs/UI_FINAL_PASS.md).
-
-Финальная проверка хакатонной сборки: [docs/HACKATHON_POLISH.md](docs/HACKATHON_POLISH.md). Docker integration дополнительно запускает smoke/RLS, браузерный CSV и отчёт преподавателя, а также FSM aiogram на своей изолированной базе; живое соединение с Telegram этим не подтверждается.
-
-Живой Telegram smoke с действиями человека и сверкой БД: [docs/TELEGRAM_LIVE_TEST.md](docs/TELEGRAM_LIVE_TEST.md). Observer не вызывает getUpdates и не меняет webhook. Диагностика включается только для выбранного тестового аккаунта; live-проверки не запускаются в публичном CI.
+Переводы и произношение TTS не проверены носителем. Сходство написания не означает семантическую эквивалентность. Подлинный лицензированный исходный аудиокорпус не добавлен: тесты используют обозначенный технический тон. Напоминания резервируют одну попытку в день, не гарантируют доставку при сетевом сбое. Официальная интеграция с экспертной организацией и объединение аккаунтов не заявляются. Локальный API нельзя публиковать напрямую без отдельной защиты и HTTPS.

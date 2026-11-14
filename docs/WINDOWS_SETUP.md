@@ -1,4 +1,4 @@
-# Windows 11: установка и безопасное обновление RC1
+# Windows 11: установка, обновление и резервная копия
 
 Основной режим — Docker Desktop, Linux containers/WSL2, Git и Python 3.11+. Все команды из корня репозитория в PowerShell. Порт 54321 должен быть свободен; Supabase CLI параллельно не запускать. Первый запуск требует интернета для образов и корпуса. Не показывайте `.env.docker`, логи с секретами и коды преподавателей на трансляции.
 
@@ -7,7 +7,7 @@
 ```powershell
 git clone https://github.com/KerixSq/bashkir-language-school.git
 Set-Location bashkir-language-school
-git switch release-candidate
+git switch rc1-visual-polish
 python scripts/create_docker_env.py
 docker compose --env-file .env.docker config --quiet
 docker compose --env-file .env.docker up -d --build --wait
@@ -45,11 +45,11 @@ if (Test-Path web/assets/original-audio) { Copy-Item web/assets/original-audio "
 ```powershell
 git status --short
 git fetch origin
-git switch release-candidate
-git pull --ff-only origin release-candidate
+git switch rc1-visual-polish
+git pull --ff-only origin rc1-visual-polish
 ```
 
-При незакоммиченных локальных изменениях сначала сохраните их отдельно; не используйте reset/force. В проекте нет единого журнала применённых миграций. Установите последнюю применённую версию по собственным записям и определению функций. Для базы до stage9 сначала изучите старые миграции stage1–8 и [DOCKER_WINDOWS.md](DOCKER_WINDOWS.md). Следующий блок предназначен для **подтверждённой базы stage9 или новее**, а не любой неизвестной схемы.
+При незакоммиченных локальных изменениях сначала сохраните их отдельно; не используйте reset/force. В проекте нет единого журнала применённых миграций. Установите последнюю применённую версию по собственным записям и определению функций. Для базы до stage9 сначала изучите старые миграции stage1–8 и [WINDOWS_SETUP.md](WINDOWS_SETUP.md). Следующий блок предназначен для **подтверждённой базы stage9 или новее**, а не любой неизвестной схемы.
 
 | Порядок | Точный файл | Назначение |
 |---|---|---|

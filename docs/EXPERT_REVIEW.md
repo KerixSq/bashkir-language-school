@@ -6,18 +6,6 @@ RPC `expert_list_queue(p_code)` сохранил прежние поля и до
 
 Сходство написания не доказывает эквивалентность смысла. Голоса не объединяются автоматически, synonym_map не меняется. Решение принимает эксперт через прежний защищённый `expert_resolve`; сохраняются история, статус, итоговый перевод и семиполевой translations_export. Повторное решение вне очереди отклоняется. Пересчёт не перезаписывает решение эксперта и не начисляет бонус повторно. Официальная экспертиза носителем/организацией не заявляется.
 
-## Обновление существующей базы в PowerShell
-
-Сначала обычная резервная копия. Миграция не удаляет данные и не меняет права или формулы очков. Копирование файла исключает перекодировку SQL при передаче через старый Windows PowerShell:
-
-```powershell
-docker compose --env-file .env.docker cp sql/migrations/20261114_stage12_expert_similarity.sql db:/tmp/stage12.sql
-docker compose --env-file .env.docker exec -T db psql -U postgres -d bashkir -v ON_ERROR_STOP=1 -f /tmp/stage12.sql
-docker compose --env-file .env.docker up -d --build app
-```
-
-Stage12 транзакционная и повторяемая, заменяет только expert_list_queue. На чистой базе функция включена в logic.sql. Для установки поверх старой версии P0 сначала примените необходимые прежние миграции, включая stage11. Не запускайте заново schema/seed/logic поверх существующего volume.
-
 ## Проверки
 
 ```powershell
@@ -30,4 +18,5 @@ python tests/browser_expert_checks.py
 
 PostgreSQL integration требует локальный PG_TEST_ADMIN_DSN, создаёт свою disposable БД. Browser-тест использует технические строки, временно меняет экспертный хеш только в QA и восстанавливает его в finally; не запускайте его с рабочими ключами. В Docker integration он запускается автоматически внутри уникального тестового проекта. Реальный REST/браузерный цикл: 6 независимых тестовых пользователей → 3 варианта по 2 голоса → подсказка → ручное решение (клик Playwright) → подтверждённый REST-экспорт. Никакие успешные серверные ответы не подменяются.
 
-Локально прошли 135 unit-тестов, compileall, контракт, Ruff, 10 PostgreSQL integration-тестов, aiogram-регрессии P0 и настоящий browser/REST экспертный цикл на 390 px. Stage12 применена дважды в QA и disposable БД. Скриншот: `test-results/visual/expert-similarity-mobile.png`. Docker локально SKIP: daemon недоступен; отдельный прогон выполняется в GitHub Actions.
+
+Миграция stage12, после обеих stage11, и backup: [WINDOWS_SETUP](WINDOWS_SETUP.md). На чистой базе включена в logic.sql; schema/seed/logic не накатывают поверх существующей базы. Фактические результаты — [QA](QA.md).
