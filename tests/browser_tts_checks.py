@@ -75,13 +75,22 @@ def main():
                     return Math.max(...positions) - Math.min(...positions) < 0.5;
                     }"""
                 ), 'Answer button moves under pointer'
+                option.click()
+                expect(page.locator('#game-check')).to_be_enabled()
                 button.focus()
                 button.press('Enter')
                 playing(page)
+                expect(page.locator('#game-feedback')).to_be_hidden()
                 no_overflow(page)
                 page.screenshot(path=str(OUT / f'tts-lesson-{width}.png'))
-                button.click()
+                button.press('Space')
                 stopped(page)
+                expect(page.locator('#game-feedback')).to_be_hidden()
+                page.locator('#game-phrase-details summary').press('Enter')
+                expect(page.locator('#game-word-source')).to_be_visible()
+                expect(page.locator('#game-feedback')).to_be_hidden()
+                page.locator('#game-phrase-details summary').press('Enter')
+                expect(page.locator('#game-word-source')).to_be_hidden()
                 button.click()
                 playing(page)
                 page.locator('#game-skip').click()
@@ -90,8 +99,11 @@ def main():
                 button.click()
                 playing(page)
                 page.on('dialog', lambda dialog: dialog.accept())
-                page.locator('#lesson-close').click()
+                page.locator('#game-answers button').first.click()
+                expect(page.locator('#game-check')).to_be_enabled()
+                page.locator('#lesson-close').press('Enter')
                 stopped(page)
+                expect(page.locator('#game-ready')).to_be_visible()
                 # The API control is exercised in isolation with a real corpus phrase,
                 # without pretending an authenticated backend response occurred.
                 page.evaluate(

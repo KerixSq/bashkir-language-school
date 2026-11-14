@@ -892,7 +892,7 @@ main {padding:0!important}
  .quest-mascot {width:275px!important;right:-35px!important}
  .student-topbar-text strong {font-size:20px}
 }
-@media(max-width:760px) {
+@media(max-width:850px) {
  .app-layout {display:block!important}
  .app-sidebar {display:none!important}
  .app-center {padding:12px 12px 92px!important}
@@ -902,18 +902,19 @@ main {padding:0!important}
  .top-chip {min-height:39px;padding:7px 9px;gap:5px;font-size:12px}
  .top-chip-account {display:none}
  .top-chip small {display:none}
- .quest-hero {padding:25px 23px!important;min-height:326px!important;border-radius:22px!important;background:linear-gradient(90deg,#e4f3fffa,#d6eeffde 62%,#cae8fd60),url('assets/ural-journey.webp') center/cover no-repeat!important;align-items:flex-start}
- .quest-hero-content {width:100%;max-width:100%;padding:0 0 104px}
- .quest-hero h2 {font-size:32px!important;max-width:365px!important;margin-top:12px!important}
+ .quest-hero {padding:20px!important;min-height:0!important;border-radius:22px!important;background:linear-gradient(90deg,#e4f3fffa,#d6eeffde 62%,#cae8fd60),url('assets/ural-journey.webp') center/cover no-repeat!important;align-items:flex-start}
+ .quest-hero-content {width:100%;max-width:100%;padding:0}
+ .quest-hero h2 {font-size:29px!important;max-width:365px!important;margin-top:0!important}
  .quest-hero p {font-size:12px!important;max-width:300px!important}
- .quest-hero-top {font-size:9px!important;white-space:normal}
- .quest-hero-links {margin-top:14px!important;gap:8px!important;max-width:300px!important}
+ .quest-hero-top {display:none}
+ .quest-hero-links {margin-top:16px!important;gap:8px!important;max-width:calc(100% - 90px)!important}
+ .quest-hero-links .quest-hero-outline {display:none!important}
  .quest-hero-links a,.quest-hero-links button {min-height:41px!important;padding:9px 11px!important;font-size:11px!important}
- .quest-mascot {width:150px!important;right:12px!important;bottom:-12px!important;top:auto!important;opacity:1}
+ .quest-mascot {width:90px!important;right:4px!important;bottom:5px!important;top:auto!important;opacity:1}
  .hero-star-one {top:61%!important;right:40%!important}
  .hero-star-two {right:11%;top:40%}
- .hero-footnote {font-size:12px!important;max-width:240px!important;margin-top:16px!important}
- .hero-small-bot {font-size:10px}
+ .quest-hero .hero-footnote {font-size:11px!important;max-width:calc(100% - 90px)!important;margin-top:16px!important}
+ .hero-small-bot {display:none}
  .path-preview {padding:18px 13px 14px;margin:18px 0}
  .path-heading h3 {font-size:21px}
  .path-heading p {font-size:11px}
@@ -933,12 +934,12 @@ main {padding:0!important}
  .app-mobile-nav a,.app-mobile-nav button {min-width:0;flex:1;padding:4px!important}
 }
 @media(max-width:420px) {
- .quest-hero {min-height:345px!important;padding:22px 16px!important}
+ .quest-hero {min-height:0!important;padding:20px 16px!important}
  .quest-hero h2 {font-size:29px!important;max-width:290px!important}
  .quest-hero p {max-width:100%!important;font-size:13px!important}
- .quest-hero-links {max-width:270px!important}
+ .quest-hero-links {max-width:calc(100% - 80px)!important}
  .quest-hero-links a,.quest-hero-links button {font-size:12px!important;padding:10px 12px!important;min-height:44px!important}
- .quest-mascot {width:140px!important;bottom:-10px!important;right:8px!important}
+ .quest-mascot {width:80px!important;bottom:8px!important;right:4px!important}
  .hero-small-bot {display:none}
  .path-all {display:none}
 }
@@ -1002,6 +1003,10 @@ body.lesson-active .app-mobile-nav {display:none!important}
   .app-brand-icon img{width:100%!important;height:100%!important;object-fit:contain!important}
   .app-sidebar-bottom img{width:145px;height:124px;max-width:100%;object-fit:contain}
   .app-guide-illustration img{width:118px;height:118px;max-width:100%;object-fit:contain}
+    .phrase-details {margin-top:8px;font:12px/1.5 system-ui,sans-serif;color:#526b7d;min-width:0}
+    .phrase-details summary {min-height:44px;padding:12px 0;cursor:pointer;font-weight:600}
+    .phrase-details[open] summary {margin-bottom:4px;border-bottom:1px solid #c9dce6}
+    .phrase-details .tts-note {margin-top:8px}
     .tts-control {margin:12px 0 4px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
     .tts-button {min-height:44px;padding:8px 14px;border:1px solid #9abccd;border-radius:12px;background:#fff;color:#194464;font:700 14px/1.4 system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px}
     .tts-button:hover:not(:disabled) {background:#eaf5fb}
@@ -1089,9 +1094,9 @@ body.lesson-active .app-mobile-nav {display:none!important}
         <div class="quest-hero-content">
           <div class="quest-hero-top"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-sparkles"></use></svg> ТВОЁ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</div>
           <h2 id="web-play-title">Каждое слово —<br><em>новое открытие!</em></h2>
-          <p>Изучай башкирский с Акбузатом: проходи короткие уроки, собирай награды и помогай сохранять язык.</p>
+          <p>Пять заданий за урок. Учись с Акбузатом и помогай сохранять язык.</p>
           <div class="quest-hero-links">
-            <a id="play-entry" class="quest-hero-main-cta" href="#game-zone"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-play"></use></svg> Играть бесплатно</a>
+            <a id="play-entry" class="quest-hero-main-cta" href="#game-zone"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-play"></use></svg> Начать урок</a>
             <a class="quest-hero-outline" href="#web-profile-area"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-check-double"></use></svg> Проверить перевод</a>
             <button id="view-ratings" class="quest-hero-outline" type="button"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-trophy"></use></svg> Рейтинг</button>
           </div>
@@ -1133,9 +1138,9 @@ body.lesson-active .app-mobile-nav {display:none!important}
                   <input class="field" id="web-join" maxlength="8" placeholder="От преподавателя" autocomplete="off">
                 </label>
               </div>
-              <button class="quest-button" id="web-register" type="submit"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-play"></use></svg> Начать приключение</button>
+              <button class="quest-button" id="web-register" type="submit"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-play"></use></svg> Создать профиль</button>
               <p class="quest-help"><a href="#connection-title">Настроить подключение к базе</a> (один раз для организатора).</p>
-              <p class="quest-help">Вход временный и привязан к этому браузеру. После очистки данных браузера восстановить профиль нельзя. Организатор должен включить анонимный вход Supabase Auth.</p>
+              <p class="quest-help">Профиль привязан к этому браузеру. После очистки его данных восстановить профиль нельзя.</p>
             </form>
           </div>
           <div id="web-session" hidden>
@@ -1158,9 +1163,9 @@ body.lesson-active .app-mobile-nav {display:none!important}
             </div>
             <div id="web-task" class="pt-4" hidden>
               <div class="quest-caption" id="web-task-pair"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-book-open"></use></svg> ПРОВЕРКА ПЕРЕВОДА</div>
-              <div class="quest-text"><span>НА БАШКИРСКОМ</span><strong id="web-original"></strong><div class="tts-control"><button id="web-tts" type="button" class="tts-button" disabled aria-label="Прослушать башкирскую фразу" aria-pressed="false" aria-describedby="web-tts-status web-tts-note"><span aria-hidden="true">▶</span> Слушать</button><span id="web-tts-status" class="tts-status" role="status" aria-live="polite">Проверяем озвучку…</span></div><span id="web-tts-note" class="tts-note">Синтезированная речь · bak_aigul · произношение не проверено носителем</span></div>
+              <div class="quest-text"><span>НА БАШКИРСКОМ</span><strong id="web-original"></strong><div class="tts-control"><button id="web-tts" type="button" class="tts-button" disabled aria-label="Прослушать башкирскую фразу" aria-pressed="false" aria-describedby="web-tts-status web-tts-note"><span aria-hidden="true">▶</span> Слушать</button><span id="web-tts-status" class="tts-status" role="status" aria-live="polite">Проверяем озвучку…</span></div><details class="phrase-details" id="web-phrase-details"><summary>Источник и озвучка</summary><p id="web-task-source" class="quest-help"></p><span id="web-tts-note" class="tts-note">Произношение синтезированной речи требует оценки носителем.</span></details></div>
               <div class="quest-text quest-proposal"><span>ПРЕДЛОЖЕННЫЙ ПЕРЕВОД</span><strong id="web-translation"></strong></div>
-              <p id="web-task-source" class="quest-help"></p>
+
               <div class="quest-actions" id="web-answer-actions">
                 <button id="web-confirm" class="quest-button" type="button"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-check"></use></svg> Верно</button>
                 <button id="web-correct-toggle" class="quest-button secondary" type="button"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-pen"></use></svg> Исправить</button>
@@ -1316,7 +1321,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
           <div id="game-question" hidden>
             <div class="game-question-bar"><span id="game-question-type">Выбери перевод</span><span id="game-question-count">1 / 5</span></div>
             <div class="game-progress-track" role="progressbar" aria-label="Прогресс урока" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><span id="game-progress-fill"></span></div>
-            <div class="game-word-card"><div class="game-word-copy"><small>Башҡортса · По-башкирски</small><strong id="game-bashkir-text"></strong><span id="game-word-source"></span><div class="tts-control"><button id="game-tts" type="button" class="tts-button" disabled aria-label="Прослушать башкирскую фразу" aria-pressed="false" aria-describedby="game-tts-status game-tts-note"><span aria-hidden="true">▶</span> Слушать</button><span id="game-tts-status" class="tts-status" role="status" aria-live="polite">Проверяем озвучку…</span></div><span id="game-tts-note" class="tts-note">Синтезированная речь · bak_aigul · произношение не проверено носителем</span></div><img class="game-word-mascot" src="assets/akbuzat.webp" alt="" loading="lazy" width="120" height="120"></div>
+            <div class="game-word-card"><div class="game-word-copy"><small>Башҡортса · По-башкирски</small><strong id="game-bashkir-text"></strong><div class="tts-control"><button id="game-tts" type="button" class="tts-button" disabled aria-label="Прослушать башкирскую фразу" aria-pressed="false" aria-describedby="game-tts-status game-tts-note"><span aria-hidden="true">▶</span> Слушать</button><span id="game-tts-status" class="tts-status" role="status" aria-live="polite">Проверяем озвучку…</span></div><details class="phrase-details" id="game-phrase-details"><summary>Источник и озвучка</summary><span id="game-word-source"></span><span id="game-tts-note" class="tts-note">Произношение синтезированной речи требует оценки носителем.</span></details></div><img class="game-word-mascot" src="assets/akbuzat.webp" alt="" loading="lazy" width="120" height="120"></div>
             <div id="game-answers" class="game-answers"></div>
             <div id="game-feedback" class="game-feedback" role="status" aria-live="polite" hidden></div>
             <div class="game-action-row"><button id="game-check" type="button" class="game-big-button" disabled>Проверить</button><button id="game-next" type="button" class="game-big-button" hidden>Продолжить ➜</button><button id="game-skip" type="button" class="game-small-button">Пропустить</button></div>
@@ -1327,6 +1332,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
             <h3 id="game-finish-title">Урок пройден!</h3>
             <p id="game-finish-summary"></p>
             <button id="game-repeat" type="button" class="game-big-button">Ещё один урок ➜</button>
+            <button id="game-back-to-map" type="button" class="game-small-button">Вернуться к карте</button>
           </div>
         </div>
         <aside class="game-achievements" aria-label="Достижения в игровом режиме">
@@ -1570,9 +1576,12 @@ body.lesson-active .app-mobile-nav {display:none!important}
         const entries = await catalog;
         if (revision !== control.revision) return;
         control.entry = entries.get(normalize(text));
-        if (control.entry) document.getElementById(id+'-tts-note').textContent = 'Синтезированная речь · '+control.entry.voice+' · произношение не проверено носителем';
+        document.getElementById(id+'-tts-note').textContent = control.entry
+          ? 'Silero · '+control.entry.model+' · '+control.entry.voice+'. Произношение не проверено носителем.'
+          : catalogError ? 'Каталог аудио не загрузился; упражнение доступно без звука.'
+          : 'Для этой фразы нет готовой записи. Русский голос не используется.';
         paint(control, control.entry ? 'ready' : 'missing', control.entry
-          ? 'Готово к прослушиванию'
+          ? 'Синтезированная речь'
           : catalogError ? 'Каталог озвучки недоступен. Текстовое задание работает.'
           : 'Озвучка этой фразы пока недоступна');
       }
@@ -1600,6 +1609,9 @@ body.lesson-active .app-mobile-nav {display:none!important}
         const control = {button:document.getElementById(id+'-tts'),status:document.getElementById(id+'-tts-status'),revision:0,entry:null};
         controls.set(id, control);
         control.button.addEventListener('click', () => play(control));
+        control.button.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') event.stopPropagation();
+        });
       }
       document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
       document.addEventListener('api-connection-changed', () => setPhrase('web',''));
@@ -2456,6 +2468,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         const labels={choice:'Выбери перевод',check:'Есть ли ошибка?',bank:'Собери перевод',type:'Напиши перевод'};
         text('game-question-type',labels[current.type]);
         text('game-bashkir-text',current.row.text_ba);
+        el('game-phrase-details').open=false;
         window.BashkirTTS?.setPhrase('game',current.row.text_ba);
         text('game-word-source',`Источник: ${current.row.source}`);
         el('game-progress-fill').style.width=`${session.at/session.rows.length*100}%`;
@@ -2570,7 +2583,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
             const picked=option[Number(event.key)-1];
             if(picked && !picked.disabled) {event.preventDefault();picked.click();}
           }
-          if (event.key==='Enter' && !el('game-question').hidden) {
+          if (event.key==='Enter' && !['BUTTON','SUMMARY','A'].includes(document.activeElement?.tagName) && !el('game-question').hidden) {
             const target=!el('game-check').hidden ? el('game-check') : el('game-next');
             if(target && !target.disabled && !target.hidden) {event.preventDefault();target.click();}
           }
@@ -2579,7 +2592,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         el('lesson-close').addEventListener('click',closeLesson);
         document.addEventListener('keydown',(event)=>{
           if (event.key === 'Tab' && document.body.classList.contains('lesson-active')) {
-            const controls = [...el('game-console').querySelectorAll('button, select, textarea, input, a[href]')]
+            const controls = [...el('game-console').querySelectorAll('button, summary, select, textarea, input, a[href]')]
               .filter((node) => !node.disabled && node.getClientRects().length);
             const first = controls[0], last = controls[controls.length - 1];
             if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
@@ -2595,6 +2608,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         el('game-next').addEventListener('click',next);
         el('game-skip').addEventListener('click',skip);
         el('game-repeat').addEventListener('click',startLesson);
+        el('game-back-to-map').addEventListener('click',closeLesson);
         el('game-reset').addEventListener('click',reset);
         el('game-local-file').addEventListener('change',async (event)=>{
           const file=event.target.files[0];
@@ -2834,6 +2848,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         if(!task) {show('web-task',false);show('web-task-intro',true);window.JuryHome?.task(null,null);status('Ты проверил все доступные фразы этой языковой пары.');return;}
         show('web-task-intro',false);show('web-task',true);
         setText('web-original',task.text_ba);
+        el('web-phrase-details').open=false;
         window.BashkirTTS?.setPhrase('web',task.text_ba);
         setText('web-translation',task.translation);
         window.JuryHome?.task(task.text_ba,task.translation,true);

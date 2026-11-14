@@ -68,17 +68,23 @@ def main():
                     '(images) => images.every(image => image.naturalWidth > 0)'
                 )
                 no_overflow(page)
+                assert page.locator('.app-center').bounding_box()['width'] >= width * 0.6
                 page.screenshot(path=str(OUT / f'home-{width}.png'))
                 # Mascot must occupy its own area rather than cover mobile CTAs/copy.
-                if width <= 760:
-                    copy = page.locator('.quest-hero-content').bounding_box()
+                if width <= 850:
                     art = page.locator('.quest-mascot').bounding_box()
-                    footnote = page.locator('.hero-footnote').bounding_box()
-                    assert footnote['y'] + footnote['height'] <= art['y'] + 10
-                    assert copy['width'] > 0
+                    for selector in ('.hero-footnote', '#play-entry'):
+                        box = page.locator(selector).bounding_box()
+                        assert (
+                            box['x'] + box['width'] <= art['x']
+                            or box['y'] + box['height'] <= art['y']
+                            or art['x'] + art['width'] <= box['x']
+                        ), f'Mascot covers {selector}'
+                    assert page.locator('.quest-hero').bounding_box()['height'] < 350
+                    expect(page.locator('#play-entry')).to_be_in_viewport(ratio=1)
                 page.locator('.path-preview').screenshot(path=str(OUT / f'map-{width}.png'))
                 for name, selector in (
-                    ('profile', '#web-play'),
+                    ('profile', '#web-profile-area'),
                     ('ratings', '#tab-ratings'),
                     ('translations', '#tab-translations'),
                     ('expert', '#tab-expert'),
@@ -88,8 +94,12 @@ def main():
                         node.click()
                         page.locator(f'#{name}').scroll_into_view_if_needed()
                     else:
-                        node.scroll_into_view_if_needed()
+                        node.evaluate(
+                            "node => node.scrollIntoView({block:'start',behavior:'instant'})"
+                        )
                     no_overflow(page)
+                    panel = page.locator(f'#{name}') if selector.startswith('#tab-') else node
+                    assert panel.bounding_box()['width'] >= min(320, width - 24)
                     page.screenshot(path=str(OUT / f'{name}-{width}.png'))
                 page.locator('#game-start').click()
                 expect(page.locator('#lesson-close')).to_be_focused()
@@ -98,6 +108,11 @@ def main():
                 page.locator('#game-skip').press('Tab')
                 expect(page.locator('#lesson-close')).to_be_focused()
                 page.screenshot(path=str(OUT / f'lesson-{width}.png'))
+                expect(page.locator('#game-word-source')).to_be_hidden()
+                expect(page.locator('#game-tts-note')).to_be_hidden()
+                page.locator('#game-phrase-details summary').click()
+                expect(page.locator('#game-word-source')).to_be_visible()
+                page.locator('#game-phrase-details summary').click()
                 no_overflow(page)
                 # A real wrong answer must look different from success, even in dark OS mode.
                 phrase = page.locator('#game-bashkir-text').inner_text()
@@ -126,7 +141,8 @@ def main():
                 # Full five-task lesson and XP persistence are exercised against real corpus.
                 lesson(page, wrong_first=True)
                 page.screenshot(path=str(OUT / f'finish-{width}.png'))
-                page.locator('#lesson-close').click()
+                page.locator('#game-back-to-map').click()
+                expect(page.locator('#game-ready')).to_be_visible()
                 # Reflow viewport corresponding to desktop browser zoom at 200%.
                 page.set_viewport_size({'width': max(320, width // 2), 'height': height})
                 no_overflow(page)

@@ -1,6 +1,6 @@
 # REST API
 
-Все запросы идут в Supabase PostgREST: `https://PROJECT.supabase.co/rest/v1/`. Обязателен HTTP-заголовок `apikey` с публичным ключом проекта для публичных вызовов. Для новых ключей вида `sb_publishable_...` не требуется указывать их в `Authorization: Bearer`: это не JWT.
+Все запросы идут в PostgREST. При основном запуске через Compose базовый адрес — `http://127.0.0.1:54321/rest/v1/`; для отдельно настроенного облачного Supabase — `https://PROJECT.supabase.co/rest/v1/`. Обязателен HTTP-заголовок `apikey` с публичным ключом проекта для публичных вызовов. Для новых ключей вида `sb_publishable_...` не требуется указывать их в `Authorization: Bearer`: это не JWT.
 
 Укажи адрес проекта в переменной PowerShell:
 

@@ -4,6 +4,7 @@ Requires Docker and a free loopback port 54321. Creates a unique Compose project
 never touches the normal project and never removes volumes. No mocked Auth/API.
 """
 
+import os
 import re
 import secrets
 import socket
@@ -131,6 +132,15 @@ def main():
                     expect(page.locator('#web-session')).to_be_visible(timeout=20000)
                     page.locator('#web-next').click()
                     expect(page.locator('#web-original')).not_to_be_empty()
+                    if index == 0:
+                        skipped = page.locator('#web-original').inner_text()
+                        page.locator('#web-correct-toggle').click()
+                        expect(page.locator('#web-correction')).to_be_focused()
+                        page.locator('#web-cancel-correction').click()
+                        page.locator('#web-skip').click()
+                        expect(page.locator('#web-task')).to_be_hidden()
+                        page.locator('#web-next').click()
+                        expect(page.locator('#web-original')).not_to_have_text(skipped)
                     original = page.locator('#web-original').inner_text()
                     if index == 0:
                         pair = original
@@ -139,7 +149,15 @@ def main():
                         page.locator('#web-confirm').click()
                         expect(page.locator('#web-status')).to_contain_text('Подожди')
                     time.sleep(6)
-                    page.locator('#web-confirm').click()
+                    if index == 1:
+                        # Submit a genuine corpus variant through the correction form.
+                        # Whitespace normalisation must preserve its vote grouping.
+                        translation = page.locator('#web-translation').inner_text()
+                        page.locator('#web-correct-toggle').click()
+                        page.locator('#web-correction').fill('  ' + translation + '  ')
+                        page.locator('#web-correct-form').evaluate('form => form.requestSubmit()')
+                    else:
+                        page.locator('#web-confirm').click()
                     expect(page.locator('#web-feedback')).to_contain_text('Ответ принят')
                     expect(page.locator('#web-points')).not_to_have_text('0')
                     expect(page.locator('#top-xp')).to_have_text('0')
@@ -220,6 +238,20 @@ def main():
                     context.close()
                 browser.close()
                 print('PASS Docker restart preserves answers, points and browser Auth sessions')
+            # These processes receive only this unique test project's credentials.
+            # No developer .env or existing application database is selected.
+            isolated_env = {
+                **os.environ,
+                'BASHKIR_ENV_FILE': str(envfile),
+                'WEB_TEST_URL': 'http://127.0.0.1:54321/web/',
+            }
+            for script in (
+                'scripts/smoke_test.py',
+                'scripts/check_rls.py',
+                'tests/browser_api_checks.py',
+                'tests/bot_integration.py',
+            ):
+                subprocess.run([sys.executable, script], cwd=ROOT, env=isolated_env, check=True)
         except Exception:
             logs = compose('logs', '--no-color', '--tail', '40', 'auth', 'db', 'rest', 'app')
             for value in values.values():
