@@ -65,7 +65,7 @@ jobs:
               db.execute('CREATE ROLE anon NOLOGIN; CREATE ROLE authenticated NOLOGIN; CREATE ROLE service_role NOLOGIN BYPASSRLS')
           PY
       - run: python tests/postgres_integration.py
-      - run: python -m playwright install --with-deps chromium
+      - run: python -m playwright install --with-deps chromium webkit
       - name: Browser interactions
         run: |
           python -m http.server 8000 --bind 127.0.0.1 > /tmp/bashkir-web.log 2>&1 &
@@ -74,12 +74,16 @@ jobs:
         run: python tests/browser_visual_checks.py
       - name: Real static Bashkir audio
         run: python tests/browser_tts_checks.py
+      - name: Mobile Chromium and WebKit checkpoint
+        run: python tests/browser_mobile_checkpoint.py
       - name: Upload visual evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: interface-screenshots
-          path: test-results/visual/
+          path: |
+            test-results/visual/
+            test-results/checkpoint/
 
   docker-integration:
     runs-on: ubuntu-latest
