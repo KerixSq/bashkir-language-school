@@ -447,7 +447,7 @@ begin
  select * into v_user from public.users where id=p_user_id for update;
  if not found or v_user.deleted_at is not null then raise exception 'Пользователь не найден'; end if;
  if v_user.role is null or v_user.lang_pair is null
-   or (v_user.class_id is null and v_user.auth_user_id is null)
+   or (v_user.role='teacher' and v_user.class_id is null)
    or v_user.nickname is null then raise exception 'Завершите регистрацию через /start'; end if;
  if v_user.state='awaiting_correction' then
    raise exception 'Сначала отправьте исправление или /cancel'; end if;

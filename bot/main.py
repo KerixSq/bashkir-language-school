@@ -59,6 +59,7 @@ async def main() -> None:
                 BotCommand(command='start', description='Регистрация'),
                 BotCommand(command='task', description='Проверить перевод'),
                 BotCommand(command='pair', description='Выбрать языковую пару'),
+                BotCommand(command='join', description='Вступить в класс'),
                 BotCommand(command='cancel', description='Отменить действие'),
                 BotCommand(command='top', description='Рейтинг'),
                 BotCommand(command='me', description='Мой профиль'),

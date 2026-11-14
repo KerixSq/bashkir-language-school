@@ -80,6 +80,9 @@ async def main():
             text=text,
         )
         if callback:
+            message = message.model_copy(
+                update={'from_user': User(id=123456, is_bot=True, first_name='Bot')}
+            )
             event = Update(
                 update_id=tick,
                 callback_query=CallbackQuery(
@@ -236,6 +239,44 @@ async def main():
         assert 'Отчёт доступен преподавателю' in stub.messages[-1]
         print(
             'PASS teacher registration, student-code rejection, report permissions and CSV content'
+        )
+
+        solo = tg + 4
+        await send(solo, '/start')
+        independent = await db.user_by_telegram(solo)
+        users.append(independent['id'])
+        await send(solo, 'Самостоятельный QA')
+        await send(solo, callback='role:student')
+        await send(solo, callback='study:solo')
+        await send(solo, callback='pair:' + pair_code)
+        await send(solo, '/start')
+        independent = await db.user_by_telegram(solo)
+        assert independent['class_id'] is None and independent['state'] == 'idle'
+        await send(solo, callback='menu:task')
+        independent = await db.user_by_telegram(solo)
+        assert independent['current_fragment_pair_id'] == stored['pair']
+        await db.update_user(
+            independent['id'],
+            {'current_shown_at': (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()},
+        )
+        await send(solo, callback='task:confirm:' + stored['pair'])
+        independent = await db.user_by_telegram(solo)
+        assert independent['points'] > 0
+        earned = independent['points']
+        for action in ('home', 'progress', 'contribution', 'history', 'ratings', 'settings'):
+            await send(solo, callback='menu:' + action)
+            assert stub.messages[-1]
+        assert any(row['name'] == independent['nickname'] for row in await db.top_users('day'))
+        assert await db.rank_summary(independent) is None
+        await send(solo, '/join')
+        await send(solo, room['join_code'])
+        await send(solo, callback='pair:' + pair_code)
+        joined = await db.user_by_telegram(solo)
+        assert joined['id'] == independent['id'] and joined['class_id'] == room['id']
+        assert joined['points'] == earned
+        assert len(await db.select('answers', user_id=joined['id'])) == 1
+        print(
+            'PASS independent student, real task and points, menu identity, join preserves progress'
         )
 
         # A separate fragment is needed because fragment/lang_pair is unique.

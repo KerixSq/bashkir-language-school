@@ -41,4 +41,21 @@ def delete_keyboard() -> InlineKeyboardMarkup:
 
 
 def next_task_keyboard() -> InlineKeyboardMarkup:
-    return build_keyboard([[('Следующее задание', 'flow:next')]])
+    return build_keyboard([[('Следующее задание', 'flow:next'), ('Меню', 'menu:home')]])
+
+
+def main_menu(role: str | None) -> InlineKeyboardMarkup:
+    rows = [
+        [('Задание дня', 'menu:task'), ('Мой прогресс', 'menu:progress')],
+        [('Вклад в библиотеку', 'menu:contribution'), ('Рейтинг', 'menu:ratings')],
+        [('Настройки', 'menu:settings')],
+    ]
+    if role == 'teacher':
+        rows.append([('Мой класс', 'menu:report'), ('Отчёт', 'menu:report')])
+    return build_keyboard(rows)
+
+
+def study_mode() -> InlineKeyboardMarkup:
+    return build_keyboard(
+        [[('Учиться самостоятельно', 'study:solo')], [('Вступить в класс', 'study:class')]]
+    )

@@ -21,21 +21,31 @@ async def continue_registration(message: Message, user: dict) -> None:
     if not user.get('nickname'):
         await db.update_user(user['id'], {'state': 'choosing_nickname'})
         await message.answer(texts.NICKNAME_PROMPT)
-    elif user.get('role') and user.get('class_id') and user.get('lang_pair'):
+    elif (
+        user.get('role')
+        and (user.get('class_id') or user.get('role') == 'student')
+        and user.get('lang_pair')
+    ):
         if user.get('state') == 'awaiting_correction':
             await message.answer(texts.CORRECTION_REQUIRED)
             return
         await db.update_user(user['id'], {'state': 'idle'})
         await message.answer(
-            texts.returned(user['nickname']), reply_markup=keyboards.next_task_keyboard()
+            texts.returned(user['nickname']), reply_markup=keyboards.main_menu(user['role'])
         )
-    elif user.get('role') and user.get('class_id'):
+    elif (
+        user.get('role') == 'student'
+        and user.get('state') == 'choosing_pair'
+        or user.get('role')
+        and user.get('class_id')
+    ):
         await db.update_user(user['id'], {'state': 'choosing_pair'})
         await show_pairs(message)
     elif user.get('role'):
         await db.update_user(user['id'], {'state': 'joining_class'})
         await message.answer(
-            texts.TEACHER_CODE if user['role'] == 'teacher' else texts.STUDENT_CODE
+            texts.TEACHER_CODE if user['role'] == 'teacher' else texts.STUDENT_CODE,
+            reply_markup=keyboards.study_mode() if user['role'] == 'student' else None,
         )
     else:
         await db.update_user(user['id'], {'state': 'choosing_role'})
@@ -59,7 +69,9 @@ async def change_pair(message: Message) -> None:
     user = await require_user(message)
     if not user:
         return
-    if not all(user.get(field) for field in ('nickname', 'role', 'class_id')):
+    if not all(user.get(field) for field in ('nickname', 'role')) or (
+        user['role'] == 'teacher' and not user.get('class_id')
+    ):
         await message.answer(texts.REGISTRATION_REQUIRED)
         return
     if user.get('state') == 'awaiting_correction':
@@ -95,7 +107,50 @@ async def choose_role(call: CallbackQuery) -> None:
         await call.message.answer(texts.ROLE_BUTTONS)
         return
     await db.update_user(user['id'], {'role': role, 'state': 'joining_class'})
-    await call.message.answer(texts.TEACHER_CODE if role == 'teacher' else texts.STUDENT_CODE)
+    await call.message.answer(
+        texts.TEACHER_CODE if role == 'teacher' else 'Как ты хочешь учиться?',
+        reply_markup=keyboards.study_mode() if role == 'student' else None,
+    )
+
+
+@router.callback_query(F.data.startswith('study:'))
+@guard
+async def study_choice(call: CallbackQuery) -> None:
+    await call.answer()
+    if not isinstance(call.message, Message):
+        return
+    user = await require_user(call)
+    if not user or user.get('role') != 'student' or user['state'] != 'joining_class':
+        return
+    if call.data == 'study:solo' and not user.get('class_id'):
+        await db.update_user(user['id'], {'state': 'choosing_pair'})
+        await show_pairs(call.message)
+    elif call.data == 'study:class':
+        await call.message.answer(texts.STUDENT_CODE)
+
+
+@router.message(Command('join'))
+@guard
+async def join_class(message: Message) -> None:
+    user = await require_user(message)
+    if not user:
+        return
+    if user.get('role') != 'student' or not user.get('nickname'):
+        await message.answer(texts.REGISTRATION_REQUIRED)
+        return
+    if user['state'] == 'awaiting_correction':
+        await message.answer(texts.CORRECTION_REQUIRED)
+        return
+    await db.update_user(
+        user['id'],
+        {
+            'state': 'joining_class',
+            'current_fragment_pair_id': None,
+            'current_shown_variant': None,
+            'current_shown_at': None,
+        },
+    )
+    await message.answer(texts.STUDENT_CODE)
 
 
 @router.callback_query(F.data.startswith('pair:'))
@@ -117,7 +172,7 @@ async def choose_pair(call: CallbackQuery) -> None:
         return
     await db.update_user(user['id'], {'lang_pair': selected, 'state': 'idle'})
     await call.message.answer(
-        texts.registered(user['nickname']), reply_markup=keyboards.next_task_keyboard()
+        texts.registered(user['nickname']), reply_markup=keyboards.main_menu(user['role'])
     )
 
 

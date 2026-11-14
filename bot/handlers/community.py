@@ -1,5 +1,6 @@
 import secrets
 from datetime import datetime, timezone
+from html import escape
 
 from aiogram import F, Router
 from aiogram.filters import Command
@@ -115,3 +116,95 @@ async def new_class(message: Message) -> None:
         },
     )
     await message.answer(texts.new_class(data))
+
+
+@router.callback_query(F.data.startswith('menu:'))
+@guard
+async def menu_click(call: CallbackQuery) -> None:
+    await call.answer()
+    if not isinstance(call.message, Message):
+        return
+    user = await require_user(call)
+    if not user:
+        return
+    # Callback messages were authored by the bot; preserve the actual human identity.
+    message = call.message.model_copy(update={'from_user': call.from_user})
+    from bot.handlers import profile, registration, tasks
+
+    action = (call.data or '').partition(':')[2]
+    actions = {
+        'task': tasks.task_command,
+        'progress': profile.me,
+        'ratings': top,
+        'report': profile.report,
+        'pair': registration.change_pair,
+        'join': registration.join_class,
+        'privacy': privacy,
+        'help': profile.help_command,
+    }
+    if action in actions:
+        await actions[action](message)
+    elif action == 'home':
+        await message.answer(
+            'Выбери следующий шаг.', reply_markup=keyboards.main_menu(user.get('role'))
+        )
+    elif action == 'settings':
+        await message.answer(
+            'Настройки обучения',
+            reply_markup=keyboards.build_keyboard(
+                [
+                    [('Языковая пара', 'menu:pair'), ('Вступить в класс', 'menu:join')],
+                    [('Приватность', 'menu:privacy'), ('Помощь', 'menu:help')],
+                    [('Меню', 'menu:home')],
+                ]
+            ),
+        )
+    elif action in ('contribution', 'history'):
+        await contribution(message, user, history=action == 'history')
+
+
+async def contribution(message: Message, user: dict, history: bool = False) -> None:
+    # User ID is resolved only from the authenticated Telegram sender, never callback data.
+    rows = await db.select(
+        'answers', 'action,created_at,fragment_pairs(status)', user_id=user['id']
+    )
+    labels = {
+        'collecting': 'Собираем голоса',
+        'confirmed': 'Подтверждено сообществом',
+        'expert_review': 'Направлено эксперту',
+    }
+    counts = {key: 0 for key in labels}
+    for row in rows:
+        status = (row.get('fragment_pairs') or {}).get('status')
+        if status in counts:
+            counts[status] += 1
+    stats = await db.user_stats(user['id'])
+    badges = await db.user_badges(user['id'])
+    lines = [
+        f'Проверок: {len(rows)} · исправлений: {sum(r["action"] == "correct" for r in rows)}',
+        f'Сегодня: {int(stats.get("day_answers") or 0)} · очки: {user["points"]} · уровень: {user["level"]}',
+    ]
+    lines.extend(f'{label}: {counts[key]}' for key, label in labels.items())
+    lines.append('Достижения: ' + (', '.join(escape(badge) for badge in badges) or 'пока нет'))
+    if user.get('lang_pair'):
+        progress = await db.select('adventure_progress', lang_pair=user['lang_pair'])
+        if progress:
+            row = progress[0]
+            total = sum(
+                int(row.get(key) or 0) for key in ('confirmed', 'collecting', 'expert_review')
+            )
+            lines.append(
+                f'Библиотека: {row.get("confirmed", 0)} подтверждено сообществом из {total}'
+            )
+    if history:
+        lines.append('Последние проверки:')
+        lines.extend(
+            f'{str(row["created_at"])[:10]} — {labels.get((row.get("fragment_pairs") or {}).get("status"), "Статус недоступен")}'
+            for row in sorted(rows, key=lambda r: r['created_at'], reverse=True)[:20]
+        )
+    await message.answer(
+        '\n'.join(lines),
+        reply_markup=keyboards.build_keyboard(
+            [[('История моих проверок', 'menu:history'), ('Меню', 'menu:home')]]
+        ),
+    )

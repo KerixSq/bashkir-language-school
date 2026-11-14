@@ -45,7 +45,9 @@ async def task_command(message: Message) -> None:
     user = await require_user(message)
     if user is None:
         return
-    if not all(user.get(field) for field in ('nickname', 'role', 'class_id', 'lang_pair')):
+    if not all(user.get(field) for field in ('nickname', 'role', 'lang_pair')) or (
+        user['role'] == 'teacher' and not user.get('class_id')
+    ):
         await message.answer(texts.REGISTRATION_REQUIRED)
         return
     if user['state'] == 'awaiting_correction':
@@ -113,7 +115,10 @@ async def task_click(call: CallbackQuery) -> None:
             },
         )
         await remove_buttons(call)
-        await call.message.answer(texts.TASK_SKIPPED if skipped else texts.TASK_STALE)
+        await call.message.answer(
+            texts.TASK_SKIPPED if skipped else texts.TASK_STALE,
+            reply_markup=keyboards.next_task_keyboard(),
+        )
     elif action == 'correct':
         started = await db.rpc(
             'begin_correction',
@@ -139,7 +144,9 @@ async def next_task_click(call: CallbackQuery) -> None:
     user = await require_user(call)
     if user is None:
         return
-    if not all(user.get(field) for field in ('nickname', 'role', 'class_id', 'lang_pair')):
+    if not all(user.get(field) for field in ('nickname', 'role', 'lang_pair')) or (
+        user['role'] == 'teacher' and not user.get('class_id')
+    ):
         await call.message.answer(texts.REGISTRATION_REQUIRED)
         return
     if user['state'] == 'awaiting_correction':
@@ -175,4 +182,6 @@ async def cancel(message: Message) -> None:
                 'current_shown_at': None,
             },
         )
-    await message.answer(texts.CANCELLED)
+    await message.answer(
+        texts.CANCELLED, reply_markup=keyboards.main_menu(user.get('role')) if user else None
+    )
