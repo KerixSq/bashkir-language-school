@@ -1,5 +1,6 @@
 """Called by isolated Docker E2E: real import, Auth user, source playback and answer."""
 
+import re
 import shutil
 import subprocess
 import sys
@@ -46,6 +47,10 @@ def check_original_audio(api, page, compose, sql, root):
             str(output / Path(source['url']).name),
             'app:/usr/share/nginx/html/web/assets/original-audio/',
         )
+        published = page.request.get('http://127.0.0.1:54321' + source['url'])
+        assert published.ok, (
+            f'Nginx cannot read the published original audio: HTTP {published.status}'
+        )
         pair = segments[0]['pair_id']
         user = sql("select id from users where nickname='Integration 0';")
         sql(
@@ -81,6 +86,20 @@ def check_original_audio(api, page, compose, sql, root):
         out = root / 'test-results/visual'
         out.mkdir(parents=True, exist_ok=True)
         page.screenshot(path=str(out / 'original-audio-mobile.png'))
+        page.context.set_offline(True)
+        page.locator('#web-confirm').click()
+        expect(page.locator('#web-status')).to_have_class(re.compile('.*is-error.*'))
+        expect(page.locator('#web-original-audio')).to_be_visible()
+        assert audio_node.evaluate('a=>a.paused && a.hasAttribute("src")')
+        assert (
+            not api.table('answers')
+            .select('id')
+            .eq('user_id', user)
+            .eq('fragment_pair_id', pair)
+            .execute()
+            .data
+        )
+        page.context.set_offline(False)
         page.locator('#web-confirm').click()
         expect(page.locator('#web-feedback')).to_contain_text('Ответ принят')
         assert audio_node.evaluate('a=>a.paused && !a.hasAttribute("src")')

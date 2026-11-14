@@ -164,6 +164,7 @@ def import_audio(db, audio, annotation, title, license_name, output_dir=None):
     if target.exists():
         if digest(target) != expected:
             raise ValueError('Existing content-addressed asset is corrupt; not overwritten')
+        target.chmod(0o644)
     else:
         with tempfile.NamedTemporaryFile(dir=output_dir, delete=False) as stream:
             temporary = Path(stream.name)
@@ -171,6 +172,7 @@ def import_audio(db, audio, annotation, title, license_name, output_dir=None):
             shutil.copyfile(audio, temporary)
             if digest(temporary) != expected:
                 raise ValueError('Audio changed during copy')
+            temporary.chmod(0o644)  # Published file must be readable by the Nginx worker.
             temporary.replace(target)
         finally:
             temporary.unlink(missing_ok=True)

@@ -78,5 +78,5 @@ window.OriginalAudio = (() => {
   document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
   window.addEventListener('pagehide', pause);
   audio.addEventListener('ended', pause);
-  return {clear, setTask(task) { button.disabled = false; setTask(task); }};
+  return {clear, pause, setTask(task) { button.disabled = false; setTask(task); }};
 })();

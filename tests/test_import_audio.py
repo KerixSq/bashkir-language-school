@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from audio_fixture import audio_fixture
 
@@ -17,6 +17,19 @@ from scripts.import_audio import audio_duration, import_audio, main, plan, read_
 
 
 class AudioImportTests(unittest.TestCase):
+    def test_published_asset_is_readable_by_web_server(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            audio, annotation, _ = audio_fixture(folder)
+            source, _ = import_audio(
+                Mock(), audio, annotation, 'Technical', 'CC0', folder / 'public'
+            )
+            target = folder / 'public' / Path(source['url']).name
+            self.assertEqual(target.stat().st_mode & 0o444, 0o444)
+            target.chmod(0o600)
+            import_audio(Mock(), audio, annotation, 'Technical', 'CC0', folder / 'public')
+            self.assertEqual(target.stat().st_mode & 0o444, 0o444)
+
     def test_audio_migration_matches_fresh_rpc_and_assignment(self):
         root = Path(__file__).resolve().parents[1]
         fresh = (root / 'sql/logic.sql').read_text(encoding='utf-8')
