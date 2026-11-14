@@ -5,12 +5,16 @@
   const items = [...document.querySelectorAll('[data-app-dest]')];
   const context = byId('sidebar-context');
   const tabNav = byId('sections-nav');
-  let current = 'learn';
+  let current = null;
+  let region = null;
+  let travel = null;
+  let hold = null;
+  const hysteresis = 12;
   let frame = 0;
   const sections = [
     ['.quest-hero', 'learn'], ['.path-preview', 'lessons'],
     ['#web-profile-area', 'practice'], ['#game-zone', 'lessons'],
-    ['.community-quest', 'library'], ['#game-console', 'lessons'],
+    ['.community-quest', 'library'], ['.game-console-main', 'lessons'],
     ['.game-achievements', 'rewards'], ['#sections-nav', 'tab'],
   ].map(([selector, dest]) => ({node: document.querySelector(selector), dest}));
   const selectedTab = () => tabNav.querySelector('[aria-selected="true"]')?.dataset.view || 'ratings';
@@ -40,12 +44,13 @@
       : `${value('community-confirmed')} согласованных переводов · ${byId('community-pair').selectedOptions[0].textContent}.`;
     if (current === 'rewards') detail = `${document.querySelectorAll('#game-badges .game-badge:not(.locked)').length} из ${byId('game-badges').children.length} наград за тренировку в этом браузере.`;
     if (current === 'ratings') detail = `Период: ${document.querySelector('[data-period][aria-pressed="true"]')?.textContent || 'день'}. Участники, классы и школы — в таблицах ниже.`;
-    context.dataset.section = current;
-    byId('sidebar-context-title').textContent = title;
-    byId('sidebar-context-detail').textContent = detail;
-    byId('sidebar-context-action').textContent = action;
+    if (context.dataset.section !== current) context.dataset.section = current;
+    if (byId('sidebar-context-title').textContent !== title) byId('sidebar-context-title').textContent = title;
+    if (byId('sidebar-context-detail').textContent !== detail) byId('sidebar-context-detail').textContent = detail;
+    if (byId('sidebar-context-action').textContent !== action) byId('sidebar-context-action').textContent = action;
   }
   function active(dest) {
+    if (current === dest) return;
     current = dest;
     items.forEach(item => {
       const mobile = item.closest('.app-mobile-nav');
@@ -58,32 +63,98 @@
     });
     render();
   }
+  function regions() {
+    const consoleNode = document.querySelector('.game-console-main');
+    const consoleRect = consoleNode.getBoundingClientRect();
+    return sections.filter(({node}) => {
+      if (!node?.getClientRects().length) return false;
+      // Desktop achievements share a row with the lesson. That row belongs to
+      // lessons while scrolling; an explicit achievements click still selects it.
+      const rect = node.getBoundingClientRect();
+      return !node.matches('.game-achievements') || rect.left < consoleRect.right ||
+        Math.abs(rect.top-consoleRect.top) > 48;
+    }).map(entry => ({...entry, top:entry.node.getBoundingClientRect().top+scrollY}))
+      .sort((a,b) => a.top-b.top);
+  }
   function measure() {
     frame = 0;
     if (document.body.classList.contains('lesson-active')) return active('lessons');
-    // A short tab can end before its header reaches the activation band.
+    if (travel) {
+      const end = Math.max(0, Math.min(document.documentElement.scrollHeight-innerHeight,
+        travel.target.getBoundingClientRect().top+scrollY-16));
+      active(travel.dest);
+      if (Math.abs(scrollY-end) <= 2 || performance.now()-travel.started > 3000) {
+        hold = {dest:travel.dest, top:scrollY};
+        travel = null;
+      } else schedule();
+      return;
+    }
+    if (hold && Math.abs(scrollY-hold.top) <= 2) return;
+    hold = null;
+    const list = regions();
+    const line = scrollY+innerHeight*.25;
+    let index = 0;
+    list.forEach((entry,i) => { if (entry.top <= line) index = i; });
     if (tabNav.getBoundingClientRect().top < innerHeight &&
-        scrollY + innerHeight >= document.documentElement.scrollHeight - 2) return active(selectedTab());
-    const line = innerHeight * 0.25;
-    const candidates = sections.filter(({node}) => node?.getClientRects().length)
-      .map(entry => ({...entry, top: entry.node.getBoundingClientRect().top}));
-    const passed = candidates.filter(entry => entry.top <= line + 1).sort((a,b) => b.top - a.top);
-    const dest = (passed[0] || candidates[0])?.dest || 'learn';
-    active(dest === 'tab' ? selectedTab() : dest);
+        scrollY+innerHeight >= document.documentElement.scrollHeight-2) index = list.length-1;
+    const old = list.findIndex(entry => entry.node === region);
+    if (old >= 0 && index !== old) {
+      if (index > old && line < list[index].top+hysteresis) index = old;
+      if (index < old && line > list[old].top-hysteresis) index = old;
+    }
+    region = list[index].node;
+    active(list[index].dest === 'tab' ? selectedTab() : list[index].dest);
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(measure); }
-  // Only section boundaries are observed. Hidden tabpanels never enter scrollspy.
-  const observer = new IntersectionObserver(schedule, {rootMargin: '0px 0px -75% 0px', threshold: 0});
-  sections.forEach(({node}) => { if (node) observer.observe(node); });
-  const resize = new ResizeObserver(schedule);
+  function interrupt() {
+    if (travel) scrollTo({top:scrollY,behavior:'instant'});
+    travel = hold = null;
+    schedule();
+  }
+  function navigate(dest) {
+    const target = dest === 'learn' ? document.querySelector('.quest-hero')
+      : dest === 'lessons' ? byId('game-zone') : dest === 'practice' ? byId('web-profile-area')
+      : dest === 'library' ? document.querySelector('.community-quest')
+      : dest === 'rewards' ? document.querySelector('.game-achievements') : tabNav;
+    if (travel) scrollTo({top:scrollY,behavior:'instant'});
+    hold = null;
+    travel = {dest,target,started:performance.now()};
+    active(dest);
+    const top = target.getBoundingClientRect().top+scrollY-16;
+    scrollTo({top:Math.max(0,top),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+    schedule();
+  }
+  window.BashkirNavigation = {navigate};
+  // One passive document scroll listener and at most one frame; no competing
+  // IntersectionObservers or independent click-only navigation state.
+  addEventListener('scroll', schedule, {passive:true});
+  addEventListener('wheel', interrupt, {passive:true});
+  addEventListener('touchstart', interrupt, {passive:true});
+  addEventListener('pointerdown', event => {
+    if (!event.target.closest('[data-app-dest],#sections-nav,#sidebar-context')) interrupt();
+  }, {passive:true});
+  addEventListener('keydown', event => {
+    if (['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key) &&
+        !event.target.closest('input,textarea,select,button')) interrupt();
+  });
+  const resize = new ResizeObserver(() => { hold = null; schedule(); });
   resize.observe(document.querySelector('main'));
   addEventListener('resize', schedule);
   addEventListener('pageshow', schedule);
-  addEventListener('hashchange', schedule);
-  document.addEventListener('section-tab-changed', schedule);
-  items.forEach(item => item.addEventListener('click', () => {
-    active(item.dataset.appDest);
+  addEventListener('hashchange', interrupt);
+  document.addEventListener('section-tab-changed', () => {
+    if (tabNav.getBoundingClientRect().top < innerHeight) {
+      const dest = selectedTab();
+      if (travel) travel.dest = dest;
+      hold = {dest,top:scrollY};
+      active(dest);
+    }
     schedule();
+  });
+  items.forEach(item => item.addEventListener('click', event => {
+    if (item.dataset.openTab) return; // Existing handler opens tab then calls navigate.
+    event.preventDefault();
+    navigate(item.dataset.appDest);
   }));
   byId('play-entry').addEventListener('click', event => {
     event.preventDefault();

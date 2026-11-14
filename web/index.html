@@ -1476,7 +1476,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         <pre class="api" id="partner-api-example">POST /rest/v1/rpc/api_get_fragments
 { "p_key": "bsk_...", "p_lang_pair": "ba-ru", "p_limit": 10 }</pre>
         <p class="hint">Схема: sources → fragments → fragment_pairs → answers → translations_export. Внешние ответы пишутся отдельно в external_answers и не получают очков.</p>
-        <p>Полный список полей, прав и примеров запросов — в <a href="../API.md">API.md</a> репозитория.</p>
+        <p>Полный список полей, прав и примеров запросов — в <a href="https://github.com/KerixSq/bashkir-language-school/blob/rc1-visual-polish/API.md">API.md</a> репозитория.</p>
       </div>
     </section>
   </main>
@@ -2110,12 +2110,14 @@ body.lesson-active .app-mobile-nav {display:none!important}
       document.querySelectorAll('[data-open-tab]').forEach((button) => {
         button.addEventListener('click', () => {
           openTab(button.dataset.openTab);
-          $('sections-nav').scrollIntoView({behavior: 'auto', block: 'start'});
+          if (window.BashkirNavigation) window.BashkirNavigation.navigate(button.dataset.openTab);
+          else $('sections-nav').scrollIntoView({behavior: 'auto', block: 'start'});
         });
       });
       $('view-ratings').addEventListener('click', () => {
         openTab('ratings');
-        $('sections-nav').scrollIntoView({behavior: 'instant', block: 'start'});
+        if (window.BashkirNavigation) window.BashkirNavigation.navigate('ratings');
+        else $('sections-nav').scrollIntoView({behavior: 'instant', block: 'start'});
       });
       $('supabase-url').value = state.url || (location.hostname === '127.0.0.1' || location.hostname === 'localhost' ? 'http://127.0.0.1:54321' : '');
       $('supabase-key').value = state.key;
