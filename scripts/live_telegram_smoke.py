@@ -144,6 +144,7 @@ class Report:
                 ),
                 encoding='utf-8',
             )
+            self.progress('completed', 'PASS' if code == 0 else 'FAIL' if code == 1 else 'SKIP')
         return code
 
 

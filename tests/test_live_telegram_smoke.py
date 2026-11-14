@@ -63,6 +63,14 @@ class LiveSmokeTests(unittest.TestCase):
             self.assertEqual(
                 json.loads(path.with_suffix('.summary.json').read_text())['complete'], False
             )
+            with contextlib.redirect_stdout(io.StringIO()):
+                report = Report(path)
+                report.progress('registration/resume', 'ready')
+                self.assertEqual(report.finish(path), 2)
+            self.assertEqual(
+                json.loads(path.with_suffix('.progress.json').read_text()),
+                {'scenario': 'completed', 'phase': 'SKIP'},
+            )
 
     def test_confirmation_requires_actual_points_not_just_a_row(self):
         before = {'user': {'points': 0}, 'answers': {}}
