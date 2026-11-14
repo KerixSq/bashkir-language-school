@@ -150,12 +150,17 @@ def main():
                         expect(page.locator('#web-status')).to_contain_text('Подожди')
                     time.sleep(6)
                     if index == 1:
-                        # Submit a genuine corpus variant through the correction form.
-                        # Whitespace normalisation must preserve its vote grouping.
+                        # Identical corrections must be rejected after normalisation.
                         translation = page.locator('#web-translation').inner_text()
                         page.locator('#web-correct-toggle').click()
                         page.locator('#web-correction').fill('  ' + translation + '  ')
                         page.locator('#web-correct-form').evaluate('form => form.requestSubmit()')
+                        expect(page.locator('#web-status')).to_contain_text(
+                            'Исправление не должно совпадать'
+                        )
+                        expect(page.locator('#web-points')).to_have_text('0')
+                        page.locator('#web-cancel-correction').click()
+                        page.locator('#web-confirm').click()
                     else:
                         page.locator('#web-confirm').click()
                     expect(page.locator('#web-feedback')).to_contain_text('Ответ принят')
