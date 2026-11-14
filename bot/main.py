@@ -6,14 +6,14 @@ from pathlib import Path
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
 from dotenv import load_dotenv
 
 from bot.handlers import community, messages, profile, registration, tasks
 from bot.live_probe import observe_polling
-
-from aiogram.client.session.aiohttp import AiohttpSession
+from bot.proxy import proxy_url
 
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / '.env')
@@ -50,7 +50,7 @@ async def main() -> None:
     if not token:
         raise SystemExit('Заполни TELEGRAM_BOT_TOKEN в .env')
     configure_logging()
-    _bot_session = AiohttpSession(proxy=os.getenv("BOT_PROXY_URL") or None)
+    _bot_session = AiohttpSession(proxy=proxy_url(os.getenv('BOT_PROXY_URL')))
     bot = Bot(token, session=_bot_session, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = create_dispatcher()
     try:
@@ -77,8 +77,11 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    print('Hello, World!')
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         pass
+    except Exception as error:
+        # Network exceptions may include authenticated proxy URLs. Do not log their values.
+        logging.getLogger('bashkir-bot').error('Bot stopped: %s', type(error).__name__)
+        raise SystemExit(1) from None

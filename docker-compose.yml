@@ -108,20 +108,19 @@ services:
     depends_on:
       app:
         condition: service_healthy
-      tor:
-        condition: service_healthy
     environment:
       SUPABASE_URL: http://app
       SUPABASE_SECRET_KEY: ${SERVICE_ROLE_KEY:?Run python scripts/create_docker_env.py}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
-      BOT_PROXY_URL: ${BOT_PROXY_URL:-socks5://tor:9050}
+      # Unset uses Tor; explicitly empty selects direct. Never silently fall back.
+      BOT_PROXY_URL: ${BOT_PROXY_URL-socks5://tor:9050}
     volumes:
       - ./data/phrasebooks:/app/data/phrasebooks:ro
     networks: [internal]
 
   tor:
     image: dockurr/tor
-    container_name: tor-proxy
+    profiles: [bot]
     restart: unless-stopped
     environment:
       - SOCKS_HOSTNAME=0.0.0.0
@@ -130,7 +129,7 @@ services:
     # ports:
     #   - "127.0.0.1:9050:9050"
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf --socks5-hostname 127.0.0.1:9050 'https://check.torproject.org/api/ip' | grep -q '\"IsTor\":true'"]
+      test: ["CMD-SHELL", "curl -fsS --max-time 8 --socks5-hostname 127.0.0.1:9050 'https://check.torproject.org/api/ip' | grep -Eq '\"IsTor\"[[:space:]]*:[[:space:]]*true'"]
       interval: 10s
       timeout: 10s
       retries: 10
