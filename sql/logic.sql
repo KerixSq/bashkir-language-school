@@ -640,7 +640,21 @@ begin
         from public.answers a1 join public.answers a2
           on a1.fragment_pair_id=a2.fragment_pair_id and a1.id<a2.id
        where a1.fragment_pair_id=fp.id and a1.eligible and a2.eligible
-         and a1.answer_norm<>a2.answer_norm) as similar_variants
+         and a1.answer_norm<>a2.answer_norm) as similar_variants,
+     (with variants as (
+       select private.normalize_translation(a.answer_norm) as normalized,
+         min(case when a.action='confirm' then fp.auto_translation else a.answer_text end) as translation,
+         count(*) as votes
+       from public.answers a where a.fragment_pair_id=fp.id and a.eligible
+       group by 1 order by votes desc,1 limit 20
+     ), candidates as (
+       select a.translation as left_translation,a.votes as left_votes,
+         b.translation as right_translation,b.votes as right_votes,
+         round(extensions.similarity(a.normalized,b.normalized)::numeric,3) as similarity
+       from variants a join variants b on a.normalized collate "C" < b.normalized collate "C"
+       where extensions.similarity(a.normalized,b.normalized)>=0.65
+       order by similarity desc,a.normalized collate "C",b.normalized collate "C" limit 10
+     ) select coalesce(jsonb_agg(to_jsonb(candidates)),'[]'::jsonb) from candidates) as similarity_candidates
   from public.fragment_pairs fp join public.fragments f on f.id=fp.fragment_id
   join public.sources s on s.id=f.source_id
   where fp.status='expert_review' order by f.created_at desc limit 100

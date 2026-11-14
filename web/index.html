@@ -1918,6 +1918,19 @@ body.lesson-active .app-mobile-nav {display:none!important}
                     create('p', item.text_ba),
                     create('p', `Автоперевод: ${item.auto_translation}`));
         if (item.similar_variants) card.append(create('p', 'Есть похожие варианты — проверь их вручную.'));
+        if (item.similarity_candidates?.length) {
+          const hints = create('details', undefined, 'expert-similarity');
+          hints.append(create('summary', 'Сравнить похожие варианты'));
+          hints.append(create('p', 'Сходство написания не доказывает совпадение смысла. Голоса не объединяются автоматически. Показаны до 10 пар из 20 наиболее частых вариантов.'));
+          for (const candidate of item.similarity_candidates) {
+            const comparison = create('div', undefined, 'state');
+            comparison.append(create('p', `${candidate.left_translation} · голосов: ${candidate.left_votes}`),
+                              create('p', `${candidate.right_translation} · голосов: ${candidate.right_votes}`),
+                              create('p', `Текстовое сходство pg_trgm: ${Math.round(candidate.similarity * 100)}%`));
+            hints.append(comparison);
+          }
+          card.append(hints);
+        }
         const options = create('div', undefined, 'expert-options');
         const field = document.createElement('textarea');
         field.className = 'field'; field.maxLength = 500;

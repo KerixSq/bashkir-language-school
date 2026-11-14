@@ -296,6 +296,7 @@ def main():
                 'BASHKIR_ENV_FILE': str(envfile),
                 'WEB_TEST_URL': 'http://127.0.0.1:54321/web/',
                 'EXPERT_ACCESS_CODE': values['EXPERT_ACCESS_CODE'],
+                'BASHKIR_QA_ISOLATED': '1',
                 'SUPABASE_URL': 'http://127.0.0.1:54321',
                 'SUPABASE_PUBLIC_KEY': values['ANON_KEY'],
                 'SUPABASE_SECRET_KEY': values['SERVICE_ROLE_KEY'],
@@ -310,6 +311,7 @@ def main():
                 'scripts/smoke_test.py',
                 'scripts/check_rls.py',
                 'tests/browser_api_checks.py',
+                'tests/browser_expert_checks.py',
                 'tests/bot_integration.py',
             ):
                 subprocess.run([sys.executable, script], cwd=ROOT, env=isolated_env, check=True)

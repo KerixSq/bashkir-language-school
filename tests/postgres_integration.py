@@ -106,6 +106,84 @@ class PostgreSQLTests(unittest.TestCase):
         with self.assertRaisesRegex(psycopg.Error, 'Завершите регистрацию'):
             self.scalar('select public.get_next_fragment(%s)', (user,))
 
+    def test_expert_similarity_is_advisory_and_resolution_is_stable(self):
+        pair, untouched = self.pair(), self.pair()
+        code = uuid.uuid4().hex
+        self.db.execute(
+            "update config set value=private.secret_hash(%s) where key='expert_access_hash'",
+            (code,),
+        )
+        synonyms_before = self.scalar('select count(*) from synonym_map')
+        variants = [
+            'Technical expert review fixture variant A.',
+            'Technical expert review fixture variant B.',
+            'Unrelated technical QA value.',
+        ]
+        people = []
+        for index in range(6):
+            user = self.user()
+            people.append(user)
+            self.assign(user, pair, correction=True)
+            self.vote(user, pair, variants[index % 3])
+        self.assertEqual(
+            self.scalar('select status from fragment_pairs where id=%s', (pair,)), 'expert_review'
+        )
+        snapshot = self.scalar('select sum(points) from users')
+        migration = (ROOT / 'sql/migrations/20261114_stage12_expert_similarity.sql').read_text(
+            encoding='utf-8'
+        )
+        self.db.execute(migration)
+        self.db.execute(migration)
+        with self.assertRaisesRegex(psycopg.Error, 'Неверный код'):
+            self.scalar('select expert_list_queue(%s)', ('wrong',))
+        with self.assertRaisesRegex(psycopg.Error, 'Неверный код'):
+            self.scalar('select expert_resolve(%s,%s,%s)', ('wrong', pair, variants[0]))
+        queue = self.scalar('select expert_list_queue(%s)', (code,))
+        item = next(row for row in queue if row['fragment_pair_id'] == str(pair))
+        self.assertTrue(item['similar_variants'])
+        self.assertTrue(item['similarity_candidates'])
+        candidate = next(
+            row
+            for row in item['similarity_candidates']
+            if {row['left_translation'], row['right_translation']} == set(variants[:2])
+        )
+        self.assertEqual((candidate['left_votes'], candidate['right_votes']), (2, 2))
+        self.assertGreaterEqual(candidate['similarity'], 0.65)
+        self.assertLessEqual(candidate['similarity'], 1)
+        self.assertEqual(self.scalar('select sum(points) from users'), snapshot)
+        self.assertEqual(self.scalar('select count(*) from synonym_map'), synonyms_before)
+        self.scalar('select expert_resolve(%s,%s,%s)', (code, pair, variants[0]))
+        result = self.db.execute(
+            'select status,final_translation,resolved_by from fragment_pairs where id=%s', (pair,)
+        ).fetchone()
+        self.assertEqual(result, ('confirmed', variants[0], 'expert'))
+        self.assertEqual(
+            self.scalar(
+                'select translation from translations_export where fragment_id=(select fragment_id from fragment_pairs where id=%s)',
+                (pair,),
+            ),
+            variants[0],
+        )
+        points = self.scalar('select sum(points) from users')
+        with self.assertRaisesRegex(psycopg.Error, 'очереди экспертов'):
+            self.scalar('select expert_resolve(%s,%s,%s)', (code, pair, variants[1]))
+        self.scalar('select private.reconcile_fragment(%s)', (pair,))
+        self.assertEqual(self.scalar('select sum(points) from users'), points)
+        self.assertEqual(
+            self.db.execute(
+                'select status,final_translation,resolved_by from fragment_pairs where id=%s',
+                (pair,),
+            ).fetchone(),
+            result,
+        )
+        self.assertEqual(
+            self.scalar('select status from fragment_pairs where id=%s', (untouched,)), 'collecting'
+        )
+        self.assertEqual(
+            self.scalar('select count(*) from expert_decisions where fragment_pair_id=%s', (pair,)),
+            1,
+        )
+
     def assign(self, user, pair, variant='auto', correction=False):
         self.db.execute(
             'update public.users set current_fragment_pair_id=%s,'

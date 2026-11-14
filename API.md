@@ -1,5 +1,7 @@
 # REST API
 
+Stage12: защищённый `expert_list_queue(p_code)` дополнительно возвращает `similarity_candidates` с двумя вариантами, числом голосов и score pg_trgm (0–1). Это подсказка эксперту, не семантическое объединение; запись выполняется прежним `expert_resolve`. Права и семь полей `translations_export` сохранены. Подробности: [EXPERT_SIMILARITY.md](docs/EXPERT_SIMILARITY.md).
+
 Telegram и веб используют общий submit_answer/консенсус и агрегированные представления. Самостоятельный Telegram-ученик может иметь class_id=NULL (stage11); публичные RLS не расширялись. Новый личный вклад запрашивается только доверенным ботом по from_user; браузеру API чужой истории не добавлен. Контракт translations_export остаётся из семи полей.
 
 Все запросы идут в PostgREST. При основном запуске через Compose базовый адрес — `http://127.0.0.1:54321/rest/v1/`; для отдельно настроенного облачного Supabase — `https://PROJECT.supabase.co/rest/v1/`. Обязателен HTTP-заголовок `apikey` с публичным ключом проекта для публичных вызовов. Для новых ключей вида `sb_publishable_...` не требуется указывать их в `Authorization: Bearer`: это не JWT.
