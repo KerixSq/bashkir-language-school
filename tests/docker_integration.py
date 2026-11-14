@@ -252,6 +252,9 @@ def main():
                 'BASHKIR_ENV_FILE': str(envfile),
                 'WEB_TEST_URL': 'http://127.0.0.1:54321/web/',
                 'EXPERT_ACCESS_CODE': values['EXPERT_ACCESS_CODE'],
+                'SUPABASE_URL': 'http://127.0.0.1:54321',
+                'SUPABASE_PUBLIC_KEY': values['ANON_KEY'],
+                'SUPABASE_SECRET_KEY': values['SERVICE_ROLE_KEY'],
             }
             expert_hash = hashlib.sha256(values['EXPERT_ACCESS_CODE'].encode()).hexdigest()
             sql(
