@@ -1,0 +1,49 @@
+/* RC visual tokens and sidebar: one authoritative desktop geometry. */
+:root { --school-ink:#203d3b; --school-green:#17694f; --school-teal:#164e50; --school-gold:#ac8139; --school-cream:#faf8f2; --school-line:#dce4df; }
+body, .app-layout, .app-center { background:var(--school-cream)!important; color:var(--school-ink)!important; }
+.app-sidebar { border-right:1px solid var(--school-line)!important; }
+.app-brand { margin-bottom:10px!important; }
+.app-nav-group-title { color:#637b74; font-size:11px; padding:8px 12px 6px; }
+.app-nav-group-second { padding-top:16px; }
+.app-sidebar-nav .app-nav-item { font-weight:700!important; color:#45635e!important; min-height:44px; padding:9px 12px!important; border-radius:10px!important; transition:background .16s,color .16s; }
+.app-sidebar-nav .app-nav-item:hover { background:#eef4ed!important; color:var(--school-teal)!important; transform:none; }
+.app-sidebar-nav .app-nav-item.is-active { background:var(--school-teal)!important; color:white!important; box-shadow:none!important; }
+.app-sidebar-nav { gap:3px!important; }
+.app-sidebar-bottom { margin:14px 0 8px; height:212px; min-height:180px; padding:15px 12px; border:1px solid var(--school-line); background:#f3f6ee; border-radius:16px; text-align:left; }
+.app-sidebar-bottom img { float:right; width:48px!important; height:48px!important; margin:0 0 6px 5px; filter:none; }
+.app-sidebar-bottom strong { min-height:38px; font-size:14px; line-height:1.35; color:var(--school-teal); }
+.app-sidebar-bottom small { clear:both; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4; height:72px; min-height:72px; overflow:hidden; font-size:12px; line-height:1.5; color:#4e6860; }
+#sidebar-context-action { margin-top:10px; border:1px solid #b6cabb; border-radius:9px; background:white; color:var(--school-green); padding:8px 10px; min-height:40px; width:100%; font-size:12px; font-weight:700; }
+.app-sidebar-foot { margin-top:auto; }
+.quest-hero { border-color:#d8e3d7!important; box-shadow:none!important; }
+.quest-hero::before { content:""; position:absolute; left:26px; right:26px; bottom:10px; height:16px; background:url('bashkir-border.svg') repeat-x center; opacity:.65; pointer-events:none; }
+.quest-hero h2 { letter-spacing:-.035em; }
+.quest-hero h2 em { color:var(--school-green); }
+.quest-hero-links .quest-hero-main-cta, .quest-button, .jury-action-yes { background:var(--school-green)!important; box-shadow:0 3px 0 #104a38!important; }
+.quest-hero-links .quest-hero-main-cta:hover { background:#1d775a!important; }
+.quest-hero p { font-weight:600; }
+.hero-footnote { margin-bottom:18px!important; }
+.path-preview, .panel, .quest-sheet, .jury-side .jury-card { border-color:var(--school-line)!important; border-bottom-width:2px!important; box-shadow:none!important; }
+.jury-daily, .jury-export, .jury-review { background:#fff!important; }
+.path-bottom { background:url('bashkir-border.svg') no-repeat right bottom; padding-bottom:18px; }
+.tab { font-weight:700!important; }
+.tab[aria-selected=true] { color:var(--school-green)!important; border-bottom-color:var(--school-green)!important; }
+.app-mobile-nav .is-active { color:var(--school-green)!important; }
+.game-word-card strong { overflow-wrap:anywhere; }
+#sidebar-context-action:focus-visible, .app-nav-item:focus-visible { outline:3px solid var(--school-gold); outline-offset:3px; }
+@media(min-width:851px) and (max-height:850px) {
+  .app-sidebar { padding-top:14px; padding-bottom:12px; }
+  .app-brand { margin-bottom:8px!important; }
+  .app-nav-group-second { padding-top:8px; }
+  .app-sidebar-bottom { height:auto; min-height:0; padding:10px; margin:12px 0 0; }
+  .app-sidebar-bottom img, .app-sidebar-bottom small, .app-sidebar-foot { display:none; }
+  .app-sidebar-bottom strong { min-height:0; }
+}
+@media(min-width:851px) and (max-height:680px) {
+  .app-sidebar { overflow-y:auto; scrollbar-width:thin; }
+  .app-sidebar-bottom { display:none; }
+}
+@media(max-width:850px) {
+  .quest-hero::before { left:16px; right:16px; opacity:.4; }
+}
+@media(prefers-reduced-motion:reduce) { .app-nav-item { transition:none!important; } }

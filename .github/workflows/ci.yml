@@ -72,6 +72,8 @@ jobs:
           python tests/browser_checks.py
       - name: Responsive interface without CDN
         run: python tests/browser_visual_checks.py
+      - name: Sidebar scrollspy and contextual navigation
+        run: python tests/browser_navigation_checks.py
       - name: Real static Bashkir audio
         run: python tests/browser_tts_checks.py
       - name: Original audio range playback
@@ -86,6 +88,7 @@ jobs:
           path: |
             test-results/visual/
             test-results/checkpoint/
+            test-results/visual-polish/
 
   docker-integration:
     runs-on: ubuntu-latest

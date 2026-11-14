@@ -16,9 +16,10 @@ class JuryHomeChecks(unittest.TestCase):
         self.assertIn('focusTask', HTML)
         self.assertIn('button.click()', HTML)
 
-    def test_rankings_are_marked_demo_until_live_data(self):
-        self.assertIn('ДЕМО', HTML)
-        self.assertIn('Вымышленные примеры для демонстрации дизайна', HTML)
+    def test_rankings_stay_empty_until_live_data(self):
+        self.assertIn('НЕТ ДАННЫХ', HTML)
+        self.assertNotIn('Гимназия № 3 (демо)', HTML)
+        self.assertIn('Результаты появятся после подключения к базе', HTML)
         self.assertIn('window.JuryHome?.update({loaded:true,users,classes,schools}', HTML)
         for kind in ('schools', 'classes', 'users'):
             self.assertIn(f'data-jury-kind="{kind}"', HTML)

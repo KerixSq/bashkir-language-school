@@ -10,7 +10,9 @@ PAGE = (ROOT / 'web' / 'index.html').read_text(encoding='utf-8')
 
 class AcademyUiTests(unittest.TestCase):
     def test_guest_cta_opens_a_real_lesson(self):
-        self.assertIn("document.getElementById('path-stage-1').click()", PAGE)
+        navigation = (ROOT / 'web/assets/navigation.js').read_text(encoding='utf-8')
+        self.assertIn('src="assets/navigation.js"', PAGE)
+        self.assertIn("byId('path-stage-1').click()", navigation)
         self.assertIn("document.querySelectorAll('[data-game-stage]')", PAGE)
         self.assertIn('function stageTo(index)', PAGE)
 

@@ -436,7 +436,7 @@
     body { background:#f9fcfa; color:#253d3f; }
     .flag { height:5px; }
     .app-layout { display:grid;grid-template-columns:238px minmax(0,720px) 294px; gap:0;justify-content:center;max-width:1490px;margin:0 auto;min-height:100vh; }
-    .app-sidebar { position:sticky;top:0;height:100vh;border-right:2px solid #e9f0eb;background:white;padding:36px 17px 24px 26px;display:flex;flex-direction:column;z-index:9; }
+    .app-sidebar { border-right:2px solid #e9f0eb;background:white;padding:36px 17px 24px 26px;display:flex;flex-direction:column;z-index:9; }
     .app-brand { display:flex;gap:10px;align-items:center;color:#198357;text-decoration:none;font-size:20px;font-weight:800;line-height:1.05;letter-spacing:-.04em;padding:0 7px 35px; }
     .app-brand b { color:#126b9b; }
     .app-brand small {display:block;margin-top:6px;font-size:9px;font-weight:800;color:#8a9d99;letter-spacing:.16em;}
@@ -695,7 +695,6 @@
 
     body {background:#e9f6f0!important;color:#183951!important;}
     .app-layout{grid-template-columns:235px minmax(0,1fr);max-width:1610px;min-height:100vh;}
-    .app-sidebar{background:linear-gradient(165deg,#07525b,#0b655e 58%,#095657)!important;color:#f0fff9;border-right:0;padding:29px 17px!important;}
     .app-brand{color:#fff!important;font-size:21px;line-height:1.2;}
     .app-brand-icon{width:66px;height:66px;background:#e4faff;border:3px solid #8fe4d5;box-shadow:0 5px 0 #064d4b;border-radius:22px;overflow:hidden;display:grid;place-items:center;}
     .app-brand-icon img{width:70px;height:70px;object-fit:contain;}
@@ -773,7 +772,7 @@ html {scroll-behavior:auto;scroll-padding-top:28px;scrollbar-gutter:stable}
 body {background:#f5f8fd!important;color:#1b2f4a!important;font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif!important;font-weight:500}
 .flag {height:4px;position:fixed;z-index:95;left:0;right:0;top:0;opacity:.9}
 .app-layout {max-width:none!important;display:grid;grid-template-columns:240px minmax(0,1fr)!important;min-height:100vh;background:#f5f8fd!important}
-.app-sidebar {background:#fff!important;border-right:2px solid #e7edf4!important;color:#294163!important;padding:22px 15px 28px!important;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.app-sidebar {background:#fff!important;border-right:2px solid #e7edf4!important;color:#294163!important;padding:20px 14px;position:sticky;align-self:start;top:0;height:100dvh;overflow:visible;display:flex;flex-direction:column;gap:0}
 .app-brand {display:flex;align-items:center;gap:12px;margin:0 5px 28px!important;text-decoration:none;color:#174c67!important;line-height:1.06;font-weight:800;letter-spacing:-.04em;font-size:21px!important}
 .app-brand b {display:block;color:#269769}
 .app-brand small {display:block;margin-top:5px;letter-spacing:.14em;color:#78909c;font-size:9px!important;font-weight:800}
@@ -1018,6 +1017,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     .tts-status {flex:1 1 180px;font:12px/1.5 system-ui,sans-serif;color:#526b7d}
 </style>
   <link rel="icon" type="image/svg+xml" href="assets/bashkir-mark.svg">
+  <link rel="stylesheet" href="assets/visual-polish.css">
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
@@ -1073,10 +1073,11 @@ body.lesson-active .app-mobile-nav {display:none!important}
         <button type="button" class="app-nav-item" data-open-tab="expert" data-app-dest="expert"><span class="app-nav-ico"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-scale-balanced"></use></svg></span> Спорные случаи</button>
         <a href="#community-title" class="app-nav-item" data-app-dest="library"><span class="app-nav-ico"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-landmark"></use></svg></span> Библиотека</a>
       </nav>
-      <div class="app-sidebar-bottom">
+      <div class="app-sidebar-bottom" id="sidebar-context" data-section="learn">
         <img src="assets/akbuzat-chibi.webp" alt="" loading="lazy" width="120" height="110">
-        <strong>Акбузат верит в тебя!</strong>
-        <small>Пять минут в день — и ты на шаг ближе к цели.</small>
+        <strong id="sidebar-context-title">С Акбузатом по Уралу</strong>
+        <small id="sidebar-context-detail">Один урок — пять заданий на фразах корпуса.</small>
+        <button type="button" id="sidebar-context-action">Начать урок</button>
       </div>
       <div class="app-sidebar-foot"><span class="app-online-dot" aria-hidden="true"></span> Изучаем язык вместе</div>
     </aside>
@@ -1093,9 +1094,9 @@ body.lesson-active .app-mobile-nav {display:none!important}
     <section id="web-play" class="browser-quest reveal" aria-labelledby="web-play-title">
       <div class="quest-hero">
         <div class="quest-hero-content">
-          <div class="quest-hero-top"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-sparkles"></use></svg> ТВОЁ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</div>
-          <h2 id="web-play-title">Каждое слово —<br><em>новое открытие!</em></h2>
-          <p>Пять заданий за урок. Учись с Акбузатом и помогай сохранять язык.</p>
+          <div class="quest-hero-top"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-sparkles"></use></svg> УЧИМСЯ НА ФРАЗАХ БГПУ</div>
+          <h2 id="web-play-title">Башкирский язык<br><em>шаг за шагом</em></h2>
+          <p>Тренируйся с Акбузатом: пять заданий за урок. Проверяй переводы вместе с другими участниками.</p>
           <div class="quest-hero-links">
             <a id="play-entry" class="quest-hero-main-cta" href="#game-zone"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-play"></use></svg> Начать урок</a>
             <a class="quest-hero-outline" href="#web-profile-area"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-check-double"></use></svg> Проверить перевод</a>
@@ -1201,7 +1202,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
             <p class="jury-help" id="jury-quick-status" role="status" aria-live="polite">Для ответа нужно войти в игру.</p>
           </section>
           <section class="jury-card jury-ranking" aria-labelledby="jury-ranking-title">
-            <div class="jury-heading"><h3 id="jury-ranking-title"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-trophy"></use></svg> Лидеры недели</h3><span id="jury-ranking-mode" class="jury-tag is-demo">ДЕМО</span></div>
+            <div class="jury-heading"><h3 id="jury-ranking-title"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-trophy"></use></svg> Рейтинг сообщества</h3><span id="jury-ranking-mode" class="jury-tag">НЕТ ДАННЫХ</span></div>
             <div class="jury-rank-tabs" role="group" aria-label="Тип рейтинга">
               <button type="button" data-jury-kind="schools" aria-pressed="true">Школы</button>
               <button type="button" data-jury-kind="classes" aria-pressed="false">Классы</button>
@@ -1218,7 +1219,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
               <button id="jury-export-json" class="jury-action jury-action-json" type="button"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-file-code"></use></svg> JSON</button>
               <button id="jury-export-csv" class="jury-action jury-action-csv" type="button"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-file-csv"></use></svg> CSV</button>
             </div>
-            <p id="jury-export-status" class="jury-help" role="status" aria-live="polite">Экспорт из реального API, без подмены демо-данными.</p>
+            <p id="jury-export-status" class="jury-help" role="status" aria-live="polite">Скачать переводы из текущей базы.</p>
           </section>
           <section class="jury-card jury-review" aria-labelledby="jury-review-title">
             <h3 id="jury-review-title"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-scale-balanced"></use></svg> Спорные случаи для УФИЦ РАН</h3>
@@ -2073,12 +2074,16 @@ body.lesson-active .app-mobile-nav {display:none!important}
       return Promise.all([loadRatings(), loadExpedition()]);
     }
 
+    let lastOpenedTab = null;
     function openTab(view) {
+      if (lastOpenedTab === view && document.querySelector('[role="tab"][aria-selected="true"]')?.dataset.view === view) return;
+      lastOpenedTab = view;
       for (const button of document.querySelectorAll('[role="tab"]')) {
         button.setAttribute('aria-selected', String(button.dataset.view === view));
         button.tabIndex = button.dataset.view === view ? 0 : -1;
       }
       for (const panel of document.querySelectorAll('[role="tabpanel"]')) panel.hidden = panel.id !== view;
+      document.dispatchEvent(new CustomEvent('section-tab-changed', {detail:view}));
       if (view === 'ratings') run(loadRatings, [$('users-table'), $('classes-table'), $('schools-table')]);
       if (view === 'translations') run(loadTranslations, [$('translations-table')]);
     }
@@ -2656,47 +2661,24 @@ body.lesson-active .app-mobile-nav {display:none!important}
     })();
     BashkirGame.init();
   </script>
-  <script>
-    'use strict';
-    // Sidebar and mobile navigation reuse the existing real section actions.
-    (() => {
-      const items = [...document.querySelectorAll('[data-app-dest]')];
-      function active(dest) {
-        items.forEach((item) => item.classList.toggle('is-active', item.dataset.appDest === dest));
-      }
-      items.forEach((item) => item.addEventListener('click', () => active(item.dataset.appDest)));
-      document.getElementById('play-entry').addEventListener('click', (event) => {
-        event.preventDefault();
-        active('learn');
-        document.getElementById('path-stage-1').click();
-      });
-      const tabs = document.querySelectorAll('#sections-nav [data-view]');
-      tabs.forEach((tab) => tab.addEventListener('click', () => active(tab.dataset.view)));
-    })();
-  </script>
+  <script src="assets/navigation.js" defer></script>
 
 
   <script>
     'use strict';
     const JuryHome = (() => {
       const byId = (id) => document.getElementById(id);
-      // Эти записи показываются только как явно обозначенный демо-пример.
-      const demo = {
-        schools: [['Гимназия № 3 (демо)', 1280],['Школа № 12 (демо)', 940],['Лицей № 4 (демо)', 720]],
-        classes: [['7А — Гимназия (демо)', 630],['8Б — Лицей (демо)', 520],['6В — Школа (демо)', 410]],
-        users: [['Айгуль (демо)', 250],['Руслан (демо)', 210],['Лейсан (демо)', 180]],
-      };
       let kind = 'schools';
       let live = null;
       function render() {
-        const rows = live ? live[kind] : demo[kind];
+        const rows = live ? live[kind] : [];
         const mode = byId('jury-ranking-mode');
-        mode.textContent = live ? 'ИЗ БАЗЫ' : 'ДЕМО';
+        mode.textContent = live ? 'ИЗ БАЗЫ' : 'НЕТ ДАННЫХ';
         mode.classList.toggle('is-demo', !live);
         mode.classList.toggle('is-live', !!live);
         byId('jury-ranking-note').textContent = live
-          ? 'Рейтинг получен из Supabase. Показываем никнеймы и очки за выбранный период.'
-          : 'Вымышленные примеры для демонстрации дизайна. Не результаты реальных учеников.';
+          ? 'Никнеймы и серверные очки за выбранный период.'
+          : 'Результаты появятся после подключения к базе и первых ответов участников.';
         byId('jury-ranking-list').replaceChildren();
         if (!rows.length) {
           const item = document.createElement('li'); item.textContent = 'Пока нет ответов — рейтинг появится после занятий.';
@@ -2725,8 +2707,8 @@ body.lesson-active .app-mobile-nav {display:none!important}
         byId('jury-quick-ba').textContent = text || 'Задание появится после входа в игру.';
         byId('jury-quick-translation').textContent = translation || 'После получения фразы здесь покажем предложенный перевод.';
         byId('jury-quick-status').textContent = active
-          ? 'Прочитай фразу и выбери действие. Исправление вводится в форме слева.'
-          : 'Сначала открой урок или создай профиль.';
+          ? 'Прочитай фразу и выбери действие. Исправление вводится в форме задания.'
+          : 'Войди в профиль и получи фразу для проверки.';
       }
       function focusTask(action) {
         const task=byId('web-task');
@@ -2786,7 +2768,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     function setText(id,value) {el(id).textContent=String(value??'');}
     function ensureClient() {
       if (!state.url || !state.key) throw new Error('Сначала подключи публичный API в разделе «Настройки сайта».');
-      if (!window.supabase?.createClient) throw new Error('Библиотека авторизации не загрузилась. Проверь интернет и CDN.');
+      if (!window.supabase?.createClient) throw new Error('Библиотека входа недоступна. Обнови страницу или проверь локальные файлы приложения.');
       const url = state.url.replace(/\/+$/, '');
       if (!client || clientConfig.url !== url || clientConfig.key !== state.key) {
         client?.auth.stopAutoRefresh();
