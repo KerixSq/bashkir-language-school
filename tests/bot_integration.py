@@ -199,6 +199,18 @@ async def main():
         assert user['current_fragment_pair_id'] == stored['pair']
         await send(tg, callback='task:correct:' + stored['pair'])
         assert (await db.user_by_telegram(tg))['state'] == 'awaiting_correction'
+        before_unknown = await db.user_by_telegram(tg)
+        await db.update_user(
+            user['id'],
+            {'current_shown_at': (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()},
+        )
+        await send(tg, '/unknown_command')
+        after_unknown = await db.user_by_telegram(tg)
+        assert after_unknown['state'] == 'awaiting_correction', (
+            'Unknown command submitted as answer'
+        )
+        assert after_unknown['points'] == before_unknown['points']
+        assert not await db.select('answers', user_id=user['id'])
         await send(tg, '/cancel')
         assert (await db.user_by_telegram(tg))['current_fragment_pair_id'] is None
         await send(tg, '/task')

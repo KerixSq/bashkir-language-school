@@ -12,6 +12,14 @@ router = Router()
 @router.message()
 @guard
 async def input_message(message: Message) -> None:
+    # Known commands have already been handled by earlier routers. Never treat
+    # an unknown command as a nickname, class code or submitted translation.
+    if (message.text or '').lstrip().startswith('/'):
+        await message.answer(
+            'Неизвестная команда. Список: /help. '
+            'Чтобы продолжить исправление, отправь текст перевода; для отмены — /cancel.'
+        )
+        return
     user = await require_user(message)
     if user is None:
         return
