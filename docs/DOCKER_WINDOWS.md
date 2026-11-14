@@ -1,5 +1,7 @@
 # Docker Compose на Windows 11
 
+Актуальный полный маршрут RC1, резервная копия и обе миграции stage11 → stage14: [FINAL_WINDOWS_SETUP.md](FINAL_WINDOWS_SETUP.md). Ниже сохранены детали первоначальной настройки; раздел stage9 описывает только исторический этап, а не завершённое обновление RC1.
+
 Здесь основной продукт — сайт, `app` (Nginx), и необязательный `bot` (aiogram).
 PostgreSQL (`db`) работает в Docker, вместе с двумя минимальными сервисами,
 которые уже нужны проекту: `rest` (PostgREST) и `auth` (Supabase Auth).
@@ -32,7 +34,8 @@ docker compose --env-file .env.docker logs --tail 50 db rest auth app
    в `data/phrasebooks/` и монтируются read-only в контейнер бота:
 
 ```powershell
-docker compose --env-file .env.docker --profile bot run --rm bot python scripts/import_phrasebooks.py --dir data/phrasebooks --bad-share 0.2 --seed 42
+docker compose --env-file .env.docker build bot
+docker compose --env-file .env.docker run --rm --no-deps bot python scripts/import_phrasebooks.py --dir data/phrasebooks --bad-share 0.2 --seed 42
 ```
 
 7. Для Telegram-бота впиши токен в `TELEGRAM_BOT_TOKEN` в `.env.docker` и запусти:
@@ -55,7 +58,7 @@ Invoke-WebRequest http://127.0.0.1:54321/health
 # Проверка состояния таблиц и сохранённых данных
 docker compose --env-file .env.docker exec db psql -U postgres -d bashkir -c 'select count(*) from public.fragment_pairs;'
 
-# Проверка публичного API (анонимный ключ вводится на сайте)
+# Публичный anon-ключ передаётся сайту автоматически через config.js.
 # Для SQL-ошибок на первом запуске смотри логи db:
 docker compose --env-file .env.docker logs --tail 100 db
 
@@ -104,3 +107,5 @@ Stage9 применяется после stage8; она исправляет в�
 После stage9 для периодных очков рейтинга применяй sql/migrations/20261114_stage10_period_points.sql через docker compose cp и psql по аналогии со stage9. Существующие ответы сохраняются.
 
 Затем примени sql/migrations/20261114_stage11_auth_search_path.sql и перезапусти auth: миграция настраивает search_path роли GoTrue на auth, public, extensions и не расширяет доступ к public.
+
+Это не единственная stage11: далее нужны `20261114_stage11_independent_students.sql`, stage12, stage13, stage14. Точные имена, проверки состояния и PowerShell — [FINAL_WINDOWS_SETUP.md](FINAL_WINDOWS_SETUP.md).

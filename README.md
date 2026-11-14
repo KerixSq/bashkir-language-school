@@ -1,5 +1,7 @@
 # Башкирская языковая школа
 
+Release candidate `v0.9.0-rc1`: [единая установка/обновление Windows](docs/FINAL_WINDOWS_SETUP.md), [сценарий на три минуты](docs/FINAL_DEMO.md), [резервный показ](docs/DEMO_BACKUP.md), [проверки и матрица ТЗ](docs/FINAL_RELEASE_QA.md). Ветка `release-candidate`; тег и стабильный релиз не опубликованы.
+
 Добровольные Telegram-напоминания: `/remind on/off` и меню настроек. По умолчанию выключены; [stage14, запуск и ограничения доставки](docs/REMINDERS.md). Итоговый технический аудит — [FINAL_HACKATHON_QA.md](docs/FINAL_HACKATHON_QA.md).
 
 Исходное WAV/MP3 с готовой разметкой: [импорт, stage13 и воспроизведение диапазона](docs/ORIGINAL_AUDIO.md). Это отдельный конвейер от TTS, без распознавания речи.
@@ -51,7 +53,7 @@ docker compose --env-file .env.docker run --rm --no-deps bot python scripts/impo
 docker compose --env-file .env.docker --profile bot down
 ```
 
-Обычный down сохраняет volume. Никогда не добавляй -v для обычной остановки. Не пересоздавай .env.docker для существующей БД: в нём сохранены её пароли и JWT secret. Backup и обновление существующего volume — [docs/DOCKER_WINDOWS.md](docs/DOCKER_WINDOWS.md). После stage9 последовательно применяются stage10_period_points.sql и stage11_auth_search_path.sql; старые миграции не редактируются и не повторяются вслепую.
+Обычный down сохраняет volume. Никогда не добавляй -v для обычной остановки. Не пересоздавай .env.docker для существующей БД: в нём сохранены её пароли и JWT secret. Backup и точный порядок обновления — [FINAL_WINDOWS_SETUP.md](docs/FINAL_WINDOWS_SETUP.md). После stage9 нужны stage10, **обе stage11** (auth_search_path и independent_students), затем stage12–14. Применяйте только необходимый суффикс после проверки состояния базы.
 
 Telegram необязателен: добавь TELEGRAM_BOT_TOKEN в .env.docker и выполни `docker compose --env-file .env.docker --profile bot up -d --build`. Команды: /start, /task, /pair, /cancel, /me, /top, /report, /newclass, /privacy, /delete_me, /help. Токены, учительские и экспертные коды не публикуй.
 

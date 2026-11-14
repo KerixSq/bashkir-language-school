@@ -178,3 +178,6 @@ Content-Type: application/json
 ## Периодные очки учеников
 
 `leaderboard_users` дополнительно возвращает `day_points`, `week_points`, `month_points`, `year_points` по `Asia/Yekaterinburg`; `points` остаётся общим итогом за всё время. Миграция stage10 добавляет колонки без изменения ответов; stage11 настраивает search_path роли Auth для самостоятельного Compose.
+# Проверка RC1
+
+API-контракты сохранены. [Матрица и результаты](docs/FINAL_RELEASE_QA.md), [PowerShell и обновление](docs/FINAL_WINDOWS_SETUP.md). REST-экспорт содержит прежние семь полей; независимые Telegram/Web-профили используют общий механизм голосования, не объединённую учётную запись.
