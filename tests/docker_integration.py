@@ -277,6 +277,12 @@ def main():
                     'PASS Telegram + two independent web users -> consensus -> export -> library=2'
                 )
 
+                from browser_original_audio_checks import check_original_audio
+
+                from supabase import create_client
+
+                audio_api = create_client('http://127.0.0.1:54321', values['SERVICE_ROLE_KEY'])
+                check_original_audio(audio_api, sessions[0][1], compose, sql, ROOT)
                 snapshot = sql('select count(*),sum(points_awarded) from answers;')
                 compose('restart', 'db', 'auth', 'rest', 'app')
                 compose('up', '-d', '--wait', '--wait-timeout', '180')

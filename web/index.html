@@ -1008,6 +1008,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     .phrase-details[open] summary {margin-bottom:4px;border-bottom:1px solid #c9dce6}
     .phrase-details .tts-note {margin-top:8px}
     .tts-control {margin:12px 0 4px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+    #web-original-audio {overflow-wrap:anywhere;margin-top:12px}
     .tts-button {min-height:44px;padding:8px 14px;border:1px solid #9abccd;border-radius:12px;background:#fff;color:#194464;font:700 14px/1.4 system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px}
     .tts-button:hover:not(:disabled) {background:#eaf5fb}
     .tts-button[aria-pressed=true] {background:#e5f8ee;border-color:#238654;color:#155c3d}
@@ -1164,6 +1165,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
             <div id="web-task" class="pt-4" hidden>
               <div class="quest-caption" id="web-task-pair"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-book-open"></use></svg> ПРОВЕРКА ПЕРЕВОДА</div>
               <div class="quest-text"><span>НА БАШКИРСКОМ</span><strong id="web-original"></strong><div class="tts-control"><button id="web-tts" type="button" class="tts-button" disabled aria-label="Прослушать башкирскую фразу" aria-pressed="false" aria-describedby="web-tts-status web-tts-note"><span aria-hidden="true">▶</span> Слушать</button><span id="web-tts-status" class="tts-status" role="status" aria-live="polite">Проверяем озвучку…</span></div><details class="phrase-details" id="web-phrase-details"><summary>Источник и озвучка</summary><p id="web-task-source" class="quest-help"></p><span id="web-tts-note" class="tts-note">Произношение синтезированной речи требует оценки носителем.</span></details></div>
+              <section id="web-original-audio" hidden><button id="original-audio-play" type="button" class="tts-button" aria-pressed="false">Слушать оригинал</button><p id="original-audio-status" role="status" class="quest-help"></p><audio id="original-audio-player" preload="metadata"></audio></section>
               <div class="quest-text quest-proposal"><span>ПРЕДЛОЖЕННЫЙ ПЕРЕВОД</span><strong id="web-translation"></strong></div>
 
               <div class="quest-actions" id="web-answer-actions">
@@ -1520,6 +1522,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
   </nav>
   <script defer src="assets/vendor/supabase.min.js"></script>
   <script src="config.js"></script>
+  <script src="original-audio.js"></script>
   <audio id="bashkir-audio" preload="none" aria-hidden="true"></audio>
   <script>
     'use strict';
@@ -2788,7 +2791,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
       if (!client || clientConfig.url !== url || clientConfig.key !== state.key) {
         client?.auth.stopAutoRefresh();
         task=null;drawProfile(null);show('web-task',false);
-        window.BashkirTTS?.setPhrase('web','');
+        window.BashkirTTS?.setPhrase('web','');window.OriginalAudio?.clear();
         client=window.supabase.createClient(url,state.key,{
           auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false},
         });
@@ -2857,13 +2860,13 @@ body.lesson-active .app-mobile-nav {display:none!important}
           if(result.error) throw result.error;
         }
         const dataProfile=await rpc('web_register',{p_nickname:nickname,p_lang_pair:el('web-pair').value,p_join_code:el('web-join').value.trim()||null});
-        window.BashkirTTS?.setPhrase('web','');
+        window.BashkirTTS?.setPhrase('web','');window.OriginalAudio?.clear();
         drawProfile(dataProfile);task=null;show('web-task',false);show('web-task-intro',true);
         status('Профиль готов. Нажми «Получить задание»!');
       });
     }
     async function next() {
-      window.BashkirTTS?.setPhrase('web','');
+      window.BashkirTTS?.setPhrase('web','');window.OriginalAudio?.clear();
       await guarded(async()=>{
         task=await rpc('web_next_fragment');
         if(!task) {show('web-task',false);show('web-task-intro',true);window.JuryHome?.task(null,null);status('Ты проверил все доступные фразы этой языковой пары.');return;}
@@ -2874,6 +2877,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         setText('web-translation',task.translation);
         window.JuryHome?.task(task.text_ba,task.translation,true);
         setText('web-task-source',task.source||'Источник: разговорники БГПУ');
+        window.OriginalAudio?.setTask(task);
         show('web-answer-actions',true);show('web-correct-form',false);
         show('web-feedback',false);show('web-after-answer',false);
         el('web-correction').value='';
@@ -2882,7 +2886,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     }
     async function submit(action,answer=null) {
       if(!task) return;
-      window.BashkirTTS?.stop();
+      window.BashkirTTS?.stop();window.OriginalAudio?.clear();
       await guarded(async()=>{
         const result=await rpc('web_submit_answer',{p_fragment_pair_id:task.fragment_pair_id,p_action:action,p_text:answer});
         if(result?.too_fast){status(`Подожди ${result.retry_seconds||2} сек. и попробуй снова.`,true);return;}
@@ -2905,7 +2909,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     }
     async function skip() {
       if(!task)return;
-      window.BashkirTTS?.setPhrase('web','');
+      window.BashkirTTS?.setPhrase('web','');window.OriginalAudio?.clear();
       await guarded(async()=>{
         await rpc('web_skip_fragment',{p_fragment_pair_id:task.fragment_pair_id});
         task=null;show('web-task',false);show('web-task-intro',true);window.JuryHome?.task(null,null);
@@ -2914,7 +2918,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     }
     function init() {
       el('web-register-form').addEventListener('submit',register);
-      el('web-edit').addEventListener('click',()=>{window.BashkirTTS?.setPhrase('web','');show('web-onboarding',true);show('web-session',false);status('Измени никнейм или языковую пару и сохрани.');});
+      el('web-edit').addEventListener('click',()=>{window.BashkirTTS?.setPhrase('web','');window.OriginalAudio?.clear();show('web-onboarding',true);show('web-session',false);status('Измени никнейм или языковую пару и сохрани.');});
       el('web-next').addEventListener('click',next);
       el('web-after-answer').addEventListener('click',next);
       el('web-confirm').addEventListener('click',()=>submit('confirm'));

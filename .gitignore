@@ -27,6 +27,7 @@ test-results/
 .index.html.before-brand-update.bak
 .cache/tts/
 .live-telegram/
+/web/assets/original-audio/
 
 
 # Supabase CLI, npm и локальные контейнеры

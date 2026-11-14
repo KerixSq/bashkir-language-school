@@ -106,6 +106,74 @@ class PostgreSQLTests(unittest.TestCase):
         with self.assertRaisesRegex(psycopg.Error, 'Завершите регистрацию'):
             self.scalar('select public.get_next_fragment(%s)', (user,))
 
+    def test_original_audio_import_transaction_and_task_metadata(self):
+        import sys
+        import tempfile
+
+        from audio_fixture import audio_fixture
+        from psycopg.types.json import Jsonb
+
+        sys.path.insert(0, str(ROOT))
+        from scripts.import_audio import plan
+
+        with tempfile.TemporaryDirectory() as directory:
+            audio, annotation, _ = audio_fixture(Path(directory))
+            source, segments = plan(audio, annotation, 'Technical QA tone, not speech', 'CC0 test')
+        migration = (ROOT / 'sql/migrations/20261114_stage13_original_audio.sql').read_text(
+            encoding='utf-8'
+        )
+        self.db.execute(migration)
+        self.db.execute(migration)
+        for _ in range(2):
+            self.scalar('select import_audio_fragments(%s,%s)', (Jsonb(source), Jsonb(segments)))
+        pair = segments[0]['pair_id']
+        self.assertEqual(
+            self.scalar('select count(*) from fragments where source_id=%s', (source['id'],)), 1
+        )
+        self.assertEqual(self.scalar('select count(*) from fragment_pairs where id=%s', (pair,)), 1)
+        self.db.execute('set role anon')
+        try:
+            with self.assertRaises(psycopg.errors.InsufficientPrivilege):
+                self.scalar(
+                    'select import_audio_fragments(%s,%s)', (Jsonb(source), Jsonb(segments))
+                )
+        finally:
+            self.db.execute('reset role')
+        broken_source = {**source, 'id': str(uuid.uuid4())}
+        broken_rows = [
+            {**segments[0], 'id': str(uuid.uuid4()), 'pair_id': str(uuid.uuid4()), 'time_end': -1}
+        ]
+        with self.assertRaisesRegex(psycopg.Error, 'Invalid audio segment'):
+            self.scalar(
+                'select import_audio_fragments(%s,%s)', (Jsonb(broken_source), Jsonb(broken_rows))
+            )
+        self.assertEqual(
+            self.scalar('select count(*) from sources where id=%s', (broken_source['id'],)), 0
+        )
+        for _ in range(3):
+            user = self.user()
+            self.assign(user, pair)
+            task = self.scalar('select get_next_fragment(%s)', (user,))
+            self.assertEqual(task['source_kind'], 'audio')
+            self.assertEqual(task['source_url'], source['url'])
+            self.assertEqual((task['time_start'], task['time_end']), (0.2, 0.7))
+            self.vote(user, pair)
+        self.scalar('select import_audio_fragments(%s,%s)', (Jsonb(source), Jsonb(segments)))
+        row = self.db.execute(
+            'select translation,source,status,confirmed from translations_export where fragment_id=%s',
+            (segments[0]['id'],),
+        ).fetchone()
+        self.assertEqual((row[0], row[2], row[3]), (segments[0]['translation'], 'confirmed', 3))
+        self.assertIn('сек.', row[1])
+        with self.assertRaisesRegex(psycopg.Error, 'Audio translation conflict'):
+            self.scalar(
+                'select import_audio_fragments(%s,%s)',
+                (
+                    Jsonb(source),
+                    Jsonb([{**segments[0], 'translation': 'Different technical text'}]),
+                ),
+            )
+
     def test_expert_similarity_is_advisory_and_resolution_is_stable(self):
         pair, untouched = self.pair(), self.pair()
         code = uuid.uuid4().hex
