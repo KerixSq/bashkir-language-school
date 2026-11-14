@@ -4,6 +4,7 @@ Requires Docker and a free loopback port 54321. Creates a unique Compose project
 never touches the normal project and never removes volumes. No mocked Auth/API.
 """
 
+import hashlib
 import os
 import re
 import secrets
@@ -39,6 +40,7 @@ def main():
             ANON_KEY=jwt(secret, 'anon'),
             SERVICE_ROLE_KEY=jwt(secret, 'service_role'),
             TELEGRAM_BOT_TOKEN='',
+            EXPERT_ACCESS_CODE=secrets.token_hex(32),
         )
         envfile.write_text(''.join(f'{k}={v}\n' for k, v in values.items()), encoding='utf-8')
         base = [
@@ -249,7 +251,14 @@ def main():
                 **os.environ,
                 'BASHKIR_ENV_FILE': str(envfile),
                 'WEB_TEST_URL': 'http://127.0.0.1:54321/web/',
+                'EXPERT_ACCESS_CODE': values['EXPERT_ACCESS_CODE'],
             }
+            expert_hash = hashlib.sha256(values['EXPERT_ACCESS_CODE'].encode()).hexdigest()
+            sql(
+                "insert into config(key,value) values('expert_access_hash','"
+                + expert_hash
+                + "') on conflict(key) do update set value=excluded.value;"
+            )
             for script in (
                 'scripts/smoke_test.py',
                 'scripts/check_rls.py',
