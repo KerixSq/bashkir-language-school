@@ -5,7 +5,7 @@ from urllib.parse import urlsplit
 
 def proxy_url(value: str | None) -> str | None:
     value = (value or '').strip()
-    if not value:
+    if not value or value == 'direct':
         return None
     try:
         url = urlsplit(value)

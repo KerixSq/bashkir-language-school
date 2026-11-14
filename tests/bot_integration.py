@@ -267,6 +267,9 @@ async def main():
         for action in ('home', 'progress', 'contribution', 'history', 'ratings', 'settings'):
             await send(solo, callback='menu:' + action)
             assert stub.messages[-1]
+            if action in ('contribution', 'history'):
+                assert 'Проверок: 1 · исправлений: 0' in stub.messages[-1]
+                assert 'Подтверждено сообществом: 1' in stub.messages[-1]
         assert any(row['name'] == independent['nickname'] for row in await db.top_users('day'))
         assert await db.rank_summary(independent) is None
         await send(solo, '/join')

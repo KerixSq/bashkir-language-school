@@ -189,23 +189,16 @@ async def menu_click(call: CallbackQuery) -> None:
 
 async def contribution(message: Message, user: dict, history: bool = False) -> None:
     # User ID is resolved only from the authenticated Telegram sender, never callback data.
-    rows = await db.select(
-        'answers', 'action,created_at,fragment_pairs(status)', user_id=user['id']
-    )
+    counts, rows = await db.contribution_summary(user['id'])
     labels = {
         'collecting': 'Собираем голоса',
         'confirmed': 'Подтверждено сообществом',
         'expert_review': 'Направлено эксперту',
     }
-    counts = {key: 0 for key in labels}
-    for row in rows:
-        status = (row.get('fragment_pairs') or {}).get('status')
-        if status in counts:
-            counts[status] += 1
     stats = await db.user_stats(user['id'])
     badges = await db.user_badges(user['id'])
     lines = [
-        f'Проверок: {len(rows)} · исправлений: {sum(r["action"] == "correct" for r in rows)}',
+        f'Проверок: {int(stats.get("total_answers") or 0)} · исправлений: {int(stats.get("corrections") or 0)}',
         f'Сегодня: {int(stats.get("day_answers") or 0)} · очки: {user["points"]} · уровень: {user["level"]}',
     ]
     lines.extend(f'{label}: {counts[key]}' for key, label in labels.items())

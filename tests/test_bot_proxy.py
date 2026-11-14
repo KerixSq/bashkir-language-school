@@ -8,6 +8,7 @@ class BotProxyTests(unittest.TestCase):
     def test_explicit_transport_and_secret_safe_validation(self):
         self.assertIsNone(proxy_url(None))
         self.assertIsNone(proxy_url('  '))
+        self.assertIsNone(proxy_url('direct'))
         self.assertEqual(proxy_url('socks5://tor:9050'), 'socks5://tor:9050')
         for value in (
             'ftp://user:SECRET@host:21',

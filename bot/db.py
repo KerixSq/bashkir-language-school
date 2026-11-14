@@ -163,6 +163,34 @@ async def daily_goal() -> int:
     return int(rows[0]['value']) if rows else 5
 
 
+async def contribution_summary(user_id: str) -> tuple[dict, list]:
+    counts = {}
+    for status in ('collecting', 'confirmed', 'expert_review'):
+        result = await query(
+            lambda: (
+                _db.table('answers')
+                .select('id,fragment_pairs!inner(status)', count='exact', head=True)
+                .eq('user_id', user_id)
+                .eq('fragment_pairs.status', status)
+                .execute()
+            )
+        )
+        counts[status] = int(result.count or 0)
+    history = await query(
+        lambda: (
+            _db.table('answers')
+            .select('action,created_at,fragment_pairs(status)')
+            .eq('user_id', user_id)
+            .order('created_at', desc=True)
+            .limit(20)
+            .execute()
+            .data
+            or []
+        )
+    )
+    return counts, history
+
+
 async def class_for_code(column: str, code: str) -> dict | None:
     if column not in ('join_code', 'teacher_code'):
         raise ValueError('Неизвестный тип кода класса')
