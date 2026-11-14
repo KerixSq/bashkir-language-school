@@ -198,6 +198,14 @@ def main():
                     assert not [url for url in requests if '/rest/v1/' in url]
                     page.locator('#tab-translations').click()
                     active('translations')
+                    # A reduced-motion jump is complete immediately. Returning
+                    # manually must not remain pinned to the previous tab.
+                    page.evaluate('scrollTo({top:0,behavior:"instant"})')
+                    active('learn')
+                    page.evaluate(
+                        'scrollTo({top:document.documentElement.scrollHeight,behavior:"instant"})'
+                    )
+                    active('translations')
                     page.reload()
                     page.locator('#game-zone').evaluate(
                         "node => node.scrollIntoView({block:'start',behavior:'instant'})"

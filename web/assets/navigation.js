@@ -95,10 +95,12 @@
     const line = scrollY+innerHeight*.25;
     let index = 0;
     list.forEach((entry,i) => { if (entry.top <= line) index = i; });
-    if (tabNav.getBoundingClientRect().top < innerHeight &&
-        scrollY+innerHeight >= document.documentElement.scrollHeight-2) index = list.length-1;
+    const distanceToBottom = document.documentElement.scrollHeight-innerHeight-scrollY;
+    const bottomBand = tabNav.getBoundingClientRect().top < innerHeight &&
+      distanceToBottom <= (region === tabNav ? 2*hysteresis : hysteresis);
+    if (bottomBand) index = list.length-1;
     const old = list.findIndex(entry => entry.node === region);
-    if (old >= 0 && index !== old) {
+    if (!bottomBand && old >= 0 && index !== old) {
       if (index > old && line < list[index].top+hysteresis) index = old;
       if (index < old && line > list[old].top-hysteresis) index = old;
     }
@@ -121,7 +123,12 @@
     travel = {dest,target,started:performance.now()};
     active(dest);
     const top = target.getBoundingClientRect().top+scrollY-16;
-    scrollTo({top:Math.max(0,top),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+    const instant = matchMedia('(prefers-reduced-motion:reduce)').matches;
+    scrollTo({top:Math.max(0,top),behavior:instant?'instant':'smooth'});
+    if (instant) {
+      hold = {dest,top:scrollY};
+      travel = null;
+    }
     schedule();
   }
   window.BashkirNavigation = {navigate};
