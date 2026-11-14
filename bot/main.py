@@ -11,6 +11,7 @@ from aiogram.types import BotCommand
 from dotenv import load_dotenv
 
 from bot.handlers import community, messages, profile, registration, tasks
+from bot.live_probe import observe_polling
 
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / '.env')
@@ -66,7 +67,8 @@ async def main() -> None:
             ]
         )
         logging.getLogger('bashkir-bot').info('Запущен long polling')
-        await dispatcher.start_polling(bot)
+        async with observe_polling(bot, dispatcher):
+            await dispatcher.start_polling(bot)
     finally:
         await bot.session.close()
 

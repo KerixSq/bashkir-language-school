@@ -26,6 +26,7 @@ Thumbs.db
 test-results/
 .index.html.before-brand-update.bak
 .cache/tts/
+.live-telegram/
 
 
 # Supabase CLI, npm и локальные контейнеры

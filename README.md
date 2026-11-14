@@ -75,3 +75,5 @@ Docker integration требует свободного порта 54321: сна�
 Визуальные регрессии интерфейса: `python tests/browser_visual_checks.py` (Chromium, шесть размеров экрана, CDN отключён, системная тёмная тема, длинный текст и клавиатура). Тест сам запускает временный статический сервер; снимки — `test-results/visual/`. Для просмотра без API: `python -m http.server 8000`, адрес `http://127.0.0.1:8000/web/`. Отчёт о визуальной полировке — [docs/UI_FINAL_PASS.md](docs/UI_FINAL_PASS.md).
 
 Финальная проверка хакатонной сборки: [docs/HACKATHON_POLISH.md](docs/HACKATHON_POLISH.md). Docker integration дополнительно запускает smoke/RLS, браузерный CSV и отчёт преподавателя, а также FSM aiogram на своей изолированной базе; живое соединение с Telegram этим не подтверждается.
+
+Живой Telegram smoke с действиями человека и сверкой БД: [docs/TELEGRAM_LIVE_TEST.md](docs/TELEGRAM_LIVE_TEST.md). Observer не вызывает getUpdates и не меняет webhook. Диагностика включается только для выбранного тестового аккаунта; live-проверки не запускаются в публичном CI.
