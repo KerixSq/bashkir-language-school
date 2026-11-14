@@ -45,6 +45,7 @@ body, .app-layout, .app-center { background:var(--school-cream)!important; color
 }
 @media(max-width:850px) {
   .quest-hero::before { left:16px; right:16px; opacity:.4; }
+  .quest-hero h2 { font-size:clamp(24px,7vw,29px)!important; line-height:1.12!important; }
   .quest-hero p { font-size:13px!important; line-height:1.5!important; }
   .quest-hero-links { margin-top:16px!important; }
   .hero-footnote { margin-top:14px!important; margin-bottom:12px!important; }

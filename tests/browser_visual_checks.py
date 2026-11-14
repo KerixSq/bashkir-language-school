@@ -80,7 +80,12 @@ def main():
                             or box['y'] + box['height'] <= art['y']
                             or art['x'] + art['width'] <= box['x']
                         ), f'Mascot covers {selector}'
-                    assert page.locator('.quest-hero').bounding_box()['height'] < 350
+                    assert page.locator('.quest-hero').bounding_box()['height'] < 350, {
+                        'viewport': width,
+                        'hero': page.locator('.quest-hero').bounding_box(),
+                        'title': page.locator('.quest-hero h2').bounding_box(),
+                        'copy': page.locator('.quest-hero p').first.bounding_box(),
+                    }
                     expect(page.locator('#play-entry')).to_be_in_viewport(ratio=1)
                 page.locator('.path-preview').screenshot(path=str(OUT / f'map-{width}.png'))
                 for name, selector in (
