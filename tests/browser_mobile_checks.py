@@ -11,7 +11,7 @@ from browser_tts_checks import playing, ready, stopped
 from browser_visual_checks import ROOT, QuietHandler, no_overflow
 from playwright.sync_api import expect, sync_playwright
 
-OUT = ROOT / 'test-results/checkpoint'
+OUT = ROOT / 'test-results/mobile'
 
 
 def main():

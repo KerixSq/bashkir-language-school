@@ -99,7 +99,7 @@ $body = @{ p_key = 'bsk_СЕКРЕТНЫЙ_КЛЮЧ'; p_external_user = 'student
 Invoke-RestMethod -Method Post -Uri "$base/rpc/api_submit_answer" -Headers $headers -ContentType 'application/json' -Body $body
 ```
 
-Возвращается `{"accepted":true,"duplicate":false}` либо `{"accepted":false,"duplicate":true}`. **Внешние ответы не влияют на консенсус, рейтинг и очки учеников Telegram.** `p_external_user` в базе хранится только как SHA-256 с привязкой к партнёру. Если нужен импорт внешних голосов в основную систему, нужен отдельный процесс проверки, в прототипе его нет.
+Возвращается `{"accepted":true,"duplicate":false}` либо `{"accepted":false,"duplicate":true}`. **Внешние ответы не влияют на консенсус, рейтинг и очки учеников Telegram.** `p_external_user` в базе хранится только как SHA-256 с привязкой к партнёру. Если нужен импорт внешних голосов в основную систему, нужен отдельный процесс проверки, в текущей реализации он не поддерживается.
 
 ## Только серверу
 
@@ -178,6 +178,6 @@ Content-Type: application/json
 ## Периодные очки учеников
 
 `leaderboard_users` дополнительно возвращает `day_points`, `week_points`, `month_points`, `year_points` по `Asia/Yekaterinburg`; `points` остаётся общим итогом за всё время. Миграция stage10 добавляет колонки без изменения ответов; stage11 настраивает search_path роли Auth для самостоятельного Compose.
-# Проверка RC1
+# Проверка API
 
 API-контракты сохранены. [Матрица и результаты](docs/QA.md), [PowerShell и обновление](docs/WINDOWS_SETUP.md). REST-экспорт содержит прежние семь полей; независимые Telegram/Web-профили используют общий механизм голосования, не объединённую учётную запись.

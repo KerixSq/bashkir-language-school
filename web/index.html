@@ -1193,7 +1193,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
           <section class="jury-card jury-daily" aria-labelledby="jury-daily-title">
             <div class="jury-heading"><span class="jury-tag"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-calendar-check"></use></svg> ЕЖЕДНЕВНЫЙ КВЕСТ</span><span class="jury-xp">Серверные очки</span></div>
             <h3 id="jury-daily-title">Проверь перевод</h3>
-            <p id="jury-quick-ba" class="jury-phrase">Начни приключение, чтобы получить фразу из корпуса.</p>
+            <p id="jury-quick-ba" class="jury-phrase">Войди в профиль, чтобы получить фразу из корпуса.</p>
             <p class="jury-proposed" id="jury-quick-translation">Предложенный перевод появится здесь.</p>
             <div class="jury-action-row">
               <button id="jury-fast-confirm" class="jury-action jury-action-yes" type="button"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-check"></use></svg> Верно</button>
@@ -1209,7 +1209,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
               <button type="button" data-jury-kind="users" aria-pressed="false">Ученики</button>
             </div>
             <ol id="jury-ranking-list" class="jury-rank-list" aria-live="polite"></ol>
-            <p id="jury-ranking-note" class="jury-help">Пример оформления — вымышленные данные. Настоящий рейтинг появится после подключения.</p>
+            <p id="jury-ranking-note" class="jury-help">Результаты появятся после подключения к базе и первых ответов участников.</p>
             <button id="jury-open-ratings" class="jury-text-button" type="button">Все рейтинги <svg class="svg-icon" aria-hidden="true"><use href="#b-icon-arrow-right"></use></svg></button>
           </section>
           <section class="jury-card jury-export" aria-labelledby="jury-export-title">
@@ -1476,12 +1476,12 @@ body.lesson-active .app-mobile-nav {display:none!important}
         <pre class="api" id="partner-api-example">POST /rest/v1/rpc/api_get_fragments
 { "p_key": "bsk_...", "p_lang_pair": "ba-ru", "p_limit": 10 }</pre>
         <p class="hint">Схема: sources → fragments → fragment_pairs → answers → translations_export. Внешние ответы пишутся отдельно в external_answers и не получают очков.</p>
-        <p>Полный список полей, прав и примеров запросов — в <a href="https://github.com/KerixSq/bashkir-language-school/blob/rc1-visual-polish/API.md">API.md</a> репозитория.</p>
+        <p>Полный список полей, прав и примеров запросов — в <a href="https://github.com/KerixSq/bashkir-language-school/blob/main/API.md">API.md</a> репозитория.</p>
       </div>
     </section>
   </main>
   <footer class="footer"><div class="container">
-    Башкирская языковая школа · проект хакатона · переводы требуют проверки.
+    Башкирская языковая школа · переводы требуют языковой проверки.
     Корпус: <a href="https://huggingface.co/datasets/bashkorttele/trilingual-parallel-phrasebooks-bgpu" target="_blank" rel="noopener noreferrer">Bashkorttele / БГПУ</a>,
     <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.
     Правообладатель: ФГБОУ ВО «БГПУ им. М. Акмуллы». Издатель: АНО «Фонд сохранения и развития башкирского языка».

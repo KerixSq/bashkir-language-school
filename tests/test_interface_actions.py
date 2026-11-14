@@ -1,4 +1,4 @@
-"""Checks for the jury-facing interface without network access."""
+"""Checks for platform actions without network access."""
 
 import re
 import unittest
@@ -9,7 +9,7 @@ HTML = (ROOT / 'web' / 'index.html').read_text(encoding='utf-8')
 SQL = (ROOT / 'sql' / 'logic.sql').read_text(encoding='utf-8')
 
 
-class JuryHomeChecks(unittest.TestCase):
+class InterfaceActionChecks(unittest.TestCase):
     def test_daily_actions_are_connected_to_original_buttons(self):
         for name in ('jury-fast-confirm', 'jury-fast-correct', 'web-confirm', 'web-correct-toggle'):
             self.assertIn(f'id="{name}"', HTML)

@@ -15,7 +15,7 @@
 9. После каждой задачи запускай `python -m compileall -q bot scripts tests`, `python -m unittest discover -s tests -v`, `python scripts/check_contract.py`; если возможно, `ruff check .` и `ruff format --check .`.
 10. На реальной базе дополнительно запускай `scripts/smoke_test.py` и `scripts/check_rls.py`. Разделяй реально пройденные проверки и ожидаемые.
 
-## Ключевой сценарий для жюри
+## Основной сценарий платформы
 
 БГПУ JSONL → импорт в PostgreSQL → Telegram-задание → несколько независимых голосов → согласованный перевод → `translations_export` → рост счётчика `adventure_progress` на сайте → API. Проверка школьниками — не полноценная экспертиза; синонимы сопоставляются только правилами и словарём.
 

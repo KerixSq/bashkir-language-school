@@ -133,7 +133,7 @@ class ContractTests(unittest.TestCase):
             'scripts/seed_demo.py',
             'docs/CONTENT_AND_AUDIO.md',
             'README.md',
-            'docs/DEMO.md',
+            'docs/PRODUCT_GUIDE.md',
         ):
             with self.subTest(filename=filename):
                 self.assertTrue((ROOT / filename).exists())

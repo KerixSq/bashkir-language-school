@@ -1,109 +1,62 @@
-# Проверки и готовность
+# Качество платформы
 
-База консолидации: e90dd405e8e80f57cba1347107951c5e40d0df61. Проверенный код навигации: `165df8e31d8dcb923085b3afbfb1e1ec36b80291`. Полная история main → release-candidate → rc1-visual-polish присутствует; дополнительных merge/cherry-pick не требуется. Единственная рабочая ветка — rc1-visual-polish. Main не обновляется.
+## Проверки
 
-Проверенная полная сборка консолидации: `7db9f637f63af5b828c2eb693c35c6b58e2322cf`, [завершённый CI 43620108912](https://github.com/KerixSq/bashkir-language-school/actions/runs/43620108912): все четыре обязательных jobs success. Последний коммит этой ветки уточняет мгновенный возврат и нижнюю границу короткой вкладки; его точный SHA/conclusion проверяется по [последнему Actions rc1-visual-polish](https://github.com/KerixSq/bashkir-language-school/actions?query=branch%3Arc1-visual-polish), а не переносится с предыдущего запуска. Функциональная история P0/P1/RC1 сохранена.
+Зафиксированная полная проверка функциональной основы: `c16c9c2eee5bd9e8ce6f6759388d35e503d8bc6b`, [GitHub Actions 43620611507](https://github.com/KerixSq/bashkir-language-school/actions/runs/43620611507), все четыре обязательных задания success. Актуальный SHA и завершённый результат сборки опубликованы в [Actions main](https://github.com/KerixSq/bashkir-language-school/actions?query=branch%3Amain). Проверяйте head_sha и conclusion=success, а не только наличие запуска.
 
-Статус: **READY WITH LIMITATIONS** при полностью успешном workflow текущего HEAD. Технически готово к рассмотрению переноса в main; автоматического merge и публикации тега нет. Живой Telegram и ноутбук защиты требуют ручного прохода.
+Тесты используют disposable PostgreSQL и отдельный Compose-проект. Реальные обработчики aiogram получают искусственные Updates с подменённым Telegram transport. Рабочие данные и реальные аккаунты для автоматического тестирования не используются.
 
-## Исправления навигации
+## Результаты
 
-До правки воспроизведена последовательность learn → lessons → learn → lessons при колебаниях ±3 px. Упорядоченные границы теперь образуют непересекающиеся вертикальные диапазоны; одинаково расположенные колонки не конкурируют. Один passive scroll-listener и один requestAnimationFrame, гистерезис 12 px. При клике выбранный пункт удерживается до завершения программного скролла; wheel/touch/клавиатура/ручная прокрутка снимают удержание. Скрытые tabpanel не наблюдаются, выбранная вкладка определяется через openTab. Контекст меняется только при смене раздела/реальных данных. Мгновенный переход при reduced-motion завершается сразу, поэтому быстрый ручной возврат не остаётся закреплён за старой вкладкой. Короткая вкладка внизу документа имеет отдельную устойчивую полосу выбора. Дизайн, SQL, API и очки не менялись.
-
-Новый тест проверяет последовательности при медленной прокрутке вниз/вверх, колебания, быстрые переходы, плавный переход и прерывание колесом, рейтинг → словарь → главная, mobile и рост контента. Повторное lessons → library → lessons при движении вниз допустимо: это три реальные последовательные области (тренировочная карта, библиотека, урок), а не возврат к прежней границе.
-
-## Текущие проверки
-
-| Проверка | Фактический результат |
+| Область | Результат и границы |
 |---|---|
-| Новые навигационные сценарии Chromium/WebKit | PASS локально и в CI, desktop/mobile; финальные мгновенный возврат/короткая вкладка дополнительно проверены локально |
-| compileall, unittest, контракт, Ruff | PASS локально, 154 unit-теста |
-| Визуальные шесть ширин, TTS, original audio, mobile checkpoint | PASS локально: шесть ширин, Chromium/WebKit, реальные WAV/MP3 |
-| PostgreSQL/aiogram/REST/RLS/эксперт | PASS: 12 PostgreSQL-сценариев, aiogram, эксперт, REST/RLS/doctor; отдельная QA-база |
-| Docker | PASS полный изолированный CI: PostgreSQL/Auth/PostgREST/Nginx, три независимых голоса Web/Telegram → консенсус → экспорт, оригинальное аудио, эксперт, напоминания и сохранность после рестарта. Локально SKIP: daemon недоступен |
-| Live Telegram/Tor/direct через интернет | SKIP: реальных аккаунтов и доставки в этой задаче нет |
-| Физические устройства, произношение/переводы носителем | SKIP: требуется человек |
+| compileall, unittest, контракт, Ruff | PASS локально: 155 unit-тестов, компиляция, контракт и Ruff; полный CI основы указан выше |
+| PostgreSQL | PASS: 12 сценариев, консенсус, дубли, периоды, эксперт, аудио и напоминания |
+| Docker | PASS: PostgreSQL/Auth/PostgREST/Nginx, реальный корпус, независимые Web/Telegram-голоса, экспорт, сохранность после рестарта |
+| Aiogram | PASS: регистрации ученика/преподавателя, /join, меню, CSV, исправление/FSM после рестарта, повторы, remind on/off; transport подменён |
+| REST и RLS | PASS на QA: прямое публичное чтение закрытых таблиц запрещено, экспорт и представления доступны |
+| Chromium/WebKit | PASS: учебный путь, mobile, клавиатура, фокус, сетевые отказы и сохранение прогресса |
+| Навигация | PASS: последовательности вниз/вверх, колебания у границы, плавный переход, ручное прерывание, короткая вкладка, динамическая высота |
+| Визуальные проверки | PASS: ширины 360/390/768/1024/1440/1920, длинные строки, offline CDN, отсутствие горизонтального переполнения |
+| TTS | PASS: реальные WAV, загрузка, повтор, остановка, смена задания, 404 и отсутствие записи/manifest |
+| Исходное аудио | PASS PCM и MP3 локально с имеющимися FFmpeg/ffprobe; в CI MP3 явно SKIP без этих инструментов |
+| Документация | PASS: локальные ссылки/якоря, четыре поля CSV, сохранность 20 примеров из реальной колоды |
+| Live Telegram/Tor/direct, физические устройства | SKIP: нужна отдельная ручная проверка |
+| Лингвистическое качество | SKIP: требуется оценка носителем |
 
-## Матрица требований
+## Воспроизведение
 
-| Требование | Реализация | Доказательство | Статус |
-|---|---|---|---|
-| Реальный текстовый корпус | Зафиксированные JSONL БГПУ, проверка хешей | Docker import, unit importer; CORPUS_PROVENANCE | PASS |
-| Источники/координаты/происхождение | sources, phrasebook_rows, source в export | importer/PG integration, REST smoke | PASS |
-| Аудио с таймкодами | WAV/MP3 + CSV/JSON, атомарный импорт | unit/PG, original audio browsers | PASS для конвейера |
-| Подлинный аудиокорпус | Лицензированного речевого материала не добавлено | Явно технический тестовый тон | PARTIAL |
-| Задания веб/Telegram | Auth/Web RPC, aiogram feed_update | browser/aiogram + Docker CI | PASS автоматически, Live SKIP |
-| Подтверждение/исправление/пропуск | SQL submit_answer и обработчики | PG/aiogram: повторы/неверные/устаревшие действия | PASS |
-| Подставные ошибки | Подстановка другого корпусного перевода | importer/unit, browser/aiogram | PARTIAL: эвристика, не гарантия языковой ошибки |
-| Добровольные напоминания | on/off, Ufa, claim, default false | unit/PG concurrency/aiogram restart | PASS автоматически, доставка Live SKIP |
-| Три независимых участника | SQL консенсус по пользователям | PG/aiogram, mixed-channel Docker CI | PASS |
-| Нормализация/словарь | Правила и существующий synonym_map | unit/PG consensus | PASS в пределах правил, без семантической модели |
-| Подсказки/экспертное решение | pg_trgm варианты/голоса/score, expert_resolve | browser_expert/PG, экспорт | PASS |
-| Итог в БД/экспорт | confirmed, семь полей translations_export | PG/REST/browser CSV | PASS |
-| Очки/уровни/достижения | Серверные и тренировочные механики раздельны | PG/aiogram/browser lesson | PASS |
-| Периодные рейтинги | Серверные period points | PG integration | PASS |
-| Карта/прогресс | Тренировочная карта + серверная библиотека | visual/mobile + adventure_progress | PASS |
-| PostgreSQL/REST/Auth | Compose db/rest/auth/app | QA REST/RLS и CI Docker | PASS автоматически |
-| Преподавательские отчёты | Защищённый отчёт и CSV | aiogram + Docker browser | PASS |
-| Общая база Web/Telegram | Общие ответы/консенсус, разные профили | mixed-channel Docker CI | PASS; аккаунты не объединены |
-| Работа offline CDN | Локальный Supabase JS/колода/WAV | visual/TTS при route.abort HTTPS | PASS для сайта; Telegram требует сеть |
+Из корня репозитория после установки requirements-dev и браузеров Playwright:
 
+```powershell
+python -m compileall -q bot scripts tests
+python -m unittest discover -s tests -v
+python scripts/check_contract.py
+python -m ruff check .
+python -m ruff format --check .
+python tests/browser_navigation_checks.py
+python tests/browser_visual_checks.py
+python tests/browser_mobile_checks.py
+python tests/browser_tts_checks.py
+python tests/browser_original_audio_checks.py
+python tests/postgres_integration.py
+python tests/docker_integration.py
+```
 
-## Документация и очистка
+PostgreSQL integration требует локальный PG_TEST_ADMIN_DSN и создаёт собственную временную БД. Docker integration требует свободный 54321 и использует отдельный Compose-проект. Не запускайте тесты с рабочими ключами. Экспертный браузерный тест требует BASHKIR_QA_ISOLATED=1 и восстанавливает изменённый код только в своей QA-базе. [Установка и backup](WINDOWS_SETUP.md).
 
-Было 51 отслеживаемый Markdown, осталось 19: четыре основных документа в корне, двенадцать в docs, руководство импорта и два документа происхождения ассетов/зависимости. Сохранены STUDENT_RESEARCH и GAMEPLAY, которые проверяет check_contract; LOCAL_WINDOWS для альтернативного CLI; TELEGRAM_LIVE_TEST для безопасной ручной проверки; IMPORT_GUIDE с условиями сторонних текстов; ART_NOTES и vendor/README. Сохранены все лицензии, CORPUS_PROVENANCE.json, SQL-миграции, фикстуры, исходники и графические ресурсы. Двадцать исходных фраз для носителя перенесены в CONTENT_AND_AUDIO без изменения текстов/переводов.
+Снимки: test-results/visual и visual-polish/after; видео: test-results/mobile. Артефакты CI — interface-screenshots и original-audio-evidence, срок хранения новых результатов 14 дней. Автоматические Telegram Updates и видео локального урока не подтверждают Live E2E.
 
-Установка и backup объединены в WINDOWS_SETUP; контент/TTS/оригинальное аудио/CSV — CONTENT_AND_AUDIO; Telegram/напоминания — TELEGRAM; эксперт — EXPERT_REVIEW; основной/резервный показ и вопросы жюри — DEMO; фактическая архитектура — ARCHITECTURE; текущие результаты — этот QA; история — RELEASE_NOTES. Промпты разработки и дублирующиеся промежуточные отчёты удалены из текущего дерева, но доступны в Git до e90dd40.
+## Ограничения
 
-Удалённые Markdown (содержимое перенесено по назначению, устаревшие числа тестов не дублируются):
+- Три голоса сообщества не являются экспертизой носителей. Текстовое сходство не доказывает семантическую эквивалентность; полного распознавания синонимов нет.
+- TTS покрывает 40 фраз, произношение не проверено носителем. Подлинный лицензированный исходный аудиокорпус не добавлен; тестовые тоны явно технические.
+- Web/Telegram-профили независимы. Очистка хранилища может лишить анонимный Auth-профиль доступа; массовое создание аккаунтов и сговор полностью не исключены.
+- Напоминания резервируют одну попытку в сутки, не гарантируют доставку при сетевом сбое. Реальная отправка проверяется отдельно.
+- Браузерные тесты на mobile используют эмуляцию. Масштабирование 125/150/200% проверялось эквивалентом доступного viewport, не всеми настройками Windows.
+- Проверки RLS не заменяют внешний пентест. Локальный API не публикуется напрямую; внешнее размещение требует HTTPS и отдельной защиты.
+- Текущая локальная среда не имеет работающего Docker daemon: полный стек проверяется в изолированном CI. Восстановление backup на конкретном компьютере требует ручной проверки.
 
-- `CODEX_ALL_IN_ONE.md`
-- `PITCH_NOTES.md`
-- `PROMPT_TRANSLATION.md`
-- `README-BRAND-UPDATE.md`
-- `START_HERE.md`
-- `docs/ACADEMY_QA_REPORT.md`
-- `docs/APP_DESIGN.md`
-- `docs/BOT_FINAL_QA.md`
-- `docs/BROWSER_FIRST.md`
-- `docs/BROWSER_FIRST_CHANGES.md`
-- `docs/BROWSER_FIRST_QA.md`
-- `docs/CHANGES.md`
-- `docs/CODEX_CONTINUATION_REPORT.md`
-- `docs/CONTENT_FINAL_QA.md`
-- `docs/CORPUS_AUDIT.md`
-- `docs/DEMO_3_MINUTES.md`
-- `docs/DEMO_BACKUP.md`
-- `docs/DOCKER_WINDOWS.md`
-- `docs/EXPERT_SIMILARITY.md`
-- `docs/FINAL_CHECKPOINT_QA.md`
-- `docs/FINAL_DEMO.md`
-- `docs/FINAL_HACKATHON_QA.md`
-- `docs/FINAL_RELEASE_QA.md`
-- `docs/FINAL_WINDOWS_SETUP.md`
-- `docs/HACKATHON_POLISH.md`
-- `docs/JURY_POLISH.md`
-- `docs/JURY_QA_REPORT.md`
-- `docs/ORIGINAL_AUDIO.md`
-- `docs/PRE_DEMO_REPORT.md`
-- `docs/QA_REPORT.md`
-- `docs/RELEASE_CHECKLIST.md`
-- `docs/RELEASE_NOTES_v0.9.0-rc1.md`
-- `docs/REMINDERS.md`
-- `docs/STABILIZATION_REPORT.md`
-- `docs/TELEGRAM_NAVIGATION.md`
-- `docs/TTS.md`
-- `docs/UI_FINAL_PASS.md`
-- `docs/UX_REFERENCE.md`
-- `docs/VISUAL_DESIGN.md`
-- `docs/VISUAL_POLISH_QA.md`
+## Состояние релиза
 
-Ссылки обновлены в README, AGENTS, API/SPEC, тематических документах и контрактном тесте наличия документов. Проверка контракта не ослаблена: CSV из четырёх полей и 20 реальных примеров проверяются регрессиями. Ссылка веб-интерфейса на API направлена в репозиторий, поскольку API.md не поставляется внутри Nginx web-root.
-
-Отслеживаемых логов, видео, дампов БД и test-results не обнаружено; удалять их из Git не требовалось. PNG-оригинал Акбузата и SVG сохранены как полезные исходные иллюстрации/проверяемые ассеты. .gitignore дополнен локальными dump/backup/video/cache-артефактами, исходники и фикстуры не игнорируются. Срок хранения новых CI-свидетельств — 14 дней; история workflow и уже существующие артефакты не удаляются.
-
-## Ограничения и защита
-
-Семантической модели синонимов и P2-объединения аккаунтов нет. Текстовое сходство не доказывает смысл. 40 TTS WAV не покрывают всю колоду; носитель не оценивал произношение. Подлинный лицензированный исходный аудиокорпус не добавлен — тестовый тон маркирован технической фикстурой. MP3 локально проверяется с имеющимися FFmpeg/ffprobe; в CI без них явно SKIP. Анонимный Auth-профиль может потеряться после очистки хранилища; сговор аккаунтов полностью не исключён. Напоминание резервирует одну попытку в день, не exactly-once доставку. Проверки RLS не являются внешним пентестом.
-
-Скриншоты/видео — test-results/visual, visual-polish/after и checkpoint; в CI interface-screenshots и original-audio-evidence. Автоматические Telegram Updates с подменённым transport — не Live E2E. Для защиты на конкретном ноутбуке нужен ручной проход из [WINDOWS_SETUP](WINDOWS_SETUP.md), [DEMO](DEMO.md) и при необходимости [TELEGRAM_LIVE_TEST](TELEGRAM_LIVE_TEST.md). Работающие данные и volumes не изменялись; SQL, формулы, API, .env.docker и секреты не трогали.
+READY WITH LIMITATIONS при успешном workflow текущего SHA main. Работающие функции доступны по [руководству пользователя](PRODUCT_GUIDE.md). Установка и обновление сохраняют данные при соблюдении [WINDOWS_SETUP](WINDOWS_SETUP.md). Тег стабильной версии не публиковался. Реальное подключение Telegram и языковую оценку нельзя считать пройденными по автоматическим тестам.

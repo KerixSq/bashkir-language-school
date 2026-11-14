@@ -78,8 +78,8 @@ jobs:
         run: python tests/browser_tts_checks.py
       - name: Original audio range playback
         run: python tests/browser_original_audio_checks.py
-      - name: Mobile Chromium and WebKit checkpoint
-        run: python tests/browser_mobile_checkpoint.py
+      - name: Mobile Chromium and WebKit checks
+        run: python tests/browser_mobile_checks.py
       - name: Upload visual evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -88,7 +88,7 @@ jobs:
           retention-days: 14
           path: |
             test-results/visual/
-            test-results/checkpoint/
+            test-results/mobile/
             test-results/visual-polish/
 
   docker-integration:

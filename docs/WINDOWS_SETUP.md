@@ -7,7 +7,7 @@
 ```powershell
 git clone https://github.com/KerixSq/bashkir-language-school.git
 Set-Location bashkir-language-school
-git switch rc1-visual-polish
+git switch main
 python scripts/create_docker_env.py
 docker compose --env-file .env.docker config --quiet
 docker compose --env-file .env.docker up -d --build --wait
@@ -45,8 +45,8 @@ if (Test-Path web/assets/original-audio) { Copy-Item web/assets/original-audio "
 ```powershell
 git status --short
 git fetch origin
-git switch rc1-visual-polish
-git pull --ff-only origin rc1-visual-polish
+git switch main
+git pull --ff-only origin main
 ```
 
 При незакоммиченных локальных изменениях сначала сохраните их отдельно; не используйте reset/force. В проекте нет единого журнала применённых миграций. Установите последнюю применённую версию по собственным записям и определению функций. Для базы до stage9 сначала изучите старые миграции stage1–8 и [WINDOWS_SETUP.md](WINDOWS_SETUP.md). Следующий блок предназначен для **подтверждённой базы stage9 или новее**, а не любой неизвестной схемы.
@@ -123,7 +123,7 @@ python -m venv .venv
 $env:BASHKIR_ENV_FILE = '.env.docker'
 .\.venv\Scripts\python.exe scripts/doctor.py
 .\.venv\Scripts\python.exe scripts/check_rls.py
-.\.venv\Scripts\python.exe scripts/demo_readiness.py --strict
+.\.venv\Scripts\python.exe scripts/check_readiness.py --strict
 ```
 
 Doctor/RLS читают API; readiness проверяет счётчики и не заменяет E2E. Smoke-тест создаёт собственные временные записи: запускайте его на отдельной QA-базе. Браузер/экспорт: сайт → серверная проверка → вкладка «База переводов» → confirmed → JSON/CSV. Локальный тренажёр не создаёт серверных голосов.
@@ -134,4 +134,4 @@ Doctor/RLS читают API; readiness проверяет счётчики и н
 docker compose --env-file .env.docker --profile bot stop
 ```
 
-`stop` сохраняет контейнеры и volumes; обычный `down` тоже сохраняет named volume. Не используйте `down -v`, reset или повторную инициализацию. Локально в RC-аудите Docker daemon недоступен: чистая установка/рестарт стека проверяются изолированным Actions, а выполнение команд обновления на конкретной Windows-машине остаётся ручной проверкой.
+`stop` сохраняет контейнеры и volumes; обычный `down` тоже сохраняет named volume. Не используйте `down -v`, reset или повторную инициализацию. Локально в технической проверке Docker daemon недоступен: чистая установка/рестарт стека проверяются изолированным Actions, а выполнение команд обновления на конкретной Windows-машине остаётся ручной проверкой.

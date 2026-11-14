@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.demo_readiness import evaluate
+from scripts.check_readiness import evaluate
 
 
 class ReadinessTests(unittest.TestCase):

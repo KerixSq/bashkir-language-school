@@ -10,6 +10,18 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class DocumentationTests(unittest.TestCase):
+    def test_product_guide_covers_normal_user_workflow(self):
+        guide = (ROOT / 'docs/PRODUCT_GUIDE.md').read_text(encoding='utf-8')
+        for heading in (
+            'Начать обучение',
+            'Пройти урок',
+            'Проверить перевод',
+            'Telegram',
+            'Экспорт',
+        ):
+            self.assertIn('## ' + heading, guide)
+        self.assertNotRegex(guide, r'\b\d:\d\d[–-]\d:\d\d\b')
+
     def test_local_markdown_links_resolve(self):
         documents = list(ROOT.glob('*.md')) + list((ROOT / 'docs').glob('*.md'))
         documents += [
