@@ -165,6 +165,35 @@ async def main():
         assert (await db.user_by_telegram(tg))['state'] == 'choosing_pair'
         await send(tg, callback='pair:' + pair_code)
         assert (await db.user_by_telegram(tg))['state'] == 'idle'
+        from bot.reminders import run_once
+
+        assert not (await db.user_by_telegram(tg))['reminders_enabled']
+        await send(tg, '/remind wrong')
+        assert not (await db.user_by_telegram(tg))['reminders_enabled']
+        await send(tg, '/remind on')
+        assert (await db.user_by_telegram(tg))['reminders_enabled']
+        clock = (
+            datetime.now(timezone(timedelta(hours=5)))
+            .replace(hour=18, minute=0, second=0, microsecond=0)
+            .astimezone(timezone.utc)
+        )
+        before_reminder = len(stub.messages)
+        await run_once(bot, clock)
+        assert len(stub.messages) == before_reminder + 1
+        await run_once(bot, clock)
+        assert len(stub.messages) == before_reminder + 1
+        await send(tg, callback='menu:task')
+        assert (await db.user_by_telegram(tg))['state'] == 'idle'
+        await send(tg, callback='remind:off')
+        assert not (await db.user_by_telegram(tg))['reminders_enabled']
+        after_opt_out = len(stub.messages)
+        await run_once(bot)  # Production path uses the database's default clock.
+        assert len(stub.messages) == after_opt_out
+        await send(tg, callback='menu:reminders')
+        assert 'выключены' in stub.messages[-1]
+        print(
+            'PASS reminders: opt-in, durable single send, task button, menu opt-out (stub transport)'
+        )
         await send(tg, '/task')
         user = await db.user_by_telegram(tg)
         assert user['current_fragment_pair_id'] == stored['pair']
@@ -333,9 +362,11 @@ async def main():
             },
         )
         # Fresh interpreter + real Dispatcher: no shared in-memory FSM or cached user rows.
+        await send(tg, '/remind on')
         subprocess.run([sys.executable, __file__, '--resume', str(tg), extra], check=True)
         after = await db.user_by_telegram(tg)
         assert after['state'] == 'idle' and after['points'] == before + 10
+        assert not after['reminders_enabled'] and after['last_reminder_date']
         assert (
             len(api.table('answers').select('id').eq('fragment_pair_id', extra).execute().data) == 1
         )
@@ -397,6 +428,7 @@ async def resume_correction(telegram_id, pair):
     try:
         user = await db.user_by_telegram(telegram_id)
         assert user['state'] == 'awaiting_correction' and user['current_fragment_pair_id'] == pair
+        assert user['reminders_enabled']
         for index, text in enumerate(('/start', 'Исправленный технический вариант.'), 1):
             await dispatcher.feed_update(
                 bot,
@@ -412,6 +444,20 @@ async def resume_correction(telegram_id, pair):
                 ),
             )
         assert (await db.user_by_telegram(telegram_id))['state'] == 'idle'
+        await dispatcher.feed_update(
+            bot,
+            Update(
+                update_id=3,
+                message=Message(
+                    message_id=3,
+                    date=datetime.now(timezone.utc),
+                    from_user=User(id=telegram_id, is_bot=False, first_name='Test'),
+                    chat=Chat(id=telegram_id, type='private'),
+                    text='/remind off',
+                ),
+            ),
+        )
+        assert not (await db.user_by_telegram(telegram_id))['reminders_enabled']
         print('PASS fresh process restores PostgreSQL FSM and submits correction')
     finally:
         await bot.session.close()

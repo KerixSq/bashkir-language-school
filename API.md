@@ -1,5 +1,7 @@
 # REST API
 
+Stage14: claim_daily_reminders(p_now timestamptz,p_limit integer) — только service_role, резервирует дату одной ежедневной попытки по Уфе через SKIP LOCKED. Публичный вызов/список Telegram-получателей запрещён. Согласие меняет только бот по from_user через /remind on/off; публичного reminder API нет. Подробности: [REMINDERS.md](docs/REMINDERS.md).
+
 Stage13: задания дополнительно возвращают source_kind/source_url/source_license и прежние time_start/time_end для исходного аудио. Новый import_audio_fragments(jsonb,jsonb) — только service_role, для CLI; публичное исполнение запрещено. В translations_export по-прежнему семь полей, таймкоды находятся в source. [Импорт и контракт](docs/ORIGINAL_AUDIO.md).
 
 Stage12: защищённый `expert_list_queue(p_code)` дополнительно возвращает `similarity_candidates` с двумя вариантами, числом голосов и score pg_trgm (0–1). Это подсказка эксперту, не семантическое объединение; запись выполняется прежним `expert_resolve`. Права и семь полей `translations_export` сохранены. Подробности: [EXPERT_SIMILARITY.md](docs/EXPERT_SIMILARITY.md).

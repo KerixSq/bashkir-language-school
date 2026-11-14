@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import logging
 import os
 from logging.handlers import RotatingFileHandler
@@ -14,6 +15,7 @@ from dotenv import load_dotenv
 from bot.handlers import community, messages, profile, registration, tasks
 from bot.live_probe import observe_polling
 from bot.proxy import proxy_url
+from bot.reminders import reminder_loop
 
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / '.env')
@@ -68,11 +70,23 @@ async def main() -> None:
                 BotCommand(command='privacy', description='Приватность'),
                 BotCommand(command='delete_me', description='Удалить профиль'),
                 BotCommand(command='help', description='Все команды'),
+                BotCommand(command='remind', description='Напоминания on/off'),
             ]
         )
         logging.getLogger('bashkir-bot').info('Запущен long polling')
         async with observe_polling(bot, dispatcher):
-            await dispatcher.start_polling(bot)
+            worker = (
+                None
+                if os.getenv('LIVE_TELEGRAM_TEST_ONLY') == '1'
+                else asyncio.create_task(reminder_loop(bot))
+            )
+            try:
+                await dispatcher.start_polling(bot)
+            finally:
+                if worker:
+                    worker.cancel()
+                    with contextlib.suppress(asyncio.CancelledError):
+                        await worker
     finally:
         await bot.session.close()
 

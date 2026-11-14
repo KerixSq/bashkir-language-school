@@ -157,10 +157,13 @@ async def menu_click(call: CallbackQuery) -> None:
                 [
                     [('Языковая пара', 'menu:pair'), ('Вступить в класс', 'menu:join')],
                     [('Приватность', 'menu:privacy'), ('Помощь', 'menu:help')],
+                    [('Напоминания', 'menu:reminders')],
                     [('Меню', 'menu:home')],
                 ]
             ),
         )
+    elif action == 'reminders':
+        await reminder_preferences(message, user, None)
     elif action in ('contribution', 'history'):
         await contribution(message, user, history=action == 'history')
     elif action == 'web':
@@ -225,3 +228,49 @@ async def contribution(message: Message, user: dict, history: bool = False) -> N
             [[('История моих проверок', 'menu:history'), ('Меню', 'menu:home')]]
         ),
     )
+
+
+async def reminder_preferences(message, user, enabled):
+    if enabled is not False and (
+        not user.get('nickname')
+        or not user.get('lang_pair')
+        or user.get('role') not in ('student', 'teacher')
+        or (user['role'] == 'teacher' and not user.get('class_id'))
+    ):
+        await message.answer(texts.REGISTRATION_REQUIRED)
+        return
+    if enabled is not None:
+        await db.update_user(user['id'], {'reminders_enabled': enabled})
+    active = user.get('reminders_enabled', False) if enabled is None else enabled
+    hours = await db.select('config', 'value', key='reminder_hour')
+    hour = int(hours[0]['value']) if hours else 18
+    await message.answer(
+        f'Напоминания {"включены" if active else "выключены"}. Одна попытка в сутки в {hour:02d}:00–{hour:02d}:59 по Уфе, пока дневная цель не выполнена. Включая, ты соглашаешься получать эти сообщения. Доставку при сетевом сбое гарантировать нельзя.',
+        reply_markup=keyboards.build_keyboard(
+            [[('Включить', 'remind:on'), ('Выключить', 'remind:off')], [('Меню', 'menu:home')]]
+        ),
+    )
+
+
+@router.message(Command('remind'))
+@guard
+async def remind_command(message: Message):
+    user = await require_user(message)
+    if not user:
+        return
+    value = (message.text or '').partition(' ')[2].strip().lower()
+    if value not in ('', 'on', 'off'):
+        await message.answer('Используй /remind on или /remind off.')
+        return
+    await reminder_preferences(message, user, None if not value else value == 'on')
+
+
+@router.callback_query(F.data.startswith('remind:'))
+@guard
+async def remind_click(call: CallbackQuery):
+    await call.answer()
+    if not isinstance(call.message, Message) or call.data not in ('remind:on', 'remind:off'):
+        return
+    user = await require_user(call)
+    if user:
+        await reminder_preferences(call.message, user, call.data == 'remind:on')

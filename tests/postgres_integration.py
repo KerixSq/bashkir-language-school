@@ -106,6 +106,69 @@ class PostgreSQLTests(unittest.TestCase):
         with self.assertRaisesRegex(psycopg.Error, 'Завершите регистрацию'):
             self.scalar('select public.get_next_fragment(%s)', (user,))
 
+    def test_daily_reminder_claims_ufa_concurrency_and_restart(self):
+        migration = (ROOT / 'sql/migrations/20261114_stage14_daily_reminders.sql').read_text(
+            encoding='utf-8'
+        )
+        self.db.execute(migration)
+        self.db.execute(migration)
+        due, done, deleted, off, teacher = [self.user() for _ in range(5)]
+        self.assertFalse(self.scalar('select reminders_enabled from users where id=%s', (due,)))
+        self.pair()  # An actual unanswered assignment is required.
+        self.db.execute(
+            'update users set telegram_id=abs(telegram_id),reminders_enabled=true where id=any(%s)',
+            ([due, done, deleted, teacher],),
+        )
+        self.db.execute('update users set deleted_at=now() where id=%s', (deleted,))
+        self.db.execute("update users set role='teacher',class_id=null where id=%s", (teacher,))
+        for _ in range(5):
+            pair = self.pair()
+            self.db.execute(
+                "insert into answers(user_id,fragment_pair_id,shown_variant,action,answer_norm,created_at) values(%s,%s,'auto','confirm','technical',timestamptz '2031-01-01 20:00:00+00')",
+                (done, pair),
+            )
+        self.assertEqual(
+            self.scalar("select count(*) from claim_daily_reminders('2031-01-02 12:59:00+00')"), 0
+        )
+
+        def claim(_):
+            with psycopg.connect(self.dsn, autocommit=True) as connection:
+                connection.execute('set role service_role')
+                return connection.execute(
+                    "select user_id from claim_daily_reminders('2031-01-02 13:00:00+00')"
+                ).fetchall()
+
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            claimed = [row[0] for batch in pool.map(claim, range(16)) for row in batch]
+        self.assertEqual(claimed, [due])
+        self.db.execute(migration)
+        self.db.execute('update users set reminders_enabled=false where id=%s', (due,))
+        self.db.execute('update users set reminders_enabled=true where id=%s', (due,))
+        self.assertEqual(
+            claim(None), []
+        )  # New connection/process state and re-enable cannot duplicate today.
+        self.assertEqual(
+            str(self.scalar('select last_reminder_date from users where id=%s', (due,))),
+            '2031-01-02',
+        )
+        self.assertTrue(self.scalar('select reminders_enabled from users where id=%s', (due,)))
+        self.assertEqual(
+            self.scalar("select count(*) from claim_daily_reminders('2031-01-03 12:59:00+00')"), 0
+        )
+        next_day = self.db.execute(
+            "select user_id from claim_daily_reminders('2031-01-03 13:00:00+00')"
+        ).fetchall()
+        self.assertEqual({row[0] for row in next_day}, {due, done})
+        self.assertEqual(
+            self.scalar("select count(*) from claim_daily_reminders('2031-01-04 14:00:00+00')"), 0
+        )
+        self.db.execute('set role anon')
+        try:
+            with self.assertRaises(psycopg.errors.InsufficientPrivilege):
+                self.db.execute('select * from claim_daily_reminders()')
+        finally:
+            self.db.execute('reset role')
+
     def test_original_audio_import_transaction_and_task_metadata(self):
         import sys
         import tempfile

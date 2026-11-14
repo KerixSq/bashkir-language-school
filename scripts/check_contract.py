@@ -30,11 +30,15 @@ RPC = (
     'web_next_fragment',
     'web_submit_answer',
     'web_skip_fragment',
+    'import_audio_fragments',
+    'claim_daily_reminders',
 )
 COMMANDS = (
     'start',
     'task',
     'pair',
+    'join',
+    'remind',
     'cancel',
     'top',
     'me',
@@ -97,8 +101,11 @@ def verify() -> None:
             assert_contains(
                 r'Command\([\'\"]' + command + r'[\'\"]\)', bot_code, f'Нет команды /{command}'
             )
-    if "Command('remind')" in bot_code or 'reminder_loop' in bot_code:
-        raise AssertionError('Напоминания не удалены из работающего бота')
+    assert_contains(
+        r'revoke all on function public.claim_daily_reminders\(timestamptz,integer\) from public,anon,authenticated',
+        logic,
+        'Reminder claims must remain private',
+    )
 
     for param in (
         'daily_goal',
