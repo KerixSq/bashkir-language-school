@@ -7,6 +7,7 @@ This is not a live Telegram polling test.
 import asyncio
 import csv
 import io
+import os
 import secrets
 import subprocess
 import sys
@@ -413,9 +414,61 @@ async def resume_correction(telegram_id, pair):
         await bot.session.close()
 
 
+async def vote_in_isolated_stack(telegram_id):
+    assert os.environ.get('BOT_INTEGRATION_ISOLATED') == '1'
+    stub = TelegramStub()
+    bot = Bot('123456:transport-is-stubbed-no-real-token', session=stub)
+    dispatcher = create_dispatcher()
+    try:
+        await dispatcher.feed_update(
+            bot,
+            Update(
+                update_id=1,
+                message=Message(
+                    message_id=1,
+                    date=datetime.now(timezone.utc),
+                    from_user=User(id=telegram_id, is_bot=False, first_name='Test'),
+                    chat=Chat(id=telegram_id, type='private'),
+                    text='/task',
+                ),
+            ),
+        )
+        user = await db.user_by_telegram(telegram_id)
+        pair = user['current_fragment_pair_id']
+        assert pair
+        await db.update_user(
+            user['id'],
+            {'current_shown_at': (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()},
+        )
+        await dispatcher.feed_update(
+            bot,
+            Update(
+                update_id=2,
+                callback_query=CallbackQuery(
+                    id='2',
+                    from_user=User(id=telegram_id, is_bot=False, first_name='Test'),
+                    chat_instance='qa',
+                    data='task:confirm:' + pair,
+                    message=Message(
+                        message_id=2,
+                        date=datetime.now(timezone.utc),
+                        chat=Chat(id=telegram_id, type='private'),
+                        from_user=User(id=123456, is_bot=True, first_name='Bot'),
+                    ),
+                ),
+            ),
+        )
+        assert len(await db.select('answers', user_id=user['id'], fragment_pair_id=pair)) == 1
+        print('PASS real aiogram vote in isolated mixed-channel stack')
+    finally:
+        await bot.session.close()
+
+
 if __name__ == '__main__':
     asyncio.run(
-        resume_correction(int(sys.argv[2]), sys.argv[3])
+        vote_in_isolated_stack(int(sys.argv[2]))
+        if len(sys.argv) == 3 and sys.argv[1] == '--isolated-vote'
+        else resume_correction(int(sys.argv[2]), sys.argv[3])
         if len(sys.argv) == 4 and sys.argv[1] == '--resume'
         else main()
     )

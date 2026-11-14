@@ -89,6 +89,7 @@ services:
     restart: unless-stopped
     environment:
       ANON_KEY: ${ANON_KEY:?Run python scripts/create_docker_env.py}
+      BOT_USERNAME: ${BOT_USERNAME:-}
     depends_on:
       rest:
         condition: service_healthy
@@ -114,6 +115,7 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       # Unset uses Tor; explicitly empty selects direct. Never silently fall back.
       BOT_PROXY_URL: ${BOT_PROXY_URL-socks5://tor:9050}
+      PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:-}
     volumes:
       - ./data/phrasebooks:/app/data/phrasebooks:ro
     networks: [internal]

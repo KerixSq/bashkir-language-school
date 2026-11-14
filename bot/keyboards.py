@@ -48,7 +48,7 @@ def main_menu(role: str | None) -> InlineKeyboardMarkup:
     rows = [
         [('Задание дня', 'menu:task'), ('Мой прогресс', 'menu:progress')],
         [('Вклад в библиотеку', 'menu:contribution'), ('Рейтинг', 'menu:ratings')],
-        [('Настройки', 'menu:settings')],
+        [('Настройки', 'menu:settings'), ('Сайт и игра', 'menu:web')],
     ]
     if role == 'teacher':
         rows.append([('Мой класс', 'menu:report'), ('Отчёт', 'menu:report')])

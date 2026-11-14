@@ -233,6 +233,50 @@ def main():
                 context.set_offline(False)
                 print('PASS fast answer, duplicate, network failure and training XP isolation')
 
+                # One actual aiogram handler vote + two independent browser/Auth votes.
+                tg = 8_700_000_000_000 + secrets.randbelow(100_000_000)
+                sql(
+                    f"insert into users(telegram_id,nickname,role,lang_pair,state) values({tg},'Mixed Telegram QA','student','ba-ru','idle');"
+                )
+                subprocess.run(
+                    [sys.executable, 'tests/bot_integration.py', '--isolated-vote', str(tg)],
+                    cwd=ROOT,
+                    check=True,
+                    env={
+                        **os.environ,
+                        'BOT_INTEGRATION_ISOLATED': '1',
+                        'SUPABASE_URL': 'http://127.0.0.1:54321',
+                        'SUPABASE_SECRET_KEY': values['SERVICE_ROLE_KEY'],
+                    },
+                )
+                mixed_pair = sql(
+                    f'select fragment_pair_id from answers join users on users.id=answers.user_id where telegram_id={tg};'
+                )
+                for _, participant, _ in sessions[:2]:
+                    participant.reload()
+                    expect(participant.locator('#web-session')).to_be_visible()
+                    participant.locator('#web-next').click()
+                    expect(participant.locator('#web-original')).not_to_be_empty()
+                    time.sleep(6)
+                    participant.locator('#web-confirm').click()
+                    expect(participant.locator('#web-feedback')).to_contain_text('Ответ принят')
+                assert (
+                    sql(
+                        f"select status||':'||confirmed_count from fragment_pairs where id='{mixed_pair}';"
+                    )
+                    == 'confirmed:3'
+                )
+                page.locator('#community-refresh').click()
+                expect(page.locator('#community-confirmed')).to_have_text('2')
+                mixed_export = context.request.get(
+                    'http://127.0.0.1:54321/rest/v1/translations_export?status=eq.confirmed',
+                    headers=headers,
+                )
+                assert mixed_export.ok and len(mixed_export.json()) == 2
+                print(
+                    'PASS Telegram + two independent web users -> consensus -> export -> library=2'
+                )
+
                 snapshot = sql('select count(*),sum(points_awarded) from answers;')
                 compose('restart', 'db', 'auth', 'rest', 'app')
                 compose('up', '-d', '--wait', '--wait-timeout', '180')

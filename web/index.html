@@ -1624,7 +1624,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     // Для GitHub Pages можно указать только публичные значения.
     const PUBLISHED_SUPABASE_URL = window.BASHKIR_PUBLIC_CONFIG?.url || '';
     const PUBLISHED_PUBLIC_KEY = window.BASHKIR_PUBLIC_CONFIG?.key || '';
-    const PUBLISHED_BOT_USERNAME = ''; // Без @, например bashkir_school_bot
+    const PUBLISHED_BOT_USERNAME = window.BASHKIR_PUBLIC_CONFIG?.bot_username || '';
     const $ = (id) => document.getElementById(id);
     const storage = {
       get(key) { try { return localStorage.getItem(key); } catch (_) { return null; } },
@@ -2069,7 +2069,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
 
     function configureBotLink() {
       const username = PUBLISHED_BOT_USERNAME.trim().replace(/^@/, '');
-      if (!/^[a-z0-9_]{5,32}bot$/i.test(username)) return;
+      if (!/^[a-z][a-z0-9_]{1,28}bot$/i.test(username)) return;
       const url = `https://t.me/${username}`;
       const heroLink = $('bot-entry');
       heroLink.href = url;
@@ -2081,7 +2081,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
       guideLink.target = '_blank';
       guideLink.rel = 'noopener noreferrer';
       guideLink.hidden = false;
-      $('bot-link-note').textContent = 'Понадобится код класса от преподавателя.';
+      $('bot-link-note').textContent = 'Учись самостоятельно или вступи в класс по коду.';
     }
 
     function init() {
@@ -2161,6 +2161,14 @@ body.lesson-active .app-mobile-nav {display:none!important}
       }
     }
     init();
+    function followPublicSection() {
+      if (location.hash === '#translations') {
+        openTab('translations');
+        $('translations').scrollIntoView({block:'start'});
+      }
+    }
+    window.addEventListener('hashchange', followPublicSection);
+    followPublicSection();
   </script>
   <script>
     'use strict';

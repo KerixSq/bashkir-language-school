@@ -120,6 +120,20 @@ def main():
 
         context = browser.new_context()
         page = context.new_page()
+        page.route(
+            '**/config.js',
+            lambda route: route.fulfill(
+                body="window.BASHKIR_PUBLIC_CONFIG={bot_username:'@school_test_bot'}",
+                content_type='application/javascript',
+            ),
+        )
+        page.goto(URL + '#translations')
+        expect(page.locator('#translations')).to_be_visible()
+        expect(page.locator('#bot-entry')).to_have_attribute('href', 'https://t.me/school_test_bot')
+        context.close()
+
+        context = browser.new_context()
+        page = context.new_page()
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
         page.add_init_script(

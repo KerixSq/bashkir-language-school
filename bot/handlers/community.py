@@ -1,13 +1,15 @@
+import os
 import secrets
 from datetime import datetime, timezone
 from html import escape
 
 from aiogram import F, Router
 from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from bot import db, keyboards, texts
 from bot.common import clean_text, guard, require_user
+from bot.links import public_web_url
 
 router = Router()
 
@@ -161,6 +163,28 @@ async def menu_click(call: CallbackQuery) -> None:
         )
     elif action in ('contribution', 'history'):
         await contribution(message, user, history=action == 'history')
+    elif action == 'web':
+        url = public_web_url(os.getenv('PUBLIC_WEB_URL', ''))
+        if not url:
+            await message.answer(
+                'Публичный адрес сайта не настроен. Локальную платформу можно открыть только на ноутбуке организатора. Задания и вклад доступны здесь в Telegram.',
+                reply_markup=keyboards.main_menu(user.get('role')),
+            )
+        else:
+            await message.answer(
+                'Сайт использует общую библиотеку и серверные рейтинги. Веб-профиль и Telegram-профиль пока независимы. Тренировочные XP игры хранятся отдельно.',
+                reply_markup=InlineKeyboardMarkup(
+                    inline_keyboard=[
+                        [InlineKeyboardButton(text='Веб-платформа', url=url)],
+                        [InlineKeyboardButton(text='Игра с Акбузатом', url=url + '#game-zone')],
+                        [
+                            InlineKeyboardButton(
+                                text='Библиотека переводов', url=url + '#translations'
+                            )
+                        ],
+                    ]
+                ),
+            )
 
 
 async def contribution(message: Message, user: dict, history: bool = False) -> None:

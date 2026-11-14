@@ -91,6 +91,21 @@ class PostgreSQLTests(unittest.TestCase):
             (-uuid.uuid4().int % (2**60) - 2**60, self.room),
         )
 
+    def test_independent_student_and_teacher_class_guard(self):
+        user = self.user()
+        self.pair()
+        self.db.execute('update users set class_id=null where id=%s', (user,))
+        task = self.scalar('select public.get_next_fragment(%s)', (user,))
+        self.assertIsNotNone(task)
+        migration = (ROOT / 'sql/migrations/20261114_stage11_independent_students.sql').read_text(
+            encoding='utf-8'
+        )
+        self.db.execute(migration)
+        self.db.execute(migration)
+        self.db.execute("update users set role='teacher' where id=%s", (user,))
+        with self.assertRaisesRegex(psycopg.Error, 'Завершите регистрацию'):
+            self.scalar('select public.get_next_fragment(%s)', (user,))
+
     def assign(self, user, pair, variant='auto', correction=False):
         self.db.execute(
             'update public.users set current_fragment_pair_id=%s,'
