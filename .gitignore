@@ -2,6 +2,7 @@
 .env.*
 !.env.example
 .venv/
+.venv-tts/
 __pycache__/
 *.py[cod]
 *.log
@@ -20,9 +21,11 @@ Thumbs.db
 
 # Статическая учебная колода публикуется осознанно, без персональных данных.
 !web/assets/learning-deck.json
+!web/assets/audio/manifest.json
 !docs/CORPUS_PROVENANCE.json
 test-results/
 .index.html.before-brand-update.bak
+.cache/tts/
 
 
 # Supabase CLI, npm и локальные контейнеры

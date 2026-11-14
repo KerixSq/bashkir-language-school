@@ -968,8 +968,8 @@ body.lesson-active #game-word-source {display:block;font-size:10px!important;col
 .game-word-mascot {display:none}
 body.lesson-active .game-word-mascot {display:block;width:130px;height:135px;flex:none;object-fit:contain;align-self:flex-end;margin-bottom:-27px;filter:drop-shadow(0 5px 4px #c4dfeccc)}
 body.lesson-active .game-answers {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;margin:24px 0 22px!important}
-body.lesson-active .game-answers .game-answer {min-height:86px!important;border:2px solid #dee9f1!important;border-bottom:5px solid #cddbe8!important;border-radius:16px!important;background:#fff!important;color:#284f6e!important;font-size:16px!important;font-weight:800!important;display:flex;align-items:center;gap:13px;padding:14px 18px!important;transition:transform .12s,border-color .12s,background .12s}
-body.lesson-active .game-answers .game-answer:hover:not(:disabled) {background:#f2fbff!important;border-color:#9bcfdf!important;transform:translateY(-2px)}
+body.lesson-active .game-answers .game-answer {min-height:86px!important;border:2px solid #dee9f1!important;border-bottom:5px solid #cddbe8!important;border-radius:16px!important;background:#fff!important;color:#284f6e!important;font-size:16px!important;font-weight:800!important;display:flex;align-items:center;gap:13px;padding:14px 18px!important;transition:border-color .12s,background .12s}
+body.lesson-active .game-answers .game-answer:hover:not(:disabled) {background:#f2fbff!important;border-color:#9bcfdf!important}
 body.lesson-active .game-answers .game-answer[aria-pressed=true] {border-color:#30b774!important;border-bottom-color:#15975a!important;background:#e9fbf1!important;box-shadow:0 0 0 2px #caf2dc!important;color:#167d53!important}
 body.lesson-active .game-answers .game-answer:disabled {opacity:.8}
 body.lesson-active .game-answers .game-answer:focus-visible {outline:3px solid #f5c34e!important;outline-offset:2px}
@@ -1002,6 +1002,14 @@ body.lesson-active .app-mobile-nav {display:none!important}
   .app-brand-icon img{width:100%!important;height:100%!important;object-fit:contain!important}
   .app-sidebar-bottom img{width:145px;height:124px;max-width:100%;object-fit:contain}
   .app-guide-illustration img{width:118px;height:118px;max-width:100%;object-fit:contain}
+    .tts-control {margin:12px 0 4px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+    .tts-button {min-height:44px;padding:8px 14px;border:1px solid #9abccd;border-radius:12px;background:#fff;color:#194464;font:700 14px/1.4 system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .tts-button:hover:not(:disabled) {background:#eaf5fb}
+    .tts-button[aria-pressed=true] {background:#e5f8ee;border-color:#238654;color:#155c3d}
+    .tts-button:disabled {color:#596d80;background:#eef3f6;cursor:not-allowed}
+    .tts-note {display:block;font:12px/1.5 system-ui,sans-serif;color:#526b7d;letter-spacing:normal;overflow-wrap:anywhere}
+    .quest-text .tts-note,.quest-text .tts-status {font-weight:400;color:#526b7d;letter-spacing:normal}
+    .tts-status {flex:1 1 180px;font:12px/1.5 system-ui,sans-serif;color:#526b7d}
 </style>
   <link rel="icon" type="image/svg+xml" href="assets/bashkir-mark.svg">
 </head>
@@ -1150,7 +1158,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
             </div>
             <div id="web-task" class="pt-4" hidden>
               <div class="quest-caption" id="web-task-pair"><svg class="svg-icon" aria-hidden="true"><use href="#b-icon-book-open"></use></svg> ПРОВЕРКА ПЕРЕВОДА</div>
-              <div class="quest-text"><span>НА БАШКИРСКОМ</span><strong id="web-original"></strong></div>
+              <div class="quest-text"><span>НА БАШКИРСКОМ</span><strong id="web-original"></strong><div class="tts-control"><button id="web-tts" type="button" class="tts-button" disabled aria-label="Прослушать башкирскую фразу" aria-pressed="false" aria-describedby="web-tts-status web-tts-note"><span aria-hidden="true">▶</span> Слушать</button><span id="web-tts-status" class="tts-status" role="status" aria-live="polite">Проверяем озвучку…</span></div><span id="web-tts-note" class="tts-note">Синтезированная речь · bak_aigul · произношение не проверено носителем</span></div>
               <div class="quest-text quest-proposal"><span>ПРЕДЛОЖЕННЫЙ ПЕРЕВОД</span><strong id="web-translation"></strong></div>
               <p id="web-task-source" class="quest-help"></p>
               <div class="quest-actions" id="web-answer-actions">
@@ -1308,7 +1316,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
           <div id="game-question" hidden>
             <div class="game-question-bar"><span id="game-question-type">Выбери перевод</span><span id="game-question-count">1 / 5</span></div>
             <div class="game-progress-track" role="progressbar" aria-label="Прогресс урока" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><span id="game-progress-fill"></span></div>
-            <div class="game-word-card"><div class="game-word-copy"><small>Башҡортса · По-башкирски</small><strong id="game-bashkir-text"></strong><span id="game-word-source"></span></div><img class="game-word-mascot" src="assets/akbuzat.webp" alt="" loading="lazy" width="120" height="120"></div>
+            <div class="game-word-card"><div class="game-word-copy"><small>Башҡортса · По-башкирски</small><strong id="game-bashkir-text"></strong><span id="game-word-source"></span><div class="tts-control"><button id="game-tts" type="button" class="tts-button" disabled aria-label="Прослушать башкирскую фразу" aria-pressed="false" aria-describedby="game-tts-status game-tts-note"><span aria-hidden="true">▶</span> Слушать</button><span id="game-tts-status" class="tts-status" role="status" aria-live="polite">Проверяем озвучку…</span></div><span id="game-tts-note" class="tts-note">Синтезированная речь · bak_aigul · произношение не проверено носителем</span></div><img class="game-word-mascot" src="assets/akbuzat.webp" alt="" loading="lazy" width="120" height="120"></div>
             <div id="game-answers" class="game-answers"></div>
             <div id="game-feedback" class="game-feedback" role="status" aria-live="polite" hidden></div>
             <div class="game-action-row"><button id="game-check" type="button" class="game-big-button" disabled>Проверить</button><button id="game-next" type="button" class="game-big-button" hidden>Продолжить ➜</button><button id="game-skip" type="button" class="game-small-button">Пропустить</button></div>
@@ -1506,6 +1514,99 @@ body.lesson-active .app-mobile-nav {display:none!important}
   </nav>
   <script defer src="assets/vendor/supabase.min.js"></script>
   <script src="config.js"></script>
+  <audio id="bashkir-audio" preload="none" aria-hidden="true"></audio>
+  <script>
+    'use strict';
+    // Static same-origin audio only. No browser voice substitution or remote TTS.
+    window.BashkirTTS = (() => {
+      const player = document.getElementById('bashkir-audio');
+      const controls = new Map();
+      const normalize = text => String(text || '').normalize('NFC').toLowerCase().trim().replace(/\s+/g,' ');
+      let active = null, ticket = 0, catalogError = false;
+      const catalog = fetch('assets/audio/manifest.json', {credentials:'same-origin'})
+        .then(async response => {
+          if (!response.ok) throw new Error('Audio catalog unavailable');
+          const body = await response.text();
+          if (body.length > 1_000_000) throw new Error('Audio catalog too large');
+          const data = JSON.parse(body);
+          if (data.version !== 1 || !Array.isArray(data.entries) || data.entries.length > 1000)
+            throw new Error('Invalid audio catalog');
+          const entries = new Map();
+          for (const entry of data.entries) {
+            if (entry.lang !== 'ba' || !/^bak_(aigul|alfia2?|miyau|ramilia)$/.test(entry.voice) ||
+                entry.model !== 'v5_cis_base_nostress' || typeof entry.text !== 'string' ||
+                entry.text.length > 500 || !/^assets\/audio\/[a-f0-9]{64}\.wav$/.test(entry.path))
+              throw new Error('Invalid audio entry');
+            entries.set(normalize(entry.text), entry);
+          }
+          return entries;
+        }).catch(() => { catalogError = true; return new Map(); });
+      function paint(control, state, message='') {
+        control.state = state;
+        control.button.disabled = state === 'missing';
+        control.button.setAttribute('aria-pressed', String(['loading','playing'].includes(state)));
+        const labels = {ready:'▶ Слушать',loading:'■ Остановить загрузку',playing:'■ Остановить',missing:'Нет озвучки',error:'↻ Повторить'};
+        control.button.textContent = labels[state];
+        control.button.setAttribute('aria-label', state === 'playing' || state === 'loading'
+          ? 'Остановить озвучку' : 'Прослушать башкирскую фразу');
+        control.status.textContent = message;
+      }
+      function stop() {
+        ticket += 1;
+        player.onended = player.onerror = null;
+        player.pause();
+        player.removeAttribute('src');
+        player.load();
+        if (active) paint(active, active.entry ? 'ready' : 'missing');
+        active = null;
+      }
+      async function setPhrase(id, text) {
+        stop();
+        const control = controls.get(id);
+        if (!control) return;
+        const revision = ++control.revision;
+        control.entry = null;
+        paint(control, 'missing', 'Проверяем озвучку…');
+        const entries = await catalog;
+        if (revision !== control.revision) return;
+        control.entry = entries.get(normalize(text));
+        if (control.entry) document.getElementById(id+'-tts-note').textContent = 'Синтезированная речь · '+control.entry.voice+' · произношение не проверено носителем';
+        paint(control, control.entry ? 'ready' : 'missing', control.entry
+          ? 'Готово к прослушиванию'
+          : catalogError ? 'Каталог озвучки недоступен. Текстовое задание работает.'
+          : 'Озвучка этой фразы пока недоступна');
+      }
+      function play(control) {
+        if (active === control) { stop(); return; }
+        stop();
+        if (!control.entry) return;
+        active = control;
+        const current = ticket;
+        paint(control, 'loading', 'Загружаем звук…');
+        const fail = () => {
+          if (current !== ticket) return;
+          stop();
+          paint(control, 'error', 'Не удалось воспроизвести звук. Попробуй ещё раз.');
+        };
+        player.onended = () => { if (current === ticket) stop(); };
+        player.onerror = fail;
+        player.src = control.entry.path;
+        // play() starts synchronously inside the user gesture, including mobile Safari.
+        player.play().then(() => {
+          if (current === ticket) paint(control, 'playing', 'Воспроизведение · синтезированная речь');
+        }).catch(fail);
+      }
+      for (const id of ['game','web']) {
+        const control = {button:document.getElementById(id+'-tts'),status:document.getElementById(id+'-tts-status'),revision:0,entry:null};
+        controls.set(id, control);
+        control.button.addEventListener('click', () => play(control));
+      }
+      document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+      document.addEventListener('api-connection-changed', () => setPhrase('web',''));
+      window.addEventListener('pagehide', stop);
+      return {setPhrase,stop};
+    })();
+  </script>
   <script>
     'use strict';
     // Для GitHub Pages можно указать только публичные значения.
@@ -2202,6 +2303,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
       let lessonReturnFocus = null;
       let lessonInert = [];
       function showScene(scene) {
+        window.BashkirTTS?.stop();
         ['loading','empty','ready','question','finish'].forEach((name)=>setVisible(`game-${name}`,scene===name));
         const active = scene === 'question' || scene === 'finish';
         document.body.classList.toggle('lesson-active', active);
@@ -2354,6 +2456,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
         const labels={choice:'Выбери перевод',check:'Есть ли ошибка?',bank:'Собери перевод',type:'Напиши перевод'};
         text('game-question-type',labels[current.type]);
         text('game-bashkir-text',current.row.text_ba);
+        window.BashkirTTS?.setPhrase('game',current.row.text_ba);
         text('game-word-source',`Источник: ${current.row.source}`);
         el('game-progress-fill').style.width=`${session.at/session.rows.length*100}%`;
         el('game-question').querySelector('[role=progressbar]').setAttribute('aria-valuenow',String(session.at));
@@ -2650,6 +2753,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
       if (!client || clientConfig.url !== url || clientConfig.key !== state.key) {
         client?.auth.stopAutoRefresh();
         task=null;drawProfile(null);show('web-task',false);
+        window.BashkirTTS?.setPhrase('web','');
         client=window.supabase.createClient(url,state.key,{
           auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false},
         });
@@ -2665,7 +2769,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     async function guarded(fn) {
       if (busy) return;
       busy=true;
-      const controls = [...document.querySelectorAll('#web-play button')].map(button=>[button,button.disabled]);
+      const controls = [...document.querySelectorAll('#web-play button:not(.tts-button)')].map(button=>[button,button.disabled]);
       controls.forEach(([button])=>{button.disabled=true;});
       status('Работаем с базой…');
       try {await fn();if(el('web-status').textContent==='Работаем с базой…')status('');}
@@ -2718,16 +2822,19 @@ body.lesson-active .app-mobile-nav {display:none!important}
           if(result.error) throw result.error;
         }
         const dataProfile=await rpc('web_register',{p_nickname:nickname,p_lang_pair:el('web-pair').value,p_join_code:el('web-join').value.trim()||null});
+        window.BashkirTTS?.setPhrase('web','');
         drawProfile(dataProfile);task=null;show('web-task',false);show('web-task-intro',true);
         status('Профиль готов. Нажми «Получить задание»!');
       });
     }
     async function next() {
+      window.BashkirTTS?.setPhrase('web','');
       await guarded(async()=>{
         task=await rpc('web_next_fragment');
         if(!task) {show('web-task',false);show('web-task-intro',true);window.JuryHome?.task(null,null);status('Ты проверил все доступные фразы этой языковой пары.');return;}
         show('web-task-intro',false);show('web-task',true);
         setText('web-original',task.text_ba);
+        window.BashkirTTS?.setPhrase('web',task.text_ba);
         setText('web-translation',task.translation);
         window.JuryHome?.task(task.text_ba,task.translation,true);
         setText('web-task-source',task.source||'Источник: разговорники БГПУ');
@@ -2739,6 +2846,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     }
     async function submit(action,answer=null) {
       if(!task) return;
+      window.BashkirTTS?.stop();
       await guarded(async()=>{
         const result=await rpc('web_submit_answer',{p_fragment_pair_id:task.fragment_pair_id,p_action:action,p_text:answer});
         if(result?.too_fast){status(`Подожди ${result.retry_seconds||2} сек. и попробуй снова.`,true);return;}
@@ -2761,6 +2869,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     }
     async function skip() {
       if(!task)return;
+      window.BashkirTTS?.setPhrase('web','');
       await guarded(async()=>{
         await rpc('web_skip_fragment',{p_fragment_pair_id:task.fragment_pair_id});
         task=null;show('web-task',false);show('web-task-intro',true);window.JuryHome?.task(null,null);
@@ -2769,7 +2878,7 @@ body.lesson-active .app-mobile-nav {display:none!important}
     }
     function init() {
       el('web-register-form').addEventListener('submit',register);
-      el('web-edit').addEventListener('click',()=>{show('web-onboarding',true);show('web-session',false);status('Измени никнейм или языковую пару и сохрани.');});
+      el('web-edit').addEventListener('click',()=>{window.BashkirTTS?.setPhrase('web','');show('web-onboarding',true);show('web-session',false);status('Измени никнейм или языковую пару и сохрани.');});
       el('web-next').addEventListener('click',next);
       el('web-after-answer').addEventListener('click',next);
       el('web-confirm').addEventListener('click',()=>submit('confirm'));

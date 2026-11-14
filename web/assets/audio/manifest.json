@@ -1,0 +1,536 @@
+{
+  "version": 1,
+  "model": "v5_cis_base_nostress",
+  "model_sha256": "0405777e332906f0644e08a680f7cfdc2137ea864090079c1fdd30a43c1b8761",
+  "model_url": "https://models.silero.ai/models/tts/ru/v5_cis_base_nostress.pt",
+  "voice": "bak_aigul",
+  "sample_rate": 24000,
+  "license": "MIT (Silero LICENSE_CIS)",
+  "review_status": "requires_native_review",
+  "notice": "Синтезированная речь, требует оценки носителем",
+  "entries": [
+    {
+      "id": "003d20d41ef1b04a2ab58e4062b9833d73df337d222aba68e23a42662c64aa49",
+      "text": "ни хәл итәһең инде!",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:1727f7fa-345e-55df-9c7a-d0365a3b06e8"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/003d20d41ef1b04a2ab58e4062b9833d73df337d222aba68e23a42662c64aa49.wav",
+      "sha256": "1f2ed6e22ea3d851d5669d91de60e5a66ed85de30f7c4a6be5a9c48d504ea026"
+    },
+    {
+      "id": "00eae168ceb6582547fb1ae17692a46dea9baa440aac4d41751786eff365a050",
+      "text": "барырға кәрәк",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:c4d62794-d362-5d11-b35f-f692eca92850"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/00eae168ceb6582547fb1ae17692a46dea9baa440aac4d41751786eff365a050.wav",
+      "sha256": "9eb1c266ff3caf2739258ca732d0948d41542a2dd601c8b696db9e77be5a92c4"
+    },
+    {
+      "id": "019c817bd378732ba88e106bc053336708dbe7377ea06dcebc12012e183b6f77",
+      "text": "баҙарға тиклем ниндәй транспорттар менән барырға мөмкин?",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:574f74ab-6d43-5647-9406-eab917791d03"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/019c817bd378732ba88e106bc053336708dbe7377ea06dcebc12012e183b6f77.wav",
+      "sha256": "4965f18f2e3376b3f16d89be068efb7d636af9a5b2bb34e4cedb4c39a8b073f5"
+    },
+    {
+      "id": "01c655b2f3178eb7fc5bb07cc3c5224ae31889028cccec64bfb338a1fc00d8d6",
+      "text": "яңылышмаһам, ...",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:e88de711-b76f-5500-8f0f-fd2762f466dd"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/01c655b2f3178eb7fc5bb07cc3c5224ae31889028cccec64bfb338a1fc00d8d6.wav",
+      "sha256": "550b112ce317a234718159344781da3e79b0c7dd9bf37523aae5acc4ce689886"
+    },
+    {
+      "id": "02202f1b45e26915c976f81f93e67545f5a5acfe1bd984a8e59386f8bce5222d",
+      "text": "арҡыры",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:d12d2cf4-5f16-5ce7-8cf9-695bd7697cee"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/02202f1b45e26915c976f81f93e67545f5a5acfe1bd984a8e59386f8bce5222d.wav",
+      "sha256": "b177c47164c354653e882e57eaa7c1772c854ccd652fe1ab1333b77e78c3f1fb"
+    },
+    {
+      "id": "0251589f0b381cf16222b2626ba0860fbd40d61f3bc8a08458202e7eb349a047",
+      "text": "ҡулдарығыҙҙы күтәрегеҙ!",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:db78ed20-8ac0-5ca6-bf1a-46550ec0b799"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0251589f0b381cf16222b2626ba0860fbd40d61f3bc8a08458202e7eb349a047.wav",
+      "sha256": "51ea9ffa5b2a991fb043987cf30f289be4110a369271fcd0ceb022b963971ab7"
+    },
+    {
+      "id": "02b8ab1309c2cad0f6f3ea4f5dc53c20dd9ff5d0ae2bce48aac6e3b8c0f7f194",
+      "text": "ҡайһы ваҡытта беҙ ял йортонда, турбазала, ял итәбеҙ",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:b30218fa-ad4e-5088-a6ec-9c2c218a61bd"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/02b8ab1309c2cad0f6f3ea4f5dc53c20dd9ff5d0ae2bce48aac6e3b8c0f7f194.wav",
+      "sha256": "114ad7f3b048a83107854870ed5c2e756cc22511c438208c73829f0da2631607"
+    },
+    {
+      "id": "03393758b5d8a3ad335d9a3283037eb91a4e6909c6ac0f0f2ab83a701255a636",
+      "text": "һеҙ (һин) былай эшләргә тейеш түгел инегеҙ(-ең)",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:80f94a70-8af8-5452-94b3-e7a8ed25ffc9"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/03393758b5d8a3ad335d9a3283037eb91a4e6909c6ac0f0f2ab83a701255a636.wav",
+      "sha256": "ee724f86482e9b04d5c4c4b21741449e8c7a66104206cfdae0a2f5dee95bf282"
+    },
+    {
+      "id": "03b15f30fd49df1d3dd71043bce6e27019809711db1e66c37961b659d69196fb",
+      "text": "эремсекле крем",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:f207c7ff-aebf-52c3-8abc-8e124791a67d"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/03b15f30fd49df1d3dd71043bce6e27019809711db1e66c37961b659d69196fb.wav",
+      "sha256": "742a0d6afab2efecbeb9308530cd2bf9a76e993664969929ba4df34da6d290d3"
+    },
+    {
+      "id": "03fd5bd3213633bb30e1e51f78ed4da9ec741f52bbd091911dd9f02e1abd29be",
+      "text": "ел көньяҡтан (төньяҡтан, көнсығыштан, көнбайыштан) иҫә",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:1ac94e96-bce2-54e9-8673-ffcea0cd4e12",
+        "ba-kk:1ac94e96-bce2-54e9-8673-ffcea0cd4e12"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/03fd5bd3213633bb30e1e51f78ed4da9ec741f52bbd091911dd9f02e1abd29be.wav",
+      "sha256": "d8363d27cc01662c9403d1a4f4562d0e284448dfbe9ceeb4cfa21ac3fff5188b"
+    },
+    {
+      "id": "04629d328284589e5dee9bf531ed4a229f6163eaf0ffeefd1a205d812163629d",
+      "text": "эйе, мин кейәүҙәмен, балалар әлегә юҡ",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:b3bfc331-35c2-5636-9f04-8310436c6d06"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/04629d328284589e5dee9bf531ed4a229f6163eaf0ffeefd1a205d812163629d.wav",
+      "sha256": "6e41c7257d9fe8f46ec6ad17fbfa039b2388e2cfa967915c0d2c5bd353f6111c"
+    },
+    {
+      "id": "05026b13b2d5e7de1f8d362c8a2e5c9d5361528a4f131068e651ee3e31ece296",
+      "text": "эйе, минең ҡатыным мәктәптә эшләй",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:3c939245-7f41-5d74-b347-0f17d13cec15"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/05026b13b2d5e7de1f8d362c8a2e5c9d5361528a4f131068e651ee3e31ece296.wav",
+      "sha256": "8cbe4a528a6cd7b4c0764508181ff8612fbd70c8b66ab0682c944e639aee6973"
+    },
+    {
+      "id": "0533a932c60f996c07b915ef7dfe61ac1fec6e2c6e2571489c3634030d22d53e",
+      "text": "йыуығыҙ, зинһар",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:3b70247a-26ac-5340-a324-7829c42a07b5"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0533a932c60f996c07b915ef7dfe61ac1fec6e2c6e2571489c3634030d22d53e.wav",
+      "sha256": "e7add2369f7b672196b3e2955da235e449f4f0bc2929bfc58f129ac3016a19b1"
+    },
+    {
+      "id": "057851811e7b1b60a9b4dd6deb1bb9930990f9f5c0bc19fbbdc920797384f84c",
+      "text": "беҙ",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:ada9d314-4c89-51bd-a8ed-4341ac09f35b",
+        "ba-kk:ada9d314-4c89-51bd-a8ed-4341ac09f35b"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/057851811e7b1b60a9b4dd6deb1bb9930990f9f5c0bc19fbbdc920797384f84c.wav",
+      "sha256": "c7434cf1f27f3f195536f512b52e813dd8e36af22b911466c70208707287d2c2"
+    },
+    {
+      "id": "058183ca35fde422941633e66c715200ceaa77ab0f492b8810a0d384f9a8ad9f",
+      "text": "мин ... теләйем",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:6f8eabae-5bef-502d-aa96-0d9c47fd9b87"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/058183ca35fde422941633e66c715200ceaa77ab0f492b8810a0d384f9a8ad9f.wav",
+      "sha256": "f9a8dc59d593c0cd0b77d019d63bd80b3ed4691d20f7ed7b6ee1dc5ca96fe4fe"
+    },
+    {
+      "id": "05efb06f199255a104b560dd80b6b52c9f4253acbecd77f91f3fdf11b26b15eb",
+      "text": "минең … бар - әсәйем",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:88e72c6e-3127-5d41-b5e8-afbbcc5ccab9"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/05efb06f199255a104b560dd80b6b52c9f4253acbecd77f91f3fdf11b26b15eb.wav",
+      "sha256": "dbd34cae737ef2db632fc86a11d05315457b21aba61330fb94e43e64999f917b"
+    },
+    {
+      "id": "060ad2c4b8f04d00a3e50642d0095b76584793f97b5ca5fb776d1a3ed83b61a6",
+      "text": "тирәк",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:958d8ecc-854f-5481-993a-c9f976c2dff9"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/060ad2c4b8f04d00a3e50642d0095b76584793f97b5ca5fb776d1a3ed83b61a6.wav",
+      "sha256": "bb710cefc73bd4f7741660ff82cef1a71449bfdb22c691fcd2915d10353fd286"
+    },
+    {
+      "id": "061a2f34e6cff91bd98497daf2b3e9bb4717b3cc6eba925c1fdb4fab203616fa",
+      "text": "ҡабул итеү имтихандары 20 (егерменсе) июлдән башлана",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:40d32726-1e23-5de9-85e0-fb8f54f9c6fe"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/061a2f34e6cff91bd98497daf2b3e9bb4717b3cc6eba925c1fdb4fab203616fa.wav",
+      "sha256": "57de424249e76d027b0748aeab284ae49d64a426c7741e3d4bccd8eff24f6096"
+    },
+    {
+      "id": "0652e14a7a4e2f025a8adfe09b020169b2d7a76103210d8dccf18a4e990a3846",
+      "text": "мин кем менән һөйләшәм?",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:c860177a-8308-56fd-9990-d9121753fd75"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0652e14a7a4e2f025a8adfe09b020169b2d7a76103210d8dccf18a4e990a3846.wav",
+      "sha256": "6c3a4e15f94e136fd6c893ac2ef93d9ffb6554fe890fbc6839ef0003ce12190d"
+    },
+    {
+      "id": "0686265071bdc6478559955f6dc100464720de7b3a6bc93e13b5cda52965ae63",
+      "text": "миңә балалар (ирҙәр, ҡатын- ҡыҙҙар) аяҡ кейеме күрһәтегеҙ әле?",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:8923c454-c339-5121-b8b5-f7ced2413c7d"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0686265071bdc6478559955f6dc100464720de7b3a6bc93e13b5cda52965ae63.wav",
+      "sha256": "51f91627bdf17b05ae86da5123a592246734a8b8555ec7804237a5324de133c5"
+    },
+    {
+      "id": "06a4b5e74d2d893c834fe9c92aefde81757241059305453f35f23fe9545ef1ad",
+      "text": "миңә яҙығыҙ әле, зинһар",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:f6f057c2-3357-572e-9110-929b826e03a3"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/06a4b5e74d2d893c834fe9c92aefde81757241059305453f35f23fe9545ef1ad.wav",
+      "sha256": "2df389cf2ca294be0b58acecaf94b63996da9d20b2480420f50b87aad0623276"
+    },
+    {
+      "id": "06b4701e08393d48434be9ffb9ae2c31175e81ebcdbdcf8c980054e10379bd19",
+      "text": "никах көнөгөҙ менән",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:8c8028d1-ac65-5310-8cf7-e96f8adc41e3"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/06b4701e08393d48434be9ffb9ae2c31175e81ebcdbdcf8c980054e10379bd19.wav",
+      "sha256": "3cc2af6828eb02ce462538b8425fbd9aa174740ab51455bcde2893dc4cd92c15"
+    },
+    {
+      "id": "06c9e1ceeae014f3a6c6291abbfb968baa1a5b96e3be202a5c332d52b8eb83e6",
+      "text": "был минең өсөн оло хөрмәт",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:18815031-50a0-5621-aca3-9a634de49b94"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/06c9e1ceeae014f3a6c6291abbfb968baa1a5b96e3be202a5c332d52b8eb83e6.wav",
+      "sha256": "29e384d642c8cd1c930a5207d8f8d545872621b0540493ca9ae6776c0c45c557"
+    },
+    {
+      "id": "06fcc3bdf4f4a3a0aebc6c411fa7e0924f1f6b20ce7d4e165d2206c217cb52cb",
+      "text": "ял көндәрендә һеҙ нимә эшләйһегеҙ?",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:a7e32f9c-2c6f-5715-927d-b3ce1ad747bb"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/06fcc3bdf4f4a3a0aebc6c411fa7e0924f1f6b20ce7d4e165d2206c217cb52cb.wav",
+      "sha256": "77639e25c5dd7467d9a4b8eda79b663c4a4cbf616d397fb107772bc85875e846"
+    },
+    {
+      "id": "07a66e5169fd1a8d5c7812d1648f72938abdfecee438085f1a1543afd387d53b",
+      "text": "һеҙ ... һөйләшәһегеҙме? - башҡортса - якутса - инглизсә - төрөксә",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:4f146518-5921-5fa0-98de-ff1d2bdef1aa"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/07a66e5169fd1a8d5c7812d1648f72938abdfecee438085f1a1543afd387d53b.wav",
+      "sha256": "64ab909a0a6c576764c63c0fd0aff9171b8cca815342afed7dfeaf55fc116b1f"
+    },
+    {
+      "id": "07a9ee61c1ebc8da5c01d743b277969b16ea5932a8727bc032a11ac17f874b23",
+      "text": "өй туйығыҙ менән!",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:2d7ca791-7b3e-5d95-bf76-935accc9ba67"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/07a9ee61c1ebc8da5c01d743b277969b16ea5932a8727bc032a11ac17f874b23.wav",
+      "sha256": "13b6171c3d9146109e76ab0797f06d83e9ef270f6bf6c2494903f7b25de4ecfb"
+    },
+    {
+      "id": "087b90a38b6bbca8a5f60fcdb60ce34cf29e9d9fdbc6869d364f7ed35914c263",
+      "text": "сентябрь",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:bd6c80ad-6409-552f-bf33-068267ba0f6b"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/087b90a38b6bbca8a5f60fcdb60ce34cf29e9d9fdbc6869d364f7ed35914c263.wav",
+      "sha256": "df3c2694fcf8a7485d01e50b300f79a984d454d1aa5b34110a3f2035a5d34456"
+    },
+    {
+      "id": "09092e5a204e94a697dc56066bf1eea222abeb4d09f47866f8aa4694a4edf9fe",
+      "text": "иҫерткес эсемлектәр",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:de3bdb25-a578-5fd5-af02-db8ae9d6135f"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/09092e5a204e94a697dc56066bf1eea222abeb4d09f47866f8aa4694a4edf9fe.wav",
+      "sha256": "43637755b39bc365334a77ef0146e6ce0a3a885f83f882dfc6fcbb14fa61fca1"
+    },
+    {
+      "id": "0950532804f788e36428d682a098c82c6cd7a076b965116b68e6968412c94274",
+      "text": "һеҙҙең кемдәрегеҙ бар?",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:af33ef18-2640-54eb-a861-746954e688ac"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0950532804f788e36428d682a098c82c6cd7a076b965116b68e6968412c94274.wav",
+      "sha256": "74cc8378b963b92dcff109b900403202e0685454a10e1abffaf420b26f8519f4"
+    },
+    {
+      "id": "0997906a7ed1eda27131024628f1d83176733a9c5cd08250b030f9f18b4eab9f",
+      "text": "монголия",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:f92fbc3a-d0a0-59df-b2fa-175a93c313f5"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0997906a7ed1eda27131024628f1d83176733a9c5cd08250b030f9f18b4eab9f.wav",
+      "sha256": "f52051de5f85ed273d5372d6a5316b14ed1a2fa9eab819c15d38084e06203119"
+    },
+    {
+      "id": "09f2ac1e65747534decf6ae6e5f1b0cbe2c2ce1956a260a535b6705f6b7ade36",
+      "text": "беҙ йыш ҡына ауылға атай-әсәйгә ярҙам итергә ҡайтабыҙ",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:96db3a49-63f1-54e2-ac3d-7bd035d080b6"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/09f2ac1e65747534decf6ae6e5f1b0cbe2c2ce1956a260a535b6705f6b7ade36.wav",
+      "sha256": "e485dbdc9b479712f2bd3f78571580f7a9d28df81aabdacab8223557fa2f7533"
+    },
+    {
+      "id": "0a1475c283988fa838910dd0d3feed61a889da66e2b3047d5784367a21589211",
+      "text": "һеҙҙе байрам менән ҡотлайым!",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:09b18f37-c1b1-55a9-a4bd-fd683d67e59c"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0a1475c283988fa838910dd0d3feed61a889da66e2b3047d5784367a21589211.wav",
+      "sha256": "d919045f9f91106e467892025f0d109af584c74505165435f54011985b63a93b"
+    },
+    {
+      "id": "0a7fb41d403d04ceb1e5d8ff4e4725238d87651267f773ccf19f2fc7ea226c6a",
+      "text": "дөрөҫ түгел",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:be153829-6097-5cf7-b8a0-86908067a2e4"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0a7fb41d403d04ceb1e5d8ff4e4725238d87651267f773ccf19f2fc7ea226c6a.wav",
+      "sha256": "fff469103f90877b1ee2583ca1ddcabe14c6d7a8d55e40da3f59118f96dc830c"
+    },
+    {
+      "id": "0ad7f3ce6c9a7a3890940cea29c7159482308544a903d990ec041d79ca63cb1d",
+      "text": "илле",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:52cf5e4c-aeb1-5372-a17d-ba8b2ecef13e"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0ad7f3ce6c9a7a3890940cea29c7159482308544a903d990ec041d79ca63cb1d.wav",
+      "sha256": "ce1ab455064192620b559cf6938399d071a4ff8509bbb0fe54cdda5c2e44bb78"
+    },
+    {
+      "id": "0afac81052c5153935e5dc38e3caaed8897950192d973b3c89cfe2c65e797239",
+      "text": "ниндәй дисктар ҡулланыу яҡшыраҡ?",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:93d65cb5-1d60-5c42-83bb-4da2f2ae6830"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0afac81052c5153935e5dc38e3caaed8897950192d973b3c89cfe2c65e797239.wav",
+      "sha256": "5e9e850fe27cf0e24c64fef5d8c8e68cfcd266c08c5b4a1312626287e70f75b6"
+    },
+    {
+      "id": "0b2e4e7f0a20549e8362e7fd89584dfae5e7ed5f3dd62a21ddfd61722e9e95f9",
+      "text": "шәкәрле",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:61442577-b2df-5f75-a396-da0837e7af9d"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0b2e4e7f0a20549e8362e7fd89584dfae5e7ed5f3dd62a21ddfd61722e9e95f9.wav",
+      "sha256": "4412aa9a6d1317cbc87f69c949c04352e7ab23fbbf7b1650df2a3f84fa94b5f2"
+    },
+    {
+      "id": "0b493acbd766165b822c2b60ab91225d89cbcf860cbe5abb1081277be65a8791",
+      "text": "мәңгегә",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:b262ffcd-6b39-5b48-aa18-9a73c05ff854"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0b493acbd766165b822c2b60ab91225d89cbcf860cbe5abb1081277be65a8791.wav",
+      "sha256": "4bf41a568400cc3d22ed32af797a13bdd9d90cb009c26698636390bbb679c86d"
+    },
+    {
+      "id": "0b56d7e4e6b6833ba0f2d82b2d7cba1fbe9d9ff8a324d446150bb36e63e46720",
+      "text": "миңә үтә бешкән",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:2bd12b7f-1248-5c3f-b475-868c2b547c27",
+        "ba-kk:2bd12b7f-1248-5c3f-b475-868c2b547c27"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0b56d7e4e6b6833ba0f2d82b2d7cba1fbe9d9ff8a324d446150bb36e63e46720.wav",
+      "sha256": "b9b39df743c01dffc664131da56cb1ec3e9845fad6cfe5411cbb373ba7309226"
+    },
+    {
+      "id": "0c24273b8848963dce67b0f60f90167c6ddd254a9d304fe562ee3158134032d4",
+      "text": "кем менән?",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-kk:e22a6a76-1e04-52fc-b7ba-fa2a8a3f8bdc"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0c24273b8848963dce67b0f60f90167c6ddd254a9d304fe562ee3158134032d4.wav",
+      "sha256": "c4a37ac6272ba54ab0ce94613f85a7c3f9534e6e7049cc97ab432f0c3762f5ff"
+    },
+    {
+      "id": "0c2bac28a5ea8816560696c97764ebbcc2bb8c5046c1f4c3d603bc94740db4c3",
+      "text": "сирень",
+      "lang": "ba",
+      "voice": "bak_aigul",
+      "model": "v5_cis_base_nostress",
+      "source_ids": [
+        "ba-ru:83f6b227-6a3a-56e0-8005-2a0ac23c3fda"
+      ],
+      "notice": "Синтезированная речь, требует оценки носителем",
+      "path": "assets/audio/0c2bac28a5ea8816560696c97764ebbcc2bb8c5046c1f4c3d603bc94740db4c3.wav",
+      "sha256": "d7a4ab5478ed80d711420f42cd5ca27d2f3f635a0bdcf87a155517962ecb57af"
+    }
+  ]
+}

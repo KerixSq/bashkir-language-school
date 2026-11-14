@@ -72,6 +72,8 @@ jobs:
           python tests/browser_checks.py
       - name: Responsive interface without CDN
         run: python tests/browser_visual_checks.py
+      - name: Real static Bashkir audio
+        run: python tests/browser_tts_checks.py
       - name: Upload visual evidence
         if: always()
         uses: actions/upload-artifact@v4
