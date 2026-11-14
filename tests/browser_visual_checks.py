@@ -122,6 +122,23 @@ def main():
                     for button in page.locator('#game-answers button').all()
                     if button.inner_text() != translation
                 ).click()
+                # Hover at the lower edge must not alternate between translated/unhovered
+                # positions every frame, preventing both real clicks and Playwright stability.
+                check = page.locator('#game-check')
+                check.scroll_into_view_if_needed()
+                box = check.bounding_box()
+                page.mouse.move(box['x'] + box['width'] / 2, box['y'] + box['height'] - 1)
+                positions = check.evaluate(
+                    """async button => {
+                        const positions = [];
+                        for (let frame = 0; frame < 12; frame++) {
+                            await new Promise(requestAnimationFrame);
+                            positions.push(button.getBoundingClientRect().y);
+                        }
+                        return positions;
+                    }"""
+                )
+                assert max(positions) - min(positions) < 0.1, 'check button hover oscillation'
                 page.locator('#game-check').click()
                 feedback = page.locator('#game-feedback')
                 expect(feedback).to_have_class('game-feedback is-wrong')
