@@ -2,7 +2,7 @@
 :root { --school-ink:#203d3b; --school-green:#17694f; --school-teal:#164e50; --school-gold:#ac8139; --school-cream:#faf8f2; --school-line:#dce4df; }
 body, .app-layout, .app-center { background:var(--school-cream)!important; color:var(--school-ink)!important; }
 .app-sidebar { border-right:1px solid var(--school-line)!important; }
-.app-brand { margin-bottom:10px!important; }
+.app-brand { margin-bottom:10px!important; padding:0 4px 8px; }
 .app-nav-group-title { color:#637b74; font-size:11px; padding:8px 12px 6px; }
 .app-nav-group-second { padding-top:16px; }
 .app-sidebar-nav .app-nav-item { font-weight:700!important; color:#45635e!important; min-height:44px; padding:9px 12px!important; border-radius:10px!important; transition:background .16s,color .16s; }

@@ -69,6 +69,8 @@ def main():
                         if height >= 900:
                             assert sidebar.evaluate(
                                 'node => node.scrollHeight <= node.clientHeight'
+                            ), sidebar.evaluate(
+                                'node => ({height:node.clientHeight, scroll:node.scrollHeight})'
                             )
                         for item in page.locator('.app-sidebar .app-nav-item').all():
                             item.focus()
