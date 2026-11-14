@@ -477,7 +477,7 @@ begin
  return (select jsonb_build_object('fragment_pair_id',v_pair.id,'text_ba',f.text_ba,
    'translation',case when v_variant='bad' then v_pair.bad_translation else v_pair.auto_translation end,
    'lang_pair',v_pair.lang_pair,'source',s.title,
-   'source_kind',s.kind,'source_license',s.license,'source_url',case when s.kind='audio' then s.url end,
+   'source_kind',s.kind,'source_license',s.license,'source_url',case when s.kind='audio' and s.url ~ '^/web/assets/original-audio/[0-9a-f]{64}\.(wav|mp3)$' then s.url end,
    'time_start',f.time_start,'time_end',f.time_end)
  from public.fragments f join public.sources s on s.id=f.source_id
  where f.id=v_pair.fragment_id);

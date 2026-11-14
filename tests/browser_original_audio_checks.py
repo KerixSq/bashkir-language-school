@@ -1,5 +1,6 @@
 """Called by isolated Docker E2E: real import, Auth user, source playback and answer."""
 
+import io
 import re
 import shutil
 import subprocess
@@ -9,6 +10,7 @@ import threading
 from functools import partial
 from http.server import ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from audio_fixture import audio_fixture
 from browser_visual_checks import ROOT, QuietHandler
@@ -75,12 +77,14 @@ def check_original_audio(api, page, compose, sql, root):
         button.click()
         assert audio_node.evaluate('a=>a.paused')
         # Failure changes only the audio status, never fabricates a successful answer.
-        task = api.rpc('get_next_fragment', {'p_user_id': user}).execute().data
-        page.route('**/original-audio/*.wav', lambda route: route.abort())
-        page.evaluate('task=>window.OriginalAudio.setTask(task)', task)
+        page.route('**/original-audio/**', lambda route: route.abort())
+        page.reload()
+        expect(page.locator('#web-session')).to_be_visible()
+        page.locator('#web-next').click()
         button.click()
         expect(page.locator('#original-audio-status')).to_contain_text('Не удалось')
-        page.unroute('**/original-audio/*.wav')
+        expect(button).to_have_attribute('aria-pressed', 'false')
+        page.unroute('**/original-audio/**')
         button.click()
         page.wait_for_function("() => !document.getElementById('original-audio-player').paused")
         out = root / 'test-results/visual'
@@ -140,6 +144,21 @@ def main():
             'source': source['title'],
         }
         files = {source['url']: audio}
+        unavailable = set()
+        retry_audio = Path(directory) / 'retry-tone.wav'
+        changed = bytearray(audio.read_bytes())
+        changed[-1] ^= 1
+        retry_audio.write_bytes(changed)
+        retry_source, retry_rows = plan(
+            retry_audio, annotation, 'TECHNICAL RETRY tone', 'CC0 technical fixture'
+        )
+        files[retry_source['url']] = retry_audio
+        retry_task = {
+            **retry_rows[0],
+            'source_kind': 'audio',
+            'source_url': retry_source['url'],
+            'source': retry_source['title'],
+        }
         mp3_task = None
         if shutil.which('ffmpeg') and shutil.which('ffprobe'):
             mp3 = Path(directory) / 'technical-tone.mp3'
@@ -162,10 +181,36 @@ def main():
             print('SKIP MP3 widget: existing ffmpeg/ffprobe unavailable; WAV still tested')
 
         class AudioHandler(QuietHandler):
-            def translate_path(self, path):
-                if path in files:
-                    return str(files[path])
-                return super().translate_path(path)
+            def send_head(self):
+                path = urlsplit(self.path).path
+                if path in unavailable:
+                    self.send_error(404)
+                    return None
+                if path not in files:
+                    return super().send_head()
+                data = files[path].read_bytes()
+                start, end = 0, len(data) - 1
+                requested = self.headers.get('Range')
+                if requested:
+                    match = re.fullmatch(r'bytes=(\d*)-(\d*)', requested)
+                    if not match or not any(match.groups()):
+                        self.send_error(416)
+                        return None
+                    left, right = match.groups()
+                    start = int(left) if left else max(0, len(data) - int(right))
+                    end = min(int(right), end) if left and right else end
+                    if not 0 <= start <= end < len(data):
+                        self.send_error(416)
+                        return None
+                self.send_response(206 if requested else 200)
+                self.send_header('Content-Type', self.guess_type(str(files[path])))
+                self.send_header('Accept-Ranges', 'bytes')
+                self.send_header('Cache-Control', 'no-store')
+                self.send_header('Content-Length', str(end - start + 1))
+                if requested:
+                    self.send_header('Content-Range', f'bytes {start}-{end}/{len(data)}')
+                self.end_headers()
+                return io.BytesIO(data[start : end + 1])
 
         server = ThreadingHTTPServer(('127.0.0.1', 0), partial(AudioHandler, directory=str(ROOT)))
         threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -214,6 +259,17 @@ def main():
                     assert page.locator('#original-audio-player').evaluate(
                         'a=>a.paused && !a.hasAttribute("src")'
                     )
+                    unavailable.add(retry_source['url'])
+                    page.evaluate('task=>window.OriginalAudio.setTask(task)', retry_task)
+                    button.click()
+                    expect(page.locator('#original-audio-status')).to_contain_text('Не удалось')
+                    expect(button).to_have_attribute('aria-pressed', 'false')
+                    unavailable.remove(retry_source['url'])
+                    button.click()
+                    page.wait_for_function(
+                        "() => {const a=document.getElementById('original-audio-player');return !a.paused && a.readyState>=2 && a.currentTime>0.23}"
+                    )
+                    page.evaluate('window.OriginalAudio.clear()')
                     page.evaluate(
                         'task=>window.OriginalAudio.setTask(task)',
                         {**task, 'source_url': 'https://evil.example/file.wav'},

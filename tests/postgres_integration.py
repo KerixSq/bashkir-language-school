@@ -127,6 +127,16 @@ class PostgreSQLTests(unittest.TestCase):
         for _ in range(2):
             self.scalar('select import_audio_fragments(%s,%s)', (Jsonb(source), Jsonb(segments)))
         pair = segments[0]['pair_id']
+        private_user = self.user()
+        self.assign(private_user, pair)
+        self.db.execute(
+            "update sources set url='https://private.example/audio?token=TEST_ONLY' where id=%s",
+            (source['id'],),
+        )
+        self.assertIsNone(
+            self.scalar('select get_next_fragment(%s)', (private_user,))['source_url']
+        )
+        self.db.execute('update sources set url=%s where id=%s', (source['url'], source['id']))
         self.assertEqual(
             self.scalar('select count(*) from fragments where source_id=%s', (source['id'],)), 1
         )

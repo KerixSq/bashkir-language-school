@@ -8,7 +8,10 @@ window.OriginalAudio = (() => {
   let segment = null;
   let ticket = 0;
   let stopTimer;
+  let loading = false, failed = false;
   function pause() {
+    ticket++;
+    loading = false;
     clearTimeout(stopTimer);
     audio.pause();
     button.textContent = 'Слушать оригинал';
@@ -17,6 +20,7 @@ window.OriginalAudio = (() => {
   function clear() {
     ticket++;
     segment = null;
+    failed = false;
     pause();
     audio.removeAttribute('src');
     audio.load();
@@ -29,7 +33,7 @@ window.OriginalAudio = (() => {
     const start = Number(task.time_start), end = Number(task.time_end);
     if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end <= start) return;
     if (typeof task.source_url !== 'string' || !/^\/web\/assets\/original-audio\/[0-9a-f]{64}\.(wav|mp3)$/.test(task.source_url)) return;
-    segment = {start, end, label: `${task.source || 'Исходное аудио'} · ${start}–${end} с. ${task.source_license || ''}`};
+    segment = {start, end, url:task.source_url, label: `${task.source || 'Исходное аудио'} · ${start}–${end} с. ${task.source_license || ''}`};
     audio.src = task.source_url;
     region.hidden = false;
     note.textContent = segment.label;
@@ -51,25 +55,38 @@ window.OriginalAudio = (() => {
   audio.addEventListener('error', () => {
     if (segment) {
       pause();
+      failed = true;
       note.textContent = 'Не удалось загрузить оригинал. Можно повторить или продолжить текстовое задание.';
     }
   });
   button.addEventListener('click', async () => {
     if (!segment) return;
-    if (!audio.paused) { pause(); return; }
-    const current = ticket;
+    if (loading || !audio.paused) { pause(); return; }
+    const current = ++ticket;
+    loading = true;
+    button.textContent = 'Остановить оригинал';
+    button.setAttribute('aria-pressed', 'true');
     window.BashkirTTS?.stop();
     try {
-      if (audio.error) audio.load();
+      if (failed || audio.error) {
+        failed = false;
+        // A failed media resource can stay cached in the browser's decoder.
+        audio.src = segment.url + '?retry=' + Date.now() + '-' + current;
+        audio.load();
+      }
       if (audio.readyState >= 1) audio.currentTime = segment.start;
       await audio.play();
       if (current !== ticket) return;
+      loading = false;
       button.textContent = 'Остановить оригинал';
       note.textContent = segment.label;
       button.setAttribute('aria-pressed', 'true');
       stopTimer = setTimeout(() => { if (current === ticket) pause(); }, Math.max(0, segment.end - audio.currentTime) * 1000);
     } catch (_) {
-      if (current === ticket) note.textContent = 'Не удалось воспроизвести оригинал. Повтори попытку; текстовое задание доступно.';
+      if (current === ticket) {
+        pause(); failed = true;
+        note.textContent = 'Не удалось воспроизвести оригинал. Повтори попытку; текстовое задание доступно.';
+      }
     }
   });
   document.addEventListener('click', event => {
