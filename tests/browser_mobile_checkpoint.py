@@ -2,6 +2,7 @@
 
 import json
 import threading
+import traceback
 from functools import partial
 from http.server import ThreadingHTTPServer
 
@@ -52,9 +53,11 @@ def main():
                     expect(page.locator('#lesson-close')).to_be_focused()
                     page.locator('#game-tts').click()
                     playing(page)
-                    page.screenshot(path=str(OUT / f'{engine}-audio.png'))
+                    # A screenshot can outlast a short real WAV on a busy runner.
+                    # Stop first so the next tap cannot restart an already-ended clip.
                     page.locator('#game-tts').click()
                     stopped(page)
+                    page.screenshot(path=str(OUT / f'{engine}-audio.png'))
                     page.on('dialog', lambda dialog: dialog.accept())
                     page.locator('#lesson-close').click()
                     # The uploaded subset contains only actual corpus entries with real WAVs.
@@ -64,7 +67,7 @@ def main():
                     saved = page.evaluate(
                         "JSON.parse(localStorage.getItem('bashkir_story_game_v1'))"
                     )
-                    assert saved['answers'] == 5 and saved['xp'] > 0
+                    assert saved['answers'] == 5 and saved['xp'] > 0, saved
                     page.locator('#game-back-to-map').click()
                     expect(page.locator('#game-ready')).to_be_visible()
                     page.reload()
@@ -101,8 +104,11 @@ def main():
                     )
                     print(f'PASS {engine}/{device}: real lesson, WAV, persistence, focus, outage')
                 except Exception as error:
+                    traceback.print_exc()
                     page.screenshot(path=str(OUT / f'{engine}-failure.png'))
-                    results.append({'engine': engine, 'status': 'FAIL', 'error': str(error)})
+                    results.append(
+                        {'engine': engine, 'status': 'FAIL', 'error': traceback.format_exc()}
+                    )
                     print(f'FAIL {engine}: {error}')
                 finally:
                     video = page.video

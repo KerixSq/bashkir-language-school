@@ -38,7 +38,7 @@ def playing(page):
 def stopped(page):
     assert page.locator('#bashkir-audio').evaluate(
         "audio => audio.paused && !audio.hasAttribute('src')"
-    )
+    ), 'Bashkir audio must be paused with its source cleared'
 
 
 def main():
