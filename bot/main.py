@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 from bot.handlers import community, messages, profile, registration, tasks
 from bot.live_probe import observe_polling
 
+from aiogram.client.session.aiohttp import AiohttpSession
+
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / '.env')
 
@@ -48,7 +50,8 @@ async def main() -> None:
     if not token:
         raise SystemExit('Заполни TELEGRAM_BOT_TOKEN в .env')
     configure_logging()
-    bot = Bot(token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    _bot_session = AiohttpSession(proxy=os.getenv("BOT_PROXY_URL") or None)
+    bot = Bot(token, session=_bot_session, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = create_dispatcher()
     try:
         await bot.set_my_commands(
