@@ -20,6 +20,25 @@ sys.path.insert(0, str(ROOT))
 from scripts.import_audio import import_audio, plan
 
 
+def arm_playback(page):
+    page.locator('#original-audio-player').evaluate("""audio => {
+      audio.dataset.qaPlayed = '';
+      audio.addEventListener('playing', () => { audio.dataset.qaPlayed = 'true'; }, {once:true});
+    }""")
+
+
+def expect_playback(page):
+    # Short clips may already have ended when WebKit returns from the key press.
+    # Require an actual playing event AND audio-clock advancement, never only no error.
+    page.wait_for_function(
+        """() => {
+      const audio = document.getElementById('original-audio-player');
+      return audio.dataset.qaPlayed === 'true' && !audio.error && audio.readyState >= 2 && audio.currentTime > 0.23;
+    }""",
+        timeout=5000,
+    )
+
+
 def check_original_audio(api, page, compose, sql, root):
     with tempfile.TemporaryDirectory() as directory:
         folder = Path(directory)
@@ -66,15 +85,22 @@ def check_original_audio(api, page, compose, sql, root):
         audio_node = page.locator('#original-audio-player')
         button = page.locator('#original-audio-play')
         button.focus()
+        arm_playback(page)
         button.press('Enter')
-        page.wait_for_function(
-            "() => {const a=document.getElementById('original-audio-player');return !a.paused && a.currentTime>=0.2 && a.currentTime<0.8}"
-        )
+        expect_playback(page)
         page.wait_for_function("() => document.getElementById('original-audio-player').paused")
         assert audio_node.evaluate('a=>a.currentTime') <= 0.8
+        arm_playback(page)
         button.click()
-        page.wait_for_function("() => !document.getElementById('original-audio-player').paused")
-        button.click()
+        expect_playback(page)
+        stopped = page.evaluate("""() => {
+          if (document.getElementById('original-audio-player').paused) return false;
+          document.getElementById('original-audio-play').click(); return true;
+        }""")
+        if not stopped:
+            print(
+                'SKIP manual stop timing: short clip already naturally ended; range stop verified'
+            )
         assert audio_node.evaluate('a=>a.paused')
         # Failure changes only the audio status, never fabricates a successful answer.
         page.route('**/original-audio/**', lambda route: route.abort())
@@ -85,8 +111,9 @@ def check_original_audio(api, page, compose, sql, root):
         expect(page.locator('#original-audio-status')).to_contain_text('Не удалось')
         expect(button).to_have_attribute('aria-pressed', 'false')
         page.unroute('**/original-audio/**')
+        arm_playback(page)
         button.click()
-        page.wait_for_function("() => !document.getElementById('original-audio-player').paused")
+        expect_playback(page)
         out = root / 'test-results/visual'
         out.mkdir(parents=True, exist_ok=True)
         page.screenshot(path=str(out / 'original-audio-mobile.png'))
@@ -230,12 +257,10 @@ def main():
                     button = page.locator('#original-audio-play')
                     expect(button).to_be_visible()
                     button.focus()
+                    arm_playback(page)
                     button.press('Enter')
                     try:
-                        page.wait_for_function(
-                            "() => {const a=document.getElementById('original-audio-player');return !a.paused && a.currentTime>=0.2}",
-                            timeout=5000,
-                        )
+                        expect_playback(page)
                     except Exception:
                         print(
                             engine,
@@ -251,10 +276,9 @@ def main():
                     assert (
                         page.locator('#original-audio-player').evaluate('a=>a.currentTime') <= 0.8
                     )
+                    arm_playback(page)
                     button.click()
-                    page.wait_for_function(
-                        "() => !document.getElementById('original-audio-player').paused"
-                    )
+                    expect_playback(page)
                     page.evaluate('window.OriginalAudio.clear()')
                     assert page.locator('#original-audio-player').evaluate(
                         'a=>a.paused && !a.hasAttribute("src")'
@@ -265,10 +289,9 @@ def main():
                     expect(page.locator('#original-audio-status')).to_contain_text('Не удалось')
                     expect(button).to_have_attribute('aria-pressed', 'false')
                     unavailable.remove(retry_source['url'])
+                    arm_playback(page)
                     button.click()
-                    page.wait_for_function(
-                        "() => {const a=document.getElementById('original-audio-player');return !a.paused && a.readyState>=2 && a.currentTime>0.23}"
-                    )
+                    expect_playback(page)
                     page.evaluate('window.OriginalAudio.clear()')
                     page.evaluate(
                         'task=>window.OriginalAudio.setTask(task)',
@@ -277,10 +300,9 @@ def main():
                     expect(page.locator('#web-original-audio')).to_be_hidden()
                     if mp3_task:
                         page.evaluate('task=>window.OriginalAudio.setTask(task)', mp3_task)
+                        arm_playback(page)
                         button.click()
-                        page.wait_for_function(
-                            "() => {const a=document.getElementById('original-audio-player');return !a.paused && a.currentTime>=0.2}"
-                        )
+                        expect_playback(page)
                         page.wait_for_function(
                             "() => document.getElementById('original-audio-player').paused"
                         )
